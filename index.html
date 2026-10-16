@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cobertura Estoque</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>/* MapLibre GL JS 4.7.1 — BSD-3-Clause */
+.maplibregl-map{font:12px/20px Helvetica Neue,Arial,Helvetica,sans-serif;overflow:hidden;position:relative;-webkit-tap-highlight-color:rgb(0 0 0/0)}.maplibregl-canvas{left:0;position:absolute;top:0}.maplibregl-map:fullscreen{height:100%;width:100%}.maplibregl-ctrl-group button.maplibregl-ctrl-compass{touch-action:none}.maplibregl-canvas-container.maplibregl-interactive,.maplibregl-ctrl-group button.maplibregl-ctrl-compass{cursor:grab;-webkit-user-select:none;-moz-user-select:none;user-select:none}.maplibregl-canvas-container.maplibregl-interactive.maplibregl-track-pointer{cursor:pointer}.maplibregl-canvas-container.maplibregl-interactive:active,.maplibregl-ctrl-group button.maplibregl-ctrl-compass:active{cursor:grabbing}.maplibregl-canvas-container.maplibregl-touch-zoom-rotate,.maplibregl-canvas-container.maplibregl-touch-zoom-rotate .maplibregl-canvas{touch-action:pan-x pan-y}.maplibregl-canvas-container.maplibregl-touch-drag-pan,.maplibregl-canvas-container.maplibregl-touch-drag-pan .maplibregl-canvas{touch-action:pinch-zoom}.maplibregl-canvas-container.maplibregl-touch-zoom-rotate.maplibregl-touch-drag-pan,.maplibregl-canvas-container.maplibregl-touch-zoom-rotate.maplibregl-touch-drag-pan .maplibregl-canvas{touch-action:none}.maplibregl-canvas-container.maplibregl-touch-drag-pan.maplibregl-cooperative-gestures,.maplibregl-canvas-container.maplibregl-touch-drag-pan.maplibregl-cooperative-gestures .maplibregl-canvas{touch-action:pan-x pan-y}.maplibregl-ctrl-bottom-left,.maplibregl-ctrl-bottom-right,.maplibregl-ctrl-top-left,.maplibregl-ctrl-top-right{pointer-events:none;position:absolute;z-index:2}.maplibregl-ctrl-top-left{left:0;top:0}.maplibregl-ctrl-top-right{right:0;top:0}.maplibregl-ctrl-bottom-left{bottom:0;left:0}.maplibregl-ctrl-bottom-right{bottom:0;right:0}.maplibregl-ctrl{clear:both;pointer-events:auto;transform:translate(0)}.maplibregl-ctrl-top-left .maplibregl-ctrl{float:left;margin:10px 0 0 10px}.maplibregl-ctrl-top-right .maplibregl-ctrl{float:right;margin:10px 10px 0 0}.maplibregl-ctrl-bottom-left .maplibregl-ctrl{float:left;margin:0 0 10px 10px}.maplibregl-ctrl-bottom-right .maplibregl-ctrl{float:right;margin:0 10px 10px 0}.maplibregl-ctrl-group{background:#fff;border-radius:4px}.maplibregl-ctrl-group:not(:empty){box-shadow:0 0 0 2px rgba(0,0,0,.1)}@media (forced-colors:active){.maplibregl-ctrl-group:not(:empty){box-shadow:0 0 0 2px ButtonText}}.maplibregl-ctrl-group button{background-color:transparent;border:0;box-sizing:border-box;cursor:pointer;display:block;height:29px;outline:0;padding:0;width:29px}.maplibregl-ctrl-group button+button{border-top:1px solid #ddd}.maplibregl-ctrl button .maplibregl-ctrl-icon{background-position:50%;background-repeat:no-repeat;display:block;height:100%;width:100%}@media (forced-colors:active){.maplibregl-ctrl-icon{background-color:transparent}.maplibregl-ctrl-group button+button{border-top:1px solid ButtonText}}.maplibregl-ctrl button::-moz-focus-inner{border:0;padding:0}.maplibregl-ctrl-attrib-button:focus,.maplibregl-ctrl-group button:focus{box-shadow:0 0 2px 2px #0096ff}.maplibregl-ctrl button:disabled{cursor:not-allowed}.maplibregl-ctrl button:disabled .maplibregl-ctrl-icon{opacity:.25}.maplibregl-ctrl button:not(:disabled):hover{background-color:rgb(0 0 0/5%)}.maplibregl-ctrl-group button:focus:focus-visible{box-shadow:0 0 2px 2px #0096ff}.maplibregl-ctrl-group button:focus:not(:focus-visible){box-shadow:none}.maplibregl-ctrl-group button:focus:first-child{border-radius:4px 4px 0 0}.maplibregl-ctrl-group button:focus:last-child{border-radius:0 0 4px 4px}.maplibregl-ctrl-group button:focus:only-child{border-radius:inherit}.maplibregl-ctrl button.maplibregl-ctrl-zoom-out .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23333' viewBox='0 0 29 29'%3E%3Cpath d='M10 13c-.75 0-1.5.75-1.5 1.5S9.25 16 10 16h9c.75 0 1.5-.75 1.5-1.5S19.75 13 19 13z'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-zoom-in .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23333' viewBox='0 0 29 29'%3E%3Cpath d='M14.5 8.5c-.75 0-1.5.75-1.5 1.5v3h-3c-.75 0-1.5.75-1.5 1.5S9.25 16 10 16h3v3c0 .75.75 1.5 1.5 1.5S16 19.75 16 19v-3h3c.75 0 1.5-.75 1.5-1.5S19.75 13 19 13h-3v-3c0-.75-.75-1.5-1.5-1.5'/%3E%3C/svg%3E")}@media (forced-colors:active){.maplibregl-ctrl button.maplibregl-ctrl-zoom-out .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23fff' viewBox='0 0 29 29'%3E%3Cpath d='M10 13c-.75 0-1.5.75-1.5 1.5S9.25 16 10 16h9c.75 0 1.5-.75 1.5-1.5S19.75 13 19 13z'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-zoom-in .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23fff' viewBox='0 0 29 29'%3E%3Cpath d='M14.5 8.5c-.75 0-1.5.75-1.5 1.5v3h-3c-.75 0-1.5.75-1.5 1.5S9.25 16 10 16h3v3c0 .75.75 1.5 1.5 1.5S16 19.75 16 19v-3h3c.75 0 1.5-.75 1.5-1.5S19.75 13 19 13h-3v-3c0-.75-.75-1.5-1.5-1.5'/%3E%3C/svg%3E")}}@media (forced-colors:active) and (prefers-color-scheme:light){.maplibregl-ctrl button.maplibregl-ctrl-zoom-out .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' viewBox='0 0 29 29'%3E%3Cpath d='M10 13c-.75 0-1.5.75-1.5 1.5S9.25 16 10 16h9c.75 0 1.5-.75 1.5-1.5S19.75 13 19 13z'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-zoom-in .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' viewBox='0 0 29 29'%3E%3Cpath d='M14.5 8.5c-.75 0-1.5.75-1.5 1.5v3h-3c-.75 0-1.5.75-1.5 1.5S9.25 16 10 16h3v3c0 .75.75 1.5 1.5 1.5S16 19.75 16 19v-3h3c.75 0 1.5-.75 1.5-1.5S19.75 13 19 13h-3v-3c0-.75-.75-1.5-1.5-1.5'/%3E%3C/svg%3E")}}.maplibregl-ctrl button.maplibregl-ctrl-fullscreen .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23333' viewBox='0 0 29 29'%3E%3Cpath d='M24 16v5.5c0 1.75-.75 2.5-2.5 2.5H16v-1l3-1.5-4-5.5 1-1 5.5 4 1.5-3zM6 16l1.5 3 5.5-4 1 1-4 5.5 3 1.5v1H7.5C5.75 24 5 23.25 5 21.5V16zm7-11v1l-3 1.5 4 5.5-1 1-5.5-4L6 13H5V7.5C5 5.75 5.75 5 7.5 5zm11 2.5c0-1.75-.75-2.5-2.5-2.5H16v1l3 1.5-4 5.5 1 1 5.5-4 1.5 3h1z'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-shrink .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' viewBox='0 0 29 29'%3E%3Cpath d='M18.5 16c-1.75 0-2.5.75-2.5 2.5V24h1l1.5-3 5.5 4 1-1-4-5.5 3-1.5v-1zM13 18.5c0-1.75-.75-2.5-2.5-2.5H5v1l3 1.5L4 24l1 1 5.5-4 1.5 3h1zm3-8c0 1.75.75 2.5 2.5 2.5H24v-1l-3-1.5L25 5l-1-1-5.5 4L17 5h-1zM10.5 13c1.75 0 2.5-.75 2.5-2.5V5h-1l-1.5 3L5 4 4 5l4 5.5L5 12v1z'/%3E%3C/svg%3E")}@media (forced-colors:active){.maplibregl-ctrl button.maplibregl-ctrl-fullscreen .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23fff' viewBox='0 0 29 29'%3E%3Cpath d='M24 16v5.5c0 1.75-.75 2.5-2.5 2.5H16v-1l3-1.5-4-5.5 1-1 5.5 4 1.5-3zM6 16l1.5 3 5.5-4 1 1-4 5.5 3 1.5v1H7.5C5.75 24 5 23.25 5 21.5V16zm7-11v1l-3 1.5 4 5.5-1 1-5.5-4L6 13H5V7.5C5 5.75 5.75 5 7.5 5zm11 2.5c0-1.75-.75-2.5-2.5-2.5H16v1l3 1.5-4 5.5 1 1 5.5-4 1.5 3h1z'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-shrink .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23fff' viewBox='0 0 29 29'%3E%3Cpath d='M18.5 16c-1.75 0-2.5.75-2.5 2.5V24h1l1.5-3 5.5 4 1-1-4-5.5 3-1.5v-1zM13 18.5c0-1.75-.75-2.5-2.5-2.5H5v1l3 1.5L4 24l1 1 5.5-4 1.5 3h1zm3-8c0 1.75.75 2.5 2.5 2.5H24v-1l-3-1.5L25 5l-1-1-5.5 4L17 5h-1zM10.5 13c1.75 0 2.5-.75 2.5-2.5V5h-1l-1.5 3L5 4 4 5l4 5.5L5 12v1z'/%3E%3C/svg%3E")}}@media (forced-colors:active) and (prefers-color-scheme:light){.maplibregl-ctrl button.maplibregl-ctrl-fullscreen .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' viewBox='0 0 29 29'%3E%3Cpath d='M24 16v5.5c0 1.75-.75 2.5-2.5 2.5H16v-1l3-1.5-4-5.5 1-1 5.5 4 1.5-3zM6 16l1.5 3 5.5-4 1 1-4 5.5 3 1.5v1H7.5C5.75 24 5 23.25 5 21.5V16zm7-11v1l-3 1.5 4 5.5-1 1-5.5-4L6 13H5V7.5C5 5.75 5.75 5 7.5 5zm11 2.5c0-1.75-.75-2.5-2.5-2.5H16v1l3 1.5-4 5.5 1 1 5.5-4 1.5 3h1z'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-shrink .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' viewBox='0 0 29 29'%3E%3Cpath d='M18.5 16c-1.75 0-2.5.75-2.5 2.5V24h1l1.5-3 5.5 4 1-1-4-5.5 3-1.5v-1zM13 18.5c0-1.75-.75-2.5-2.5-2.5H5v1l3 1.5L4 24l1 1 5.5-4 1.5 3h1zm3-8c0 1.75.75 2.5 2.5 2.5H24v-1l-3-1.5L25 5l-1-1-5.5 4L17 5h-1zM10.5 13c1.75 0 2.5-.75 2.5-2.5V5h-1l-1.5 3L5 4 4 5l4 5.5L5 12v1z'/%3E%3C/svg%3E")}}.maplibregl-ctrl button.maplibregl-ctrl-compass .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23333' viewBox='0 0 29 29'%3E%3Cpath d='m10.5 14 4-8 4 8z'/%3E%3Cpath fill='%23ccc' d='m10.5 16 4 8 4-8z'/%3E%3C/svg%3E")}@media (forced-colors:active){.maplibregl-ctrl button.maplibregl-ctrl-compass .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23fff' viewBox='0 0 29 29'%3E%3Cpath d='m10.5 14 4-8 4 8z'/%3E%3Cpath fill='%23ccc' d='m10.5 16 4 8 4-8z'/%3E%3C/svg%3E")}}@media (forced-colors:active) and (prefers-color-scheme:light){.maplibregl-ctrl button.maplibregl-ctrl-compass .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' viewBox='0 0 29 29'%3E%3Cpath d='m10.5 14 4-8 4 8z'/%3E%3Cpath fill='%23ccc' d='m10.5 16 4 8 4-8z'/%3E%3C/svg%3E")}}.maplibregl-ctrl button.maplibregl-ctrl-terrain .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' fill='%23333' viewBox='0 0 22 22'%3E%3Cpath d='m1.754 13.406 4.453-4.851 3.09 3.09 3.281 3.277.969-.969-3.309-3.312 3.844-4.121 6.148 6.886h1.082v-.855l-7.207-8.07-4.84 5.187L6.169 6.57l-5.48 5.965v.871ZM.688 16.844h20.625v1.375H.688Zm0 0'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-terrain-enabled .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' fill='%2333b5e5' viewBox='0 0 22 22'%3E%3Cpath d='m1.754 13.406 4.453-4.851 3.09 3.09 3.281 3.277.969-.969-3.309-3.312 3.844-4.121 6.148 6.886h1.082v-.855l-7.207-8.07-4.84 5.187L6.169 6.57l-5.48 5.965v.871ZM.688 16.844h20.625v1.375H.688Zm0 0'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23333' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate:disabled .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23aaa' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3Cpath fill='red' d='m14 5 1 1-9 9-1-1z'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate.maplibregl-ctrl-geolocate-active .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%2333b5e5' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate.maplibregl-ctrl-geolocate-active-error .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23e58978' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate.maplibregl-ctrl-geolocate-background .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%2333b5e5' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate.maplibregl-ctrl-geolocate-background-error .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23e54e33' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate.maplibregl-ctrl-geolocate-waiting .maplibregl-ctrl-icon{animation:maplibregl-spin 2s linear infinite}@media (forced-colors:active){.maplibregl-ctrl button.maplibregl-ctrl-geolocate .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23fff' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate:disabled .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23999' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3Cpath fill='red' d='m14 5 1 1-9 9-1-1z'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate.maplibregl-ctrl-geolocate-active .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%2333b5e5' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate.maplibregl-ctrl-geolocate-active-error .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23e58978' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate.maplibregl-ctrl-geolocate-background .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%2333b5e5' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate.maplibregl-ctrl-geolocate-background-error .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23e54e33' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3C/svg%3E")}}@media (forced-colors:active) and (prefers-color-scheme:light){.maplibregl-ctrl button.maplibregl-ctrl-geolocate .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate:disabled .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23666' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3Cpath fill='red' d='m14 5 1 1-9 9-1-1z'/%3E%3C/svg%3E")}}@keyframes maplibregl-spin{0%{transform:rotate(0)}to{transform:rotate(1turn)}}a.maplibregl-ctrl-logo{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='23' fill='none'%3E%3Cpath fill='%23000' fill-opacity='.4' fill-rule='evenodd' d='M17.408 16.796h-1.827l2.501-12.095h.198l3.324 6.533.988 2.19.988-2.19 3.258-6.533h.181l2.6 12.095h-1.81l-1.218-5.644-.362-1.71-.658 1.71-2.929 5.644h-.098l-2.914-5.644-.757-1.71-.345 1.71zm1.958-3.42-.726 3.663a1.255 1.255 0 0 1-1.232 1.011h-1.827a1.255 1.255 0 0 1-1.229-1.509l2.501-12.095a1.255 1.255 0 0 1 1.23-1.001h.197a1.25 1.25 0 0 1 1.12.685l3.19 6.273 3.125-6.263a1.25 1.25 0 0 1 1.123-.695h.181a1.255 1.255 0 0 1 1.227.991l1.443 6.71a5 5 0 0 1 .314-.787l.009-.016a4.6 4.6 0 0 1 1.777-1.887c.782-.46 1.668-.667 2.611-.667a4.6 4.6 0 0 1 1.7.32l.306.134c.21-.16.474-.256.759-.256h1.694a1.255 1.255 0 0 1 1.212.925 1.255 1.255 0 0 1 1.212-.925h1.711c.284 0 .545.094.755.252.613-.3 1.312-.45 2.075-.45 1.356 0 2.557.445 3.482 1.4q.47.48.763 1.064V4.701a1.255 1.255 0 0 1 1.255-1.255h1.86A1.255 1.255 0 0 1 54.44 4.7v9.194h2.217c.19 0 .37.043.532.118v-4.77c0-.356.147-.678.385-.906a2.42 2.42 0 0 1-.682-1.71c0-.665.267-1.253.735-1.7a2.45 2.45 0 0 1 1.722-.674 2.43 2.43 0 0 1 1.705.675q.318.302.504.683V4.7a1.255 1.255 0 0 1 1.255-1.255h1.744A1.255 1.255 0 0 1 65.812 4.7v3.335a4.8 4.8 0 0 1 1.526-.246c.938 0 1.817.214 2.59.69a4.47 4.47 0 0 1 1.67 1.743v-.98a1.255 1.255 0 0 1 1.256-1.256h1.777c.233 0 .451.064.639.174a3.4 3.4 0 0 1 1.567-.372c.346 0 .861.02 1.285.232a1.25 1.25 0 0 1 .689 1.004 4.7 4.7 0 0 1 .853-.588c.795-.44 1.675-.647 2.61-.647 1.385 0 2.65.39 3.525 1.396.836.938 1.168 2.173 1.168 3.528q-.001.515-.056 1.051a1.255 1.255 0 0 1-.947 1.09l.408.952a1.255 1.255 0 0 1-.477 1.552c-.418.268-.92.463-1.458.612-.613.171-1.304.244-2.049.244-1.06 0-2.043-.207-2.886-.698l-.015-.008c-.798-.48-1.419-1.135-1.818-1.963l-.004-.008a5.8 5.8 0 0 1-.548-2.512q0-.429.053-.843a1.3 1.3 0 0 1-.333-.086l-.166-.004c-.223 0-.426.062-.643.228-.03.024-.142.139-.142.59v3.883a1.255 1.255 0 0 1-1.256 1.256h-1.777a1.255 1.255 0 0 1-1.256-1.256V15.69l-.032.057a4.8 4.8 0 0 1-1.86 1.833 5.04 5.04 0 0 1-2.484.634 4.5 4.5 0 0 1-1.935-.424 1.25 1.25 0 0 1-.764.258h-1.71a1.255 1.255 0 0 1-1.256-1.255V7.687a2.4 2.4 0 0 1-.428.625c.253.23.412.561.412.93v7.553a1.255 1.255 0 0 1-1.256 1.255h-1.843a1.25 1.25 0 0 1-.894-.373c-.228.23-.544.373-.894.373H51.32a1.255 1.255 0 0 1-1.256-1.255v-1.251l-.061.117a4.7 4.7 0 0 1-1.782 1.884 4.77 4.77 0 0 1-2.485.67 5.6 5.6 0 0 1-1.485-.188l.009 2.764a1.255 1.255 0 0 1-1.255 1.259h-1.729a1.255 1.255 0 0 1-1.255-1.255v-3.537a1.255 1.255 0 0 1-1.167.793h-1.679a1.25 1.25 0 0 1-.77-.263 4.5 4.5 0 0 1-1.945.429c-.885 0-1.724-.21-2.495-.632l-.017-.01a5 5 0 0 1-1.081-.836 1.255 1.255 0 0 1-1.254 1.312h-1.81a1.255 1.255 0 0 1-1.228-.99l-.782-3.625-2.044 3.939a1.25 1.25 0 0 1-1.115.676h-.098a1.25 1.25 0 0 1-1.116-.68l-2.061-3.994zM35.92 16.63l.207-.114.223-.15q.493-.356.735-.785l.061-.118.033 1.332h1.678V9.242h-1.694l-.033 1.267q-.133-.329-.526-.658l-.032-.028a3.2 3.2 0 0 0-.668-.428l-.27-.12a3.3 3.3 0 0 0-1.235-.23q-1.136-.001-1.974.493a3.36 3.36 0 0 0-1.3 1.382q-.445.89-.444 2.074 0 1.2.51 2.107a3.8 3.8 0 0 0 1.382 1.381 3.9 3.9 0 0 0 1.893.477q.795 0 1.455-.33zm-2.789-5.38q-.576.675-.575 1.762 0 1.102.559 1.794.576.675 1.645.675a2.25 2.25 0 0 0 .934-.19 2.2 2.2 0 0 0 .468-.29l.178-.161a2.2 2.2 0 0 0 .397-.561q.244-.5.244-1.15v-.115q0-.708-.296-1.267l-.043-.077a2.2 2.2 0 0 0-.633-.709l-.13-.086-.047-.028a2.1 2.1 0 0 0-1.073-.285q-1.052 0-1.629.692zm2.316 2.706c.163-.17.28-.407.28-.83v-.114c0-.292-.06-.508-.15-.68a.96.96 0 0 0-.353-.389.85.85 0 0 0-.464-.127c-.4 0-.56.114-.664.239l-.01.012c-.148.174-.275.45-.275.945 0 .506.122.801.27.99.097.11.266.224.68.224.303 0 .504-.09.687-.269zm7.545 1.705a2.6 2.6 0 0 0 .331.423q.319.33.755.548l.173.074q.65.255 1.49.255 1.02 0 1.844-.493a3.45 3.45 0 0 0 1.316-1.4q.493-.904.493-2.089 0-1.909-.988-2.913-.988-1.02-2.584-1.02-.898 0-1.575.347a3 3 0 0 0-.415.262l-.199.166a3.4 3.4 0 0 0-.64.82V9.242h-1.712v11.553h1.729l-.017-5.134zm.53-1.138q.206.29.48.5l.155.11.053.034q.51.296 1.119.297 1.07 0 1.645-.675.577-.69.576-1.762 0-1.119-.576-1.777-.558-.675-1.645-.675-.435 0-.835.16a2 2 0 0 0-.284.136 2 2 0 0 0-.363.254 2.2 2.2 0 0 0-.46.569l-.082.162a2.6 2.6 0 0 0-.213 1.072v.115q0 .707.296 1.267l.135.211zm.964-.818a1.1 1.1 0 0 0 .367.385.94.94 0 0 0 .476.118c.423 0 .59-.117.687-.23.159-.194.28-.478.28-.95 0-.53-.133-.8-.266-.952l-.021-.025c-.078-.094-.231-.221-.68-.221a1 1 0 0 0-.503.135l-.012.007a.86.86 0 0 0-.335.343c-.073.133-.132.324-.132.614v.115a1.4 1.4 0 0 0 .14.66zm15.7-6.222q.347-.346.346-.856a1.05 1.05 0 0 0-.345-.79 1.18 1.18 0 0 0-.84-.329q-.51 0-.855.33a1.05 1.05 0 0 0-.346.79q0 .51.346.855.345.346.856.346.51 0 .839-.346zm4.337 9.314.033-1.332q.191.403.59.747l.098.081a4 4 0 0 0 .316.224l.223.122a3.2 3.2 0 0 0 1.44.322 3.8 3.8 0 0 0 1.875-.477 3.5 3.5 0 0 0 1.382-1.366q.527-.89.526-2.09 0-1.184-.444-2.073a3.24 3.24 0 0 0-1.283-1.399q-.823-.51-1.942-.51a3.5 3.5 0 0 0-1.527.344l-.086.043-.165.09a3 3 0 0 0-.33.214q-.432.315-.656.707a2 2 0 0 0-.099.198l.082-1.283V4.701h-1.744v12.095zm.473-2.509a2.5 2.5 0 0 0 .566.7q.117.098.245.18l.144.08a2.1 2.1 0 0 0 .975.232q1.07 0 1.645-.675.576-.69.576-1.778 0-1.102-.576-1.777-.56-.691-1.645-.692a2.2 2.2 0 0 0-1.015.235q-.22.113-.415.282l-.15.142a2.1 2.1 0 0 0-.42.594q-.223.479-.223 1.1v.115q0 .705.293 1.26zm2.616-.293c.157-.191.28-.479.28-.967 0-.51-.13-.79-.276-.961l-.021-.026c-.082-.1-.232-.225-.67-.225a.87.87 0 0 0-.681.279l-.012.011c-.154.155-.274.38-.274.807v.115c0 .285.057.499.144.669a1.1 1.1 0 0 0 .367.405c.137.082.28.123.455.123.423 0 .59-.118.686-.23zm8.266-3.013q.345-.13.724-.14l.069-.002q.493 0 .642.099l.247-1.794q-.196-.099-.717-.099a2.3 2.3 0 0 0-.545.063 2 2 0 0 0-.411.148 2.2 2.2 0 0 0-.4.249 2.5 2.5 0 0 0-.485.499 2.7 2.7 0 0 0-.32.581l-.05.137v-1.48h-1.778v7.553h1.777v-3.884q0-.546.159-.943a1.5 1.5 0 0 1 .466-.636 2.5 2.5 0 0 1 .399-.253 2 2 0 0 1 .224-.099zm9.784 2.656.05-.922q0-1.743-.856-2.698-.838-.97-2.584-.97-1.119-.001-2.007.493a3.46 3.46 0 0 0-1.4 1.382q-.493.906-.493 2.106 0 1.07.428 1.975.428.89 1.332 1.432.906.526 2.255.526.973 0 1.668-.185l.044-.012.135-.04q.613-.184.984-.421l-.542-1.267q-.3.162-.642.274l-.297.087q-.51.131-1.3.131-.954 0-1.497-.444a1.6 1.6 0 0 1-.192-.193q-.366-.44-.512-1.234l-.004-.021zm-5.427-1.256-.003.022h3.752v-.138q-.011-.727-.288-1.118a1 1 0 0 0-.156-.176q-.46-.428-1.316-.428-.986 0-1.494.604-.379.45-.494 1.234zm-27.053 2.77V4.7h-1.86v12.095h5.333V15.15zm7.103-5.908v7.553h-1.843V9.242h1.843z'/%3E%3Cpath fill='%23fff' d='m19.63 11.151-.757-1.71-.345 1.71-1.12 5.644h-1.827L18.083 4.7h.197l3.325 6.533.988 2.19.988-2.19L26.839 4.7h.181l2.6 12.095h-1.81l-1.218-5.644-.362-1.71-.658 1.71-2.93 5.644h-.098l-2.913-5.644zm14.836 5.81q-1.02 0-1.893-.478a3.8 3.8 0 0 1-1.381-1.382q-.51-.906-.51-2.106 0-1.185.444-2.074a3.36 3.36 0 0 1 1.3-1.382q.839-.494 1.974-.494a3.3 3.3 0 0 1 1.234.231 3.3 3.3 0 0 1 .97.575q.396.33.527.659l.033-1.267h1.694v7.553H37.18l-.033-1.332q-.279.593-1.02 1.053a3.17 3.17 0 0 1-1.662.444zm.296-1.482q.938 0 1.58-.642.642-.66.642-1.711v-.115q0-.708-.296-1.267a2.2 2.2 0 0 0-.807-.872 2.1 2.1 0 0 0-1.119-.313q-1.053 0-1.629.692-.575.675-.575 1.76 0 1.103.559 1.795.577.675 1.645.675zm6.521-6.237h1.711v1.4q.906-1.597 2.83-1.597 1.596 0 2.584 1.02.988 1.005.988 2.914 0 1.185-.493 2.09a3.46 3.46 0 0 1-1.316 1.399 3.5 3.5 0 0 1-1.844.493q-.954 0-1.662-.329a2.67 2.67 0 0 1-1.086-.97l.017 5.134h-1.728zm4.048 6.22q1.07 0 1.645-.674.577-.69.576-1.762 0-1.119-.576-1.777-.558-.675-1.645-.675-.592 0-1.12.296-.51.28-.822.823-.296.527-.296 1.234v.115q0 .708.296 1.267.313.543.823.855.51.296 1.119.297z'/%3E%3Cpath fill='%23e1e3e9' d='M51.325 4.7h1.86v10.45h3.473v1.646h-5.333zm7.12 4.542h1.843v7.553h-1.843zm.905-1.415a1.16 1.16 0 0 1-.856-.346 1.17 1.17 0 0 1-.346-.856 1.05 1.05 0 0 1 .346-.79q.346-.329.856-.329.494 0 .839.33a1.05 1.05 0 0 1 .345.79 1.16 1.16 0 0 1-.345.855q-.33.346-.84.346zm7.875 9.133a3.17 3.17 0 0 1-1.662-.444q-.723-.46-1.004-1.053l-.033 1.332h-1.71V4.701h1.743v4.657l-.082 1.283q.279-.658 1.086-1.119a3.5 3.5 0 0 1 1.778-.477q1.119 0 1.942.51a3.24 3.24 0 0 1 1.283 1.4q.445.888.444 2.072 0 1.201-.526 2.09a3.5 3.5 0 0 1-1.382 1.366 3.8 3.8 0 0 1-1.876.477zm-.296-1.481q1.069 0 1.645-.675.577-.69.577-1.778 0-1.102-.577-1.776-.56-.691-1.645-.692a2.12 2.12 0 0 0-1.58.659q-.642.641-.642 1.694v.115q0 .71.296 1.267a2.4 2.4 0 0 0 .807.872 2.1 2.1 0 0 0 1.119.313zm5.927-6.237h1.777v1.481q.263-.757.856-1.217a2.14 2.14 0 0 1 1.349-.46q.527 0 .724.098l-.247 1.794q-.149-.099-.642-.099-.774 0-1.416.494-.626.493-.626 1.58v3.883h-1.777V9.242zm9.534 7.718q-1.35 0-2.255-.526-.904-.543-1.332-1.432a4.6 4.6 0 0 1-.428-1.975q0-1.2.493-2.106a3.46 3.46 0 0 1 1.4-1.382q.889-.495 2.007-.494 1.744 0 2.584.97.855.956.856 2.7 0 .444-.05.92h-5.43q.18 1.005.708 1.45.542.443 1.497.443.79 0 1.3-.131a4 4 0 0 0 .938-.362l.542 1.267q-.411.263-1.119.46-.708.198-1.711.197zm1.596-4.558q.016-1.02-.444-1.432-.46-.428-1.316-.428-1.728 0-1.991 1.86z'/%3E%3Cpath d='M5.074 15.948a.484.657 0 0 0-.486.659v1.84a.484.657 0 0 0 .486.659h4.101a.484.657 0 0 0 .486-.659v-1.84a.484.657 0 0 0-.486-.659zm3.56 1.16H5.617v.838h3.017z' style='fill:%23fff;fill-rule:evenodd;stroke-width:1.03600001'/%3E%3Cg style='stroke-width:1.12603545'%3E%3Cpath d='M-9.408-1.416c-3.833-.025-7.056 2.912-7.08 6.615-.02 3.08 1.653 4.832 3.107 6.268.903.892 1.721 1.74 2.32 2.902l-.525-.004c-.543-.003-.992.304-1.24.639a1.87 1.87 0 0 0-.362 1.121l-.011 1.877c-.003.402.104.787.347 1.125.244.338.688.653 1.23.656l4.142.028c.542.003.99-.306 1.238-.641a1.87 1.87 0 0 0 .363-1.121l.012-1.875a1.87 1.87 0 0 0-.348-1.127c-.243-.338-.688-.653-1.23-.656l-.518-.004c.597-1.145 1.425-1.983 2.348-2.87 1.473-1.414 3.18-3.149 3.2-6.226-.016-3.59-2.923-6.684-6.993-6.707m-.006 1.1v.002c3.274.02 5.92 2.532 5.9 5.6-.017 2.706-1.39 4.026-2.863 5.44-1.034.994-2.118 2.033-2.814 3.633-.018.041-.052.055-.075.065q-.013.004-.02.01a.34.34 0 0 1-.226.084.34.34 0 0 1-.224-.086l-.092-.077c-.699-1.615-1.768-2.669-2.781-3.67-1.454-1.435-2.797-2.762-2.78-5.478.02-3.067 2.7-5.545 5.975-5.523m-.02 2.826c-1.62-.01-2.944 1.315-2.955 2.96-.01 1.646 1.295 2.988 2.916 2.999h.002c1.621.01 2.943-1.316 2.953-2.961.011-1.646-1.294-2.988-2.916-2.998m-.005 1.1c1.017.006 1.829.83 1.822 1.89s-.83 1.874-1.848 1.867c-1.018-.006-1.829-.83-1.822-1.89s.83-1.874 1.848-1.868m-2.155 11.857 4.14.025c.271.002.49.305.487.676l-.013 1.875c-.003.37-.224.67-.495.668l-4.14-.025c-.27-.002-.487-.306-.485-.676l.012-1.875c.003-.37.224-.67.494-.668' style='color:%23000;font-style:normal;font-variant:normal;font-weight:400;font-stretch:normal;font-size:medium;line-height:normal;font-family:sans-serif;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-feature-settings:normal;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:%23000;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-orientation:mixed;dominant-baseline:auto;baseline-shift:baseline;text-anchor:start;white-space:normal;shape-padding:0;clip-rule:evenodd;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:%23000;solid-opacity:1;vector-effect:none;fill:%23000;fill-opacity:.4;fill-rule:evenodd;stroke:none;stroke-width:2.47727823;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto' transform='translate(15.553 2.85)scale(.88807)'/%3E%3Cpath d='M-9.415-.316C-12.69-.338-15.37 2.14-15.39 5.207c-.017 2.716 1.326 4.041 2.78 5.477 1.013 1 2.081 2.055 2.78 3.67l.092.076a.34.34 0 0 0 .225.086.34.34 0 0 0 .227-.083l.019-.01c.022-.009.057-.024.074-.064.697-1.6 1.78-2.64 2.814-3.634 1.473-1.414 2.847-2.733 2.864-5.44.02-3.067-2.627-5.58-5.901-5.601m-.057 8.784c1.621.011 2.944-1.315 2.955-2.96.01-1.646-1.295-2.988-2.916-2.999-1.622-.01-2.945 1.315-2.955 2.96s1.295 2.989 2.916 3' style='clip-rule:evenodd;fill:%23e1e3e9;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.47727823;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:.4' transform='translate(15.553 2.85)scale(.88807)'/%3E%3Cpath d='M-11.594 15.465c-.27-.002-.492.297-.494.668l-.012 1.876c-.003.371.214.673.485.675l4.14.027c.271.002.492-.298.495-.668l.012-1.877c.003-.37-.215-.672-.485-.674z' style='clip-rule:evenodd;fill:%23fff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.47727823;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:.4' transform='translate(15.553 2.85)scale(.88807)'/%3E%3C/g%3E%3C/svg%3E");background-repeat:no-repeat;cursor:pointer;display:block;height:23px;margin:0 0 -4px -4px;overflow:hidden;width:88px}a.maplibregl-ctrl-logo.maplibregl-compact{width:14px}@media (forced-colors:active){a.maplibregl-ctrl-logo{background-color:transparent;background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='23' fill='none'%3E%3Cpath fill='%23000' fill-opacity='.4' fill-rule='evenodd' d='M17.408 16.796h-1.827l2.501-12.095h.198l3.324 6.533.988 2.19.988-2.19 3.258-6.533h.181l2.6 12.095h-1.81l-1.218-5.644-.362-1.71-.658 1.71-2.929 5.644h-.098l-2.914-5.644-.757-1.71-.345 1.71zm1.958-3.42-.726 3.663a1.255 1.255 0 0 1-1.232 1.011h-1.827a1.255 1.255 0 0 1-1.229-1.509l2.501-12.095a1.255 1.255 0 0 1 1.23-1.001h.197a1.25 1.25 0 0 1 1.12.685l3.19 6.273 3.125-6.263a1.25 1.25 0 0 1 1.123-.695h.181a1.255 1.255 0 0 1 1.227.991l1.443 6.71a5 5 0 0 1 .314-.787l.009-.016a4.6 4.6 0 0 1 1.777-1.887c.782-.46 1.668-.667 2.611-.667a4.6 4.6 0 0 1 1.7.32l.306.134c.21-.16.474-.256.759-.256h1.694a1.255 1.255 0 0 1 1.212.925 1.255 1.255 0 0 1 1.212-.925h1.711c.284 0 .545.094.755.252.613-.3 1.312-.45 2.075-.45 1.356 0 2.557.445 3.482 1.4q.47.48.763 1.064V4.701a1.255 1.255 0 0 1 1.255-1.255h1.86A1.255 1.255 0 0 1 54.44 4.7v9.194h2.217c.19 0 .37.043.532.118v-4.77c0-.356.147-.678.385-.906a2.42 2.42 0 0 1-.682-1.71c0-.665.267-1.253.735-1.7a2.45 2.45 0 0 1 1.722-.674 2.43 2.43 0 0 1 1.705.675q.318.302.504.683V4.7a1.255 1.255 0 0 1 1.255-1.255h1.744A1.255 1.255 0 0 1 65.812 4.7v3.335a4.8 4.8 0 0 1 1.526-.246c.938 0 1.817.214 2.59.69a4.47 4.47 0 0 1 1.67 1.743v-.98a1.255 1.255 0 0 1 1.256-1.256h1.777c.233 0 .451.064.639.174a3.4 3.4 0 0 1 1.567-.372c.346 0 .861.02 1.285.232a1.25 1.25 0 0 1 .689 1.004 4.7 4.7 0 0 1 .853-.588c.795-.44 1.675-.647 2.61-.647 1.385 0 2.65.39 3.525 1.396.836.938 1.168 2.173 1.168 3.528q-.001.515-.056 1.051a1.255 1.255 0 0 1-.947 1.09l.408.952a1.255 1.255 0 0 1-.477 1.552c-.418.268-.92.463-1.458.612-.613.171-1.304.244-2.049.244-1.06 0-2.043-.207-2.886-.698l-.015-.008c-.798-.48-1.419-1.135-1.818-1.963l-.004-.008a5.8 5.8 0 0 1-.548-2.512q0-.429.053-.843a1.3 1.3 0 0 1-.333-.086l-.166-.004c-.223 0-.426.062-.643.228-.03.024-.142.139-.142.59v3.883a1.255 1.255 0 0 1-1.256 1.256h-1.777a1.255 1.255 0 0 1-1.256-1.256V15.69l-.032.057a4.8 4.8 0 0 1-1.86 1.833 5.04 5.04 0 0 1-2.484.634 4.5 4.5 0 0 1-1.935-.424 1.25 1.25 0 0 1-.764.258h-1.71a1.255 1.255 0 0 1-1.256-1.255V7.687a2.4 2.4 0 0 1-.428.625c.253.23.412.561.412.93v7.553a1.255 1.255 0 0 1-1.256 1.255h-1.843a1.25 1.25 0 0 1-.894-.373c-.228.23-.544.373-.894.373H51.32a1.255 1.255 0 0 1-1.256-1.255v-1.251l-.061.117a4.7 4.7 0 0 1-1.782 1.884 4.77 4.77 0 0 1-2.485.67 5.6 5.6 0 0 1-1.485-.188l.009 2.764a1.255 1.255 0 0 1-1.255 1.259h-1.729a1.255 1.255 0 0 1-1.255-1.255v-3.537a1.255 1.255 0 0 1-1.167.793h-1.679a1.25 1.25 0 0 1-.77-.263 4.5 4.5 0 0 1-1.945.429c-.885 0-1.724-.21-2.495-.632l-.017-.01a5 5 0 0 1-1.081-.836 1.255 1.255 0 0 1-1.254 1.312h-1.81a1.255 1.255 0 0 1-1.228-.99l-.782-3.625-2.044 3.939a1.25 1.25 0 0 1-1.115.676h-.098a1.25 1.25 0 0 1-1.116-.68l-2.061-3.994zM35.92 16.63l.207-.114.223-.15q.493-.356.735-.785l.061-.118.033 1.332h1.678V9.242h-1.694l-.033 1.267q-.133-.329-.526-.658l-.032-.028a3.2 3.2 0 0 0-.668-.428l-.27-.12a3.3 3.3 0 0 0-1.235-.23q-1.136-.001-1.974.493a3.36 3.36 0 0 0-1.3 1.382q-.445.89-.444 2.074 0 1.2.51 2.107a3.8 3.8 0 0 0 1.382 1.381 3.9 3.9 0 0 0 1.893.477q.795 0 1.455-.33zm-2.789-5.38q-.576.675-.575 1.762 0 1.102.559 1.794.576.675 1.645.675a2.25 2.25 0 0 0 .934-.19 2.2 2.2 0 0 0 .468-.29l.178-.161a2.2 2.2 0 0 0 .397-.561q.244-.5.244-1.15v-.115q0-.708-.296-1.267l-.043-.077a2.2 2.2 0 0 0-.633-.709l-.13-.086-.047-.028a2.1 2.1 0 0 0-1.073-.285q-1.052 0-1.629.692zm2.316 2.706c.163-.17.28-.407.28-.83v-.114c0-.292-.06-.508-.15-.68a.96.96 0 0 0-.353-.389.85.85 0 0 0-.464-.127c-.4 0-.56.114-.664.239l-.01.012c-.148.174-.275.45-.275.945 0 .506.122.801.27.99.097.11.266.224.68.224.303 0 .504-.09.687-.269zm7.545 1.705a2.6 2.6 0 0 0 .331.423q.319.33.755.548l.173.074q.65.255 1.49.255 1.02 0 1.844-.493a3.45 3.45 0 0 0 1.316-1.4q.493-.904.493-2.089 0-1.909-.988-2.913-.988-1.02-2.584-1.02-.898 0-1.575.347a3 3 0 0 0-.415.262l-.199.166a3.4 3.4 0 0 0-.64.82V9.242h-1.712v11.553h1.729l-.017-5.134zm.53-1.138q.206.29.48.5l.155.11.053.034q.51.296 1.119.297 1.07 0 1.645-.675.577-.69.576-1.762 0-1.119-.576-1.777-.558-.675-1.645-.675-.435 0-.835.16a2 2 0 0 0-.284.136 2 2 0 0 0-.363.254 2.2 2.2 0 0 0-.46.569l-.082.162a2.6 2.6 0 0 0-.213 1.072v.115q0 .707.296 1.267l.135.211zm.964-.818a1.1 1.1 0 0 0 .367.385.94.94 0 0 0 .476.118c.423 0 .59-.117.687-.23.159-.194.28-.478.28-.95 0-.53-.133-.8-.266-.952l-.021-.025c-.078-.094-.231-.221-.68-.221a1 1 0 0 0-.503.135l-.012.007a.86.86 0 0 0-.335.343c-.073.133-.132.324-.132.614v.115a1.4 1.4 0 0 0 .14.66zm15.7-6.222q.347-.346.346-.856a1.05 1.05 0 0 0-.345-.79 1.18 1.18 0 0 0-.84-.329q-.51 0-.855.33a1.05 1.05 0 0 0-.346.79q0 .51.346.855.345.346.856.346.51 0 .839-.346zm4.337 9.314.033-1.332q.191.403.59.747l.098.081a4 4 0 0 0 .316.224l.223.122a3.2 3.2 0 0 0 1.44.322 3.8 3.8 0 0 0 1.875-.477 3.5 3.5 0 0 0 1.382-1.366q.527-.89.526-2.09 0-1.184-.444-2.073a3.24 3.24 0 0 0-1.283-1.399q-.823-.51-1.942-.51a3.5 3.5 0 0 0-1.527.344l-.086.043-.165.09a3 3 0 0 0-.33.214q-.432.315-.656.707a2 2 0 0 0-.099.198l.082-1.283V4.701h-1.744v12.095zm.473-2.509a2.5 2.5 0 0 0 .566.7q.117.098.245.18l.144.08a2.1 2.1 0 0 0 .975.232q1.07 0 1.645-.675.576-.69.576-1.778 0-1.102-.576-1.777-.56-.691-1.645-.692a2.2 2.2 0 0 0-1.015.235q-.22.113-.415.282l-.15.142a2.1 2.1 0 0 0-.42.594q-.223.479-.223 1.1v.115q0 .705.293 1.26zm2.616-.293c.157-.191.28-.479.28-.967 0-.51-.13-.79-.276-.961l-.021-.026c-.082-.1-.232-.225-.67-.225a.87.87 0 0 0-.681.279l-.012.011c-.154.155-.274.38-.274.807v.115c0 .285.057.499.144.669a1.1 1.1 0 0 0 .367.405c.137.082.28.123.455.123.423 0 .59-.118.686-.23zm8.266-3.013q.345-.13.724-.14l.069-.002q.493 0 .642.099l.247-1.794q-.196-.099-.717-.099a2.3 2.3 0 0 0-.545.063 2 2 0 0 0-.411.148 2.2 2.2 0 0 0-.4.249 2.5 2.5 0 0 0-.485.499 2.7 2.7 0 0 0-.32.581l-.05.137v-1.48h-1.778v7.553h1.777v-3.884q0-.546.159-.943a1.5 1.5 0 0 1 .466-.636 2.5 2.5 0 0 1 .399-.253 2 2 0 0 1 .224-.099zm9.784 2.656.05-.922q0-1.743-.856-2.698-.838-.97-2.584-.97-1.119-.001-2.007.493a3.46 3.46 0 0 0-1.4 1.382q-.493.906-.493 2.106 0 1.07.428 1.975.428.89 1.332 1.432.906.526 2.255.526.973 0 1.668-.185l.044-.012.135-.04q.613-.184.984-.421l-.542-1.267q-.3.162-.642.274l-.297.087q-.51.131-1.3.131-.954 0-1.497-.444a1.6 1.6 0 0 1-.192-.193q-.366-.44-.512-1.234l-.004-.021zm-5.427-1.256-.003.022h3.752v-.138q-.011-.727-.288-1.118a1 1 0 0 0-.156-.176q-.46-.428-1.316-.428-.986 0-1.494.604-.379.45-.494 1.234zm-27.053 2.77V4.7h-1.86v12.095h5.333V15.15zm7.103-5.908v7.553h-1.843V9.242h1.843z'/%3E%3Cpath fill='%23fff' d='m19.63 11.151-.757-1.71-.345 1.71-1.12 5.644h-1.827L18.083 4.7h.197l3.325 6.533.988 2.19.988-2.19L26.839 4.7h.181l2.6 12.095h-1.81l-1.218-5.644-.362-1.71-.658 1.71-2.93 5.644h-.098l-2.913-5.644zm14.836 5.81q-1.02 0-1.893-.478a3.8 3.8 0 0 1-1.381-1.382q-.51-.906-.51-2.106 0-1.185.444-2.074a3.36 3.36 0 0 1 1.3-1.382q.839-.494 1.974-.494a3.3 3.3 0 0 1 1.234.231 3.3 3.3 0 0 1 .97.575q.396.33.527.659l.033-1.267h1.694v7.553H37.18l-.033-1.332q-.279.593-1.02 1.053a3.17 3.17 0 0 1-1.662.444zm.296-1.482q.938 0 1.58-.642.642-.66.642-1.711v-.115q0-.708-.296-1.267a2.2 2.2 0 0 0-.807-.872 2.1 2.1 0 0 0-1.119-.313q-1.053 0-1.629.692-.575.675-.575 1.76 0 1.103.559 1.795.577.675 1.645.675zm6.521-6.237h1.711v1.4q.906-1.597 2.83-1.597 1.596 0 2.584 1.02.988 1.005.988 2.914 0 1.185-.493 2.09a3.46 3.46 0 0 1-1.316 1.399 3.5 3.5 0 0 1-1.844.493q-.954 0-1.662-.329a2.67 2.67 0 0 1-1.086-.97l.017 5.134h-1.728zm4.048 6.22q1.07 0 1.645-.674.577-.69.576-1.762 0-1.119-.576-1.777-.558-.675-1.645-.675-.592 0-1.12.296-.51.28-.822.823-.296.527-.296 1.234v.115q0 .708.296 1.267.313.543.823.855.51.296 1.119.297z'/%3E%3Cpath fill='%23e1e3e9' d='M51.325 4.7h1.86v10.45h3.473v1.646h-5.333zm7.12 4.542h1.843v7.553h-1.843zm.905-1.415a1.16 1.16 0 0 1-.856-.346 1.17 1.17 0 0 1-.346-.856 1.05 1.05 0 0 1 .346-.79q.346-.329.856-.329.494 0 .839.33a1.05 1.05 0 0 1 .345.79 1.16 1.16 0 0 1-.345.855q-.33.346-.84.346zm7.875 9.133a3.17 3.17 0 0 1-1.662-.444q-.723-.46-1.004-1.053l-.033 1.332h-1.71V4.701h1.743v4.657l-.082 1.283q.279-.658 1.086-1.119a3.5 3.5 0 0 1 1.778-.477q1.119 0 1.942.51a3.24 3.24 0 0 1 1.283 1.4q.445.888.444 2.072 0 1.201-.526 2.09a3.5 3.5 0 0 1-1.382 1.366 3.8 3.8 0 0 1-1.876.477zm-.296-1.481q1.069 0 1.645-.675.577-.69.577-1.778 0-1.102-.577-1.776-.56-.691-1.645-.692a2.12 2.12 0 0 0-1.58.659q-.642.641-.642 1.694v.115q0 .71.296 1.267a2.4 2.4 0 0 0 .807.872 2.1 2.1 0 0 0 1.119.313zm5.927-6.237h1.777v1.481q.263-.757.856-1.217a2.14 2.14 0 0 1 1.349-.46q.527 0 .724.098l-.247 1.794q-.149-.099-.642-.099-.774 0-1.416.494-.626.493-.626 1.58v3.883h-1.777V9.242zm9.534 7.718q-1.35 0-2.255-.526-.904-.543-1.332-1.432a4.6 4.6 0 0 1-.428-1.975q0-1.2.493-2.106a3.46 3.46 0 0 1 1.4-1.382q.889-.495 2.007-.494 1.744 0 2.584.97.855.956.856 2.7 0 .444-.05.92h-5.43q.18 1.005.708 1.45.542.443 1.497.443.79 0 1.3-.131a4 4 0 0 0 .938-.362l.542 1.267q-.411.263-1.119.46-.708.198-1.711.197zm1.596-4.558q.016-1.02-.444-1.432-.46-.428-1.316-.428-1.728 0-1.991 1.86z'/%3E%3Cpath d='M5.074 15.948a.484.657 0 0 0-.486.659v1.84a.484.657 0 0 0 .486.659h4.101a.484.657 0 0 0 .486-.659v-1.84a.484.657 0 0 0-.486-.659zm3.56 1.16H5.617v.838h3.017z' style='fill:%23fff;fill-rule:evenodd;stroke-width:1.03600001'/%3E%3Cg style='stroke-width:1.12603545'%3E%3Cpath d='M-9.408-1.416c-3.833-.025-7.056 2.912-7.08 6.615-.02 3.08 1.653 4.832 3.107 6.268.903.892 1.721 1.74 2.32 2.902l-.525-.004c-.543-.003-.992.304-1.24.639a1.87 1.87 0 0 0-.362 1.121l-.011 1.877c-.003.402.104.787.347 1.125.244.338.688.653 1.23.656l4.142.028c.542.003.99-.306 1.238-.641a1.87 1.87 0 0 0 .363-1.121l.012-1.875a1.87 1.87 0 0 0-.348-1.127c-.243-.338-.688-.653-1.23-.656l-.518-.004c.597-1.145 1.425-1.983 2.348-2.87 1.473-1.414 3.18-3.149 3.2-6.226-.016-3.59-2.923-6.684-6.993-6.707m-.006 1.1v.002c3.274.02 5.92 2.532 5.9 5.6-.017 2.706-1.39 4.026-2.863 5.44-1.034.994-2.118 2.033-2.814 3.633-.018.041-.052.055-.075.065q-.013.004-.02.01a.34.34 0 0 1-.226.084.34.34 0 0 1-.224-.086l-.092-.077c-.699-1.615-1.768-2.669-2.781-3.67-1.454-1.435-2.797-2.762-2.78-5.478.02-3.067 2.7-5.545 5.975-5.523m-.02 2.826c-1.62-.01-2.944 1.315-2.955 2.96-.01 1.646 1.295 2.988 2.916 2.999h.002c1.621.01 2.943-1.316 2.953-2.961.011-1.646-1.294-2.988-2.916-2.998m-.005 1.1c1.017.006 1.829.83 1.822 1.89s-.83 1.874-1.848 1.867c-1.018-.006-1.829-.83-1.822-1.89s.83-1.874 1.848-1.868m-2.155 11.857 4.14.025c.271.002.49.305.487.676l-.013 1.875c-.003.37-.224.67-.495.668l-4.14-.025c-.27-.002-.487-.306-.485-.676l.012-1.875c.003-.37.224-.67.494-.668' style='color:%23000;font-style:normal;font-variant:normal;font-weight:400;font-stretch:normal;font-size:medium;line-height:normal;font-family:sans-serif;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-feature-settings:normal;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:%23000;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-orientation:mixed;dominant-baseline:auto;baseline-shift:baseline;text-anchor:start;white-space:normal;shape-padding:0;clip-rule:evenodd;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:%23000;solid-opacity:1;vector-effect:none;fill:%23000;fill-opacity:.4;fill-rule:evenodd;stroke:none;stroke-width:2.47727823;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto' transform='translate(15.553 2.85)scale(.88807)'/%3E%3Cpath d='M-9.415-.316C-12.69-.338-15.37 2.14-15.39 5.207c-.017 2.716 1.326 4.041 2.78 5.477 1.013 1 2.081 2.055 2.78 3.67l.092.076a.34.34 0 0 0 .225.086.34.34 0 0 0 .227-.083l.019-.01c.022-.009.057-.024.074-.064.697-1.6 1.78-2.64 2.814-3.634 1.473-1.414 2.847-2.733 2.864-5.44.02-3.067-2.627-5.58-5.901-5.601m-.057 8.784c1.621.011 2.944-1.315 2.955-2.96.01-1.646-1.295-2.988-2.916-2.999-1.622-.01-2.945 1.315-2.955 2.96s1.295 2.989 2.916 3' style='clip-rule:evenodd;fill:%23e1e3e9;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.47727823;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:.4' transform='translate(15.553 2.85)scale(.88807)'/%3E%3Cpath d='M-11.594 15.465c-.27-.002-.492.297-.494.668l-.012 1.876c-.003.371.214.673.485.675l4.14.027c.271.002.492-.298.495-.668l.012-1.877c.003-.37-.215-.672-.485-.674z' style='clip-rule:evenodd;fill:%23fff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.47727823;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:.4' transform='translate(15.553 2.85)scale(.88807)'/%3E%3C/g%3E%3C/svg%3E")}}@media (forced-colors:active) and (prefers-color-scheme:light){a.maplibregl-ctrl-logo{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='23' fill='none'%3E%3Cpath fill='%23000' fill-opacity='.4' fill-rule='evenodd' d='M17.408 16.796h-1.827l2.501-12.095h.198l3.324 6.533.988 2.19.988-2.19 3.258-6.533h.181l2.6 12.095h-1.81l-1.218-5.644-.362-1.71-.658 1.71-2.929 5.644h-.098l-2.914-5.644-.757-1.71-.345 1.71zm1.958-3.42-.726 3.663a1.255 1.255 0 0 1-1.232 1.011h-1.827a1.255 1.255 0 0 1-1.229-1.509l2.501-12.095a1.255 1.255 0 0 1 1.23-1.001h.197a1.25 1.25 0 0 1 1.12.685l3.19 6.273 3.125-6.263a1.25 1.25 0 0 1 1.123-.695h.181a1.255 1.255 0 0 1 1.227.991l1.443 6.71a5 5 0 0 1 .314-.787l.009-.016a4.6 4.6 0 0 1 1.777-1.887c.782-.46 1.668-.667 2.611-.667a4.6 4.6 0 0 1 1.7.32l.306.134c.21-.16.474-.256.759-.256h1.694a1.255 1.255 0 0 1 1.212.925 1.255 1.255 0 0 1 1.212-.925h1.711c.284 0 .545.094.755.252.613-.3 1.312-.45 2.075-.45 1.356 0 2.557.445 3.482 1.4q.47.48.763 1.064V4.701a1.255 1.255 0 0 1 1.255-1.255h1.86A1.255 1.255 0 0 1 54.44 4.7v9.194h2.217c.19 0 .37.043.532.118v-4.77c0-.356.147-.678.385-.906a2.42 2.42 0 0 1-.682-1.71c0-.665.267-1.253.735-1.7a2.45 2.45 0 0 1 1.722-.674 2.43 2.43 0 0 1 1.705.675q.318.302.504.683V4.7a1.255 1.255 0 0 1 1.255-1.255h1.744A1.255 1.255 0 0 1 65.812 4.7v3.335a4.8 4.8 0 0 1 1.526-.246c.938 0 1.817.214 2.59.69a4.47 4.47 0 0 1 1.67 1.743v-.98a1.255 1.255 0 0 1 1.256-1.256h1.777c.233 0 .451.064.639.174a3.4 3.4 0 0 1 1.567-.372c.346 0 .861.02 1.285.232a1.25 1.25 0 0 1 .689 1.004 4.7 4.7 0 0 1 .853-.588c.795-.44 1.675-.647 2.61-.647 1.385 0 2.65.39 3.525 1.396.836.938 1.168 2.173 1.168 3.528q-.001.515-.056 1.051a1.255 1.255 0 0 1-.947 1.09l.408.952a1.255 1.255 0 0 1-.477 1.552c-.418.268-.92.463-1.458.612-.613.171-1.304.244-2.049.244-1.06 0-2.043-.207-2.886-.698l-.015-.008c-.798-.48-1.419-1.135-1.818-1.963l-.004-.008a5.8 5.8 0 0 1-.548-2.512q0-.429.053-.843a1.3 1.3 0 0 1-.333-.086l-.166-.004c-.223 0-.426.062-.643.228-.03.024-.142.139-.142.59v3.883a1.255 1.255 0 0 1-1.256 1.256h-1.777a1.255 1.255 0 0 1-1.256-1.256V15.69l-.032.057a4.8 4.8 0 0 1-1.86 1.833 5.04 5.04 0 0 1-2.484.634 4.5 4.5 0 0 1-1.935-.424 1.25 1.25 0 0 1-.764.258h-1.71a1.255 1.255 0 0 1-1.256-1.255V7.687a2.4 2.4 0 0 1-.428.625c.253.23.412.561.412.93v7.553a1.255 1.255 0 0 1-1.256 1.255h-1.843a1.25 1.25 0 0 1-.894-.373c-.228.23-.544.373-.894.373H51.32a1.255 1.255 0 0 1-1.256-1.255v-1.251l-.061.117a4.7 4.7 0 0 1-1.782 1.884 4.77 4.77 0 0 1-2.485.67 5.6 5.6 0 0 1-1.485-.188l.009 2.764a1.255 1.255 0 0 1-1.255 1.259h-1.729a1.255 1.255 0 0 1-1.255-1.255v-3.537a1.255 1.255 0 0 1-1.167.793h-1.679a1.25 1.25 0 0 1-.77-.263 4.5 4.5 0 0 1-1.945.429c-.885 0-1.724-.21-2.495-.632l-.017-.01a5 5 0 0 1-1.081-.836 1.255 1.255 0 0 1-1.254 1.312h-1.81a1.255 1.255 0 0 1-1.228-.99l-.782-3.625-2.044 3.939a1.25 1.25 0 0 1-1.115.676h-.098a1.25 1.25 0 0 1-1.116-.68l-2.061-3.994zM35.92 16.63l.207-.114.223-.15q.493-.356.735-.785l.061-.118.033 1.332h1.678V9.242h-1.694l-.033 1.267q-.133-.329-.526-.658l-.032-.028a3.2 3.2 0 0 0-.668-.428l-.27-.12a3.3 3.3 0 0 0-1.235-.23q-1.136-.001-1.974.493a3.36 3.36 0 0 0-1.3 1.382q-.445.89-.444 2.074 0 1.2.51 2.107a3.8 3.8 0 0 0 1.382 1.381 3.9 3.9 0 0 0 1.893.477q.795 0 1.455-.33zm-2.789-5.38q-.576.675-.575 1.762 0 1.102.559 1.794.576.675 1.645.675a2.25 2.25 0 0 0 .934-.19 2.2 2.2 0 0 0 .468-.29l.178-.161a2.2 2.2 0 0 0 .397-.561q.244-.5.244-1.15v-.115q0-.708-.296-1.267l-.043-.077a2.2 2.2 0 0 0-.633-.709l-.13-.086-.047-.028a2.1 2.1 0 0 0-1.073-.285q-1.052 0-1.629.692zm2.316 2.706c.163-.17.28-.407.28-.83v-.114c0-.292-.06-.508-.15-.68a.96.96 0 0 0-.353-.389.85.85 0 0 0-.464-.127c-.4 0-.56.114-.664.239l-.01.012c-.148.174-.275.45-.275.945 0 .506.122.801.27.99.097.11.266.224.68.224.303 0 .504-.09.687-.269zm7.545 1.705a2.6 2.6 0 0 0 .331.423q.319.33.755.548l.173.074q.65.255 1.49.255 1.02 0 1.844-.493a3.45 3.45 0 0 0 1.316-1.4q.493-.904.493-2.089 0-1.909-.988-2.913-.988-1.02-2.584-1.02-.898 0-1.575.347a3 3 0 0 0-.415.262l-.199.166a3.4 3.4 0 0 0-.64.82V9.242h-1.712v11.553h1.729l-.017-5.134zm.53-1.138q.206.29.48.5l.155.11.053.034q.51.296 1.119.297 1.07 0 1.645-.675.577-.69.576-1.762 0-1.119-.576-1.777-.558-.675-1.645-.675-.435 0-.835.16a2 2 0 0 0-.284.136 2 2 0 0 0-.363.254 2.2 2.2 0 0 0-.46.569l-.082.162a2.6 2.6 0 0 0-.213 1.072v.115q0 .707.296 1.267l.135.211zm.964-.818a1.1 1.1 0 0 0 .367.385.94.94 0 0 0 .476.118c.423 0 .59-.117.687-.23.159-.194.28-.478.28-.95 0-.53-.133-.8-.266-.952l-.021-.025c-.078-.094-.231-.221-.68-.221a1 1 0 0 0-.503.135l-.012.007a.86.86 0 0 0-.335.343c-.073.133-.132.324-.132.614v.115a1.4 1.4 0 0 0 .14.66zm15.7-6.222q.347-.346.346-.856a1.05 1.05 0 0 0-.345-.79 1.18 1.18 0 0 0-.84-.329q-.51 0-.855.33a1.05 1.05 0 0 0-.346.79q0 .51.346.855.345.346.856.346.51 0 .839-.346zm4.337 9.314.033-1.332q.191.403.59.747l.098.081a4 4 0 0 0 .316.224l.223.122a3.2 3.2 0 0 0 1.44.322 3.8 3.8 0 0 0 1.875-.477 3.5 3.5 0 0 0 1.382-1.366q.527-.89.526-2.09 0-1.184-.444-2.073a3.24 3.24 0 0 0-1.283-1.399q-.823-.51-1.942-.51a3.5 3.5 0 0 0-1.527.344l-.086.043-.165.09a3 3 0 0 0-.33.214q-.432.315-.656.707a2 2 0 0 0-.099.198l.082-1.283V4.701h-1.744v12.095zm.473-2.509a2.5 2.5 0 0 0 .566.7q.117.098.245.18l.144.08a2.1 2.1 0 0 0 .975.232q1.07 0 1.645-.675.576-.69.576-1.778 0-1.102-.576-1.777-.56-.691-1.645-.692a2.2 2.2 0 0 0-1.015.235q-.22.113-.415.282l-.15.142a2.1 2.1 0 0 0-.42.594q-.223.479-.223 1.1v.115q0 .705.293 1.26zm2.616-.293c.157-.191.28-.479.28-.967 0-.51-.13-.79-.276-.961l-.021-.026c-.082-.1-.232-.225-.67-.225a.87.87 0 0 0-.681.279l-.012.011c-.154.155-.274.38-.274.807v.115c0 .285.057.499.144.669a1.1 1.1 0 0 0 .367.405c.137.082.28.123.455.123.423 0 .59-.118.686-.23zm8.266-3.013q.345-.13.724-.14l.069-.002q.493 0 .642.099l.247-1.794q-.196-.099-.717-.099a2.3 2.3 0 0 0-.545.063 2 2 0 0 0-.411.148 2.2 2.2 0 0 0-.4.249 2.5 2.5 0 0 0-.485.499 2.7 2.7 0 0 0-.32.581l-.05.137v-1.48h-1.778v7.553h1.777v-3.884q0-.546.159-.943a1.5 1.5 0 0 1 .466-.636 2.5 2.5 0 0 1 .399-.253 2 2 0 0 1 .224-.099zm9.784 2.656.05-.922q0-1.743-.856-2.698-.838-.97-2.584-.97-1.119-.001-2.007.493a3.46 3.46 0 0 0-1.4 1.382q-.493.906-.493 2.106 0 1.07.428 1.975.428.89 1.332 1.432.906.526 2.255.526.973 0 1.668-.185l.044-.012.135-.04q.613-.184.984-.421l-.542-1.267q-.3.162-.642.274l-.297.087q-.51.131-1.3.131-.954 0-1.497-.444a1.6 1.6 0 0 1-.192-.193q-.366-.44-.512-1.234l-.004-.021zm-5.427-1.256-.003.022h3.752v-.138q-.011-.727-.288-1.118a1 1 0 0 0-.156-.176q-.46-.428-1.316-.428-.986 0-1.494.604-.379.45-.494 1.234zm-27.053 2.77V4.7h-1.86v12.095h5.333V15.15zm7.103-5.908v7.553h-1.843V9.242h1.843z'/%3E%3Cpath fill='%23fff' d='m19.63 11.151-.757-1.71-.345 1.71-1.12 5.644h-1.827L18.083 4.7h.197l3.325 6.533.988 2.19.988-2.19L26.839 4.7h.181l2.6 12.095h-1.81l-1.218-5.644-.362-1.71-.658 1.71-2.93 5.644h-.098l-2.913-5.644zm14.836 5.81q-1.02 0-1.893-.478a3.8 3.8 0 0 1-1.381-1.382q-.51-.906-.51-2.106 0-1.185.444-2.074a3.36 3.36 0 0 1 1.3-1.382q.839-.494 1.974-.494a3.3 3.3 0 0 1 1.234.231 3.3 3.3 0 0 1 .97.575q.396.33.527.659l.033-1.267h1.694v7.553H37.18l-.033-1.332q-.279.593-1.02 1.053a3.17 3.17 0 0 1-1.662.444zm.296-1.482q.938 0 1.58-.642.642-.66.642-1.711v-.115q0-.708-.296-1.267a2.2 2.2 0 0 0-.807-.872 2.1 2.1 0 0 0-1.119-.313q-1.053 0-1.629.692-.575.675-.575 1.76 0 1.103.559 1.795.577.675 1.645.675zm6.521-6.237h1.711v1.4q.906-1.597 2.83-1.597 1.596 0 2.584 1.02.988 1.005.988 2.914 0 1.185-.493 2.09a3.46 3.46 0 0 1-1.316 1.399 3.5 3.5 0 0 1-1.844.493q-.954 0-1.662-.329a2.67 2.67 0 0 1-1.086-.97l.017 5.134h-1.728zm4.048 6.22q1.07 0 1.645-.674.577-.69.576-1.762 0-1.119-.576-1.777-.558-.675-1.645-.675-.592 0-1.12.296-.51.28-.822.823-.296.527-.296 1.234v.115q0 .708.296 1.267.313.543.823.855.51.296 1.119.297z'/%3E%3Cpath fill='%23e1e3e9' d='M51.325 4.7h1.86v10.45h3.473v1.646h-5.333zm7.12 4.542h1.843v7.553h-1.843zm.905-1.415a1.16 1.16 0 0 1-.856-.346 1.17 1.17 0 0 1-.346-.856 1.05 1.05 0 0 1 .346-.79q.346-.329.856-.329.494 0 .839.33a1.05 1.05 0 0 1 .345.79 1.16 1.16 0 0 1-.345.855q-.33.346-.84.346zm7.875 9.133a3.17 3.17 0 0 1-1.662-.444q-.723-.46-1.004-1.053l-.033 1.332h-1.71V4.701h1.743v4.657l-.082 1.283q.279-.658 1.086-1.119a3.5 3.5 0 0 1 1.778-.477q1.119 0 1.942.51a3.24 3.24 0 0 1 1.283 1.4q.445.888.444 2.072 0 1.201-.526 2.09a3.5 3.5 0 0 1-1.382 1.366 3.8 3.8 0 0 1-1.876.477zm-.296-1.481q1.069 0 1.645-.675.577-.69.577-1.778 0-1.102-.577-1.776-.56-.691-1.645-.692a2.12 2.12 0 0 0-1.58.659q-.642.641-.642 1.694v.115q0 .71.296 1.267a2.4 2.4 0 0 0 .807.872 2.1 2.1 0 0 0 1.119.313zm5.927-6.237h1.777v1.481q.263-.757.856-1.217a2.14 2.14 0 0 1 1.349-.46q.527 0 .724.098l-.247 1.794q-.149-.099-.642-.099-.774 0-1.416.494-.626.493-.626 1.58v3.883h-1.777V9.242zm9.534 7.718q-1.35 0-2.255-.526-.904-.543-1.332-1.432a4.6 4.6 0 0 1-.428-1.975q0-1.2.493-2.106a3.46 3.46 0 0 1 1.4-1.382q.889-.495 2.007-.494 1.744 0 2.584.97.855.956.856 2.7 0 .444-.05.92h-5.43q.18 1.005.708 1.45.542.443 1.497.443.79 0 1.3-.131a4 4 0 0 0 .938-.362l.542 1.267q-.411.263-1.119.46-.708.198-1.711.197zm1.596-4.558q.016-1.02-.444-1.432-.46-.428-1.316-.428-1.728 0-1.991 1.86z'/%3E%3Cpath d='M5.074 15.948a.484.657 0 0 0-.486.659v1.84a.484.657 0 0 0 .486.659h4.101a.484.657 0 0 0 .486-.659v-1.84a.484.657 0 0 0-.486-.659zm3.56 1.16H5.617v.838h3.017z' style='fill:%23fff;fill-rule:evenodd;stroke-width:1.03600001'/%3E%3Cg style='stroke-width:1.12603545'%3E%3Cpath d='M-9.408-1.416c-3.833-.025-7.056 2.912-7.08 6.615-.02 3.08 1.653 4.832 3.107 6.268.903.892 1.721 1.74 2.32 2.902l-.525-.004c-.543-.003-.992.304-1.24.639a1.87 1.87 0 0 0-.362 1.121l-.011 1.877c-.003.402.104.787.347 1.125.244.338.688.653 1.23.656l4.142.028c.542.003.99-.306 1.238-.641a1.87 1.87 0 0 0 .363-1.121l.012-1.875a1.87 1.87 0 0 0-.348-1.127c-.243-.338-.688-.653-1.23-.656l-.518-.004c.597-1.145 1.425-1.983 2.348-2.87 1.473-1.414 3.18-3.149 3.2-6.226-.016-3.59-2.923-6.684-6.993-6.707m-.006 1.1v.002c3.274.02 5.92 2.532 5.9 5.6-.017 2.706-1.39 4.026-2.863 5.44-1.034.994-2.118 2.033-2.814 3.633-.018.041-.052.055-.075.065q-.013.004-.02.01a.34.34 0 0 1-.226.084.34.34 0 0 1-.224-.086l-.092-.077c-.699-1.615-1.768-2.669-2.781-3.67-1.454-1.435-2.797-2.762-2.78-5.478.02-3.067 2.7-5.545 5.975-5.523m-.02 2.826c-1.62-.01-2.944 1.315-2.955 2.96-.01 1.646 1.295 2.988 2.916 2.999h.002c1.621.01 2.943-1.316 2.953-2.961.011-1.646-1.294-2.988-2.916-2.998m-.005 1.1c1.017.006 1.829.83 1.822 1.89s-.83 1.874-1.848 1.867c-1.018-.006-1.829-.83-1.822-1.89s.83-1.874 1.848-1.868m-2.155 11.857 4.14.025c.271.002.49.305.487.676l-.013 1.875c-.003.37-.224.67-.495.668l-4.14-.025c-.27-.002-.487-.306-.485-.676l.012-1.875c.003-.37.224-.67.494-.668' style='color:%23000;font-style:normal;font-variant:normal;font-weight:400;font-stretch:normal;font-size:medium;line-height:normal;font-family:sans-serif;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-feature-settings:normal;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:%23000;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-orientation:mixed;dominant-baseline:auto;baseline-shift:baseline;text-anchor:start;white-space:normal;shape-padding:0;clip-rule:evenodd;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:%23000;solid-opacity:1;vector-effect:none;fill:%23000;fill-opacity:.4;fill-rule:evenodd;stroke:none;stroke-width:2.47727823;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto' transform='translate(15.553 2.85)scale(.88807)'/%3E%3Cpath d='M-9.415-.316C-12.69-.338-15.37 2.14-15.39 5.207c-.017 2.716 1.326 4.041 2.78 5.477 1.013 1 2.081 2.055 2.78 3.67l.092.076a.34.34 0 0 0 .225.086.34.34 0 0 0 .227-.083l.019-.01c.022-.009.057-.024.074-.064.697-1.6 1.78-2.64 2.814-3.634 1.473-1.414 2.847-2.733 2.864-5.44.02-3.067-2.627-5.58-5.901-5.601m-.057 8.784c1.621.011 2.944-1.315 2.955-2.96.01-1.646-1.295-2.988-2.916-2.999-1.622-.01-2.945 1.315-2.955 2.96s1.295 2.989 2.916 3' style='clip-rule:evenodd;fill:%23e1e3e9;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.47727823;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:.4' transform='translate(15.553 2.85)scale(.88807)'/%3E%3Cpath d='M-11.594 15.465c-.27-.002-.492.297-.494.668l-.012 1.876c-.003.371.214.673.485.675l4.14.027c.271.002.492-.298.495-.668l.012-1.877c.003-.37-.215-.672-.485-.674z' style='clip-rule:evenodd;fill:%23fff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.47727823;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:.4' transform='translate(15.553 2.85)scale(.88807)'/%3E%3C/g%3E%3C/svg%3E")}}.maplibregl-ctrl.maplibregl-ctrl-attrib{background-color:hsla(0,0%,100%,.5);margin:0;padding:0 5px}@media screen{.maplibregl-ctrl-attrib.maplibregl-compact{background-color:#fff;border-radius:12px;box-sizing:content-box;color:#000;margin:10px;min-height:20px;padding:2px 24px 2px 0;position:relative}.maplibregl-ctrl-attrib.maplibregl-compact-show{padding:2px 28px 2px 8px;visibility:visible}.maplibregl-ctrl-bottom-left>.maplibregl-ctrl-attrib.maplibregl-compact-show,.maplibregl-ctrl-top-left>.maplibregl-ctrl-attrib.maplibregl-compact-show{border-radius:12px;padding:2px 8px 2px 28px}.maplibregl-ctrl-attrib.maplibregl-compact .maplibregl-ctrl-attrib-inner{display:none}.maplibregl-ctrl-attrib-button{background-color:hsla(0,0%,100%,.5);background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill-rule='evenodd' viewBox='0 0 20 20'%3E%3Cpath d='M4 10a6 6 0 1 0 12 0 6 6 0 1 0-12 0m5-3a1 1 0 1 0 2 0 1 1 0 1 0-2 0m0 3a1 1 0 1 1 2 0v3a1 1 0 1 1-2 0'/%3E%3C/svg%3E");border:0;border-radius:12px;box-sizing:border-box;cursor:pointer;display:none;height:24px;outline:0;position:absolute;right:0;top:0;width:24px}.maplibregl-ctrl-attrib summary.maplibregl-ctrl-attrib-button{-webkit-appearance:none;-moz-appearance:none;appearance:none;list-style:none}.maplibregl-ctrl-attrib summary.maplibregl-ctrl-attrib-button::-webkit-details-marker{display:none}.maplibregl-ctrl-bottom-left .maplibregl-ctrl-attrib-button,.maplibregl-ctrl-top-left .maplibregl-ctrl-attrib-button{left:0}.maplibregl-ctrl-attrib.maplibregl-compact .maplibregl-ctrl-attrib-button,.maplibregl-ctrl-attrib.maplibregl-compact-show .maplibregl-ctrl-attrib-inner{display:block}.maplibregl-ctrl-attrib.maplibregl-compact-show .maplibregl-ctrl-attrib-button{background-color:rgb(0 0 0/5%)}.maplibregl-ctrl-bottom-right>.maplibregl-ctrl-attrib.maplibregl-compact:after{bottom:0;right:0}.maplibregl-ctrl-top-right>.maplibregl-ctrl-attrib.maplibregl-compact:after{right:0;top:0}.maplibregl-ctrl-top-left>.maplibregl-ctrl-attrib.maplibregl-compact:after{left:0;top:0}.maplibregl-ctrl-bottom-left>.maplibregl-ctrl-attrib.maplibregl-compact:after{bottom:0;left:0}}@media screen and (forced-colors:active){.maplibregl-ctrl-attrib.maplibregl-compact:after{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='%23fff' fill-rule='evenodd' viewBox='0 0 20 20'%3E%3Cpath d='M4 10a6 6 0 1 0 12 0 6 6 0 1 0-12 0m5-3a1 1 0 1 0 2 0 1 1 0 1 0-2 0m0 3a1 1 0 1 1 2 0v3a1 1 0 1 1-2 0'/%3E%3C/svg%3E")}}@media screen and (forced-colors:active) and (prefers-color-scheme:light){.maplibregl-ctrl-attrib.maplibregl-compact:after{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill-rule='evenodd' viewBox='0 0 20 20'%3E%3Cpath d='M4 10a6 6 0 1 0 12 0 6 6 0 1 0-12 0m5-3a1 1 0 1 0 2 0 1 1 0 1 0-2 0m0 3a1 1 0 1 1 2 0v3a1 1 0 1 1-2 0'/%3E%3C/svg%3E")}}.maplibregl-ctrl-attrib a{color:rgba(0,0,0,.75);text-decoration:none}.maplibregl-ctrl-attrib a:hover{color:inherit;text-decoration:underline}.maplibregl-attrib-empty{display:none}.maplibregl-ctrl-scale{background-color:hsla(0,0%,100%,.75);border:2px solid #333;border-top:#333;box-sizing:border-box;color:#333;font-size:10px;padding:0 5px}.maplibregl-popup{display:flex;left:0;pointer-events:none;position:absolute;top:0;will-change:transform}.maplibregl-popup-anchor-top,.maplibregl-popup-anchor-top-left,.maplibregl-popup-anchor-top-right{flex-direction:column}.maplibregl-popup-anchor-bottom,.maplibregl-popup-anchor-bottom-left,.maplibregl-popup-anchor-bottom-right{flex-direction:column-reverse}.maplibregl-popup-anchor-left{flex-direction:row}.maplibregl-popup-anchor-right{flex-direction:row-reverse}.maplibregl-popup-tip{border:10px solid transparent;height:0;width:0;z-index:1}.maplibregl-popup-anchor-top .maplibregl-popup-tip{align-self:center;border-bottom-color:#fff;border-top:none}.maplibregl-popup-anchor-top-left .maplibregl-popup-tip{align-self:flex-start;border-bottom-color:#fff;border-left:none;border-top:none}.maplibregl-popup-anchor-top-right .maplibregl-popup-tip{align-self:flex-end;border-bottom-color:#fff;border-right:none;border-top:none}.maplibregl-popup-anchor-bottom .maplibregl-popup-tip{align-self:center;border-bottom:none;border-top-color:#fff}.maplibregl-popup-anchor-bottom-left .maplibregl-popup-tip{align-self:flex-start;border-bottom:none;border-left:none;border-top-color:#fff}.maplibregl-popup-anchor-bottom-right .maplibregl-popup-tip{align-self:flex-end;border-bottom:none;border-right:none;border-top-color:#fff}.maplibregl-popup-anchor-left .maplibregl-popup-tip{align-self:center;border-left:none;border-right-color:#fff}.maplibregl-popup-anchor-right .maplibregl-popup-tip{align-self:center;border-left-color:#fff;border-right:none}.maplibregl-popup-close-button{background-color:transparent;border:0;border-radius:0 3px 0 0;cursor:pointer;position:absolute;right:0;top:0}.maplibregl-popup-close-button:hover{background-color:rgb(0 0 0/5%)}.maplibregl-popup-content{background:#fff;border-radius:3px;box-shadow:0 1px 2px rgba(0,0,0,.1);padding:15px 10px;pointer-events:auto;position:relative}.maplibregl-popup-anchor-top-left .maplibregl-popup-content{border-top-left-radius:0}.maplibregl-popup-anchor-top-right .maplibregl-popup-content{border-top-right-radius:0}.maplibregl-popup-anchor-bottom-left .maplibregl-popup-content{border-bottom-left-radius:0}.maplibregl-popup-anchor-bottom-right .maplibregl-popup-content{border-bottom-right-radius:0}.maplibregl-popup-track-pointer{display:none}.maplibregl-popup-track-pointer *{pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.maplibregl-map:hover .maplibregl-popup-track-pointer{display:flex}.maplibregl-map:active .maplibregl-popup-track-pointer{display:none}.maplibregl-marker{left:0;position:absolute;top:0;transition:opacity .2s;will-change:transform}.maplibregl-user-location-dot,.maplibregl-user-location-dot:before{background-color:#1da1f2;border-radius:50%;height:15px;width:15px}.maplibregl-user-location-dot:before{animation:maplibregl-user-location-dot-pulse 2s infinite;content:"";position:absolute}.maplibregl-user-location-dot:after{border:2px solid #fff;border-radius:50%;box-shadow:0 0 3px rgba(0,0,0,.35);box-sizing:border-box;content:"";height:19px;left:-2px;position:absolute;top:-2px;width:19px}@keyframes maplibregl-user-location-dot-pulse{0%{opacity:1;transform:scale(1)}70%{opacity:0;transform:scale(3)}to{opacity:0;transform:scale(1)}}.maplibregl-user-location-dot-stale{background-color:#aaa}.maplibregl-user-location-dot-stale:after{display:none}.maplibregl-user-location-accuracy-circle{background-color:#1da1f233;border-radius:100%;height:1px;width:1px}.maplibregl-crosshair,.maplibregl-crosshair .maplibregl-interactive,.maplibregl-crosshair .maplibregl-interactive:active{cursor:crosshair}.maplibregl-boxzoom{background:#fff;border:2px dotted #202020;height:0;left:0;opacity:.5;position:absolute;top:0;width:0}.maplibregl-cooperative-gesture-screen{align-items:center;background:rgba(0,0,0,.4);color:#fff;display:flex;font-size:1.4em;inset:0;justify-content:center;line-height:1.2;opacity:0;padding:1rem;pointer-events:none;position:absolute;transition:opacity 1s ease 1s;z-index:99999}.maplibregl-cooperative-gesture-screen.maplibregl-show{opacity:1;transition:opacity .05s}.maplibregl-cooperative-gesture-screen .maplibregl-mobile-message{display:none}@media (hover:none),(width <= 480px){.maplibregl-cooperative-gesture-screen .maplibregl-desktop-message{display:none}.maplibregl-cooperative-gesture-screen .maplibregl-mobile-message{display:block}}.maplibregl-pseudo-fullscreen{height:100%!important;left:0!important;position:fixed!important;top:0!important;width:100%!important;z-index:99999}</style>
+<style>
+/* Layout: app bar → filtros → 3 indicadores → mapa WebGL + painel lateral → tempo e distância → tabelas.
+   Cor: marinho da planilha elevado a azul vivo; calor em rampa plasma; faixas de tempo em escala verde → vermelho. */
+:root{
+  --bg:#eef2f8; --surface:#ffffff; --surface-2:#f6f8fc; --line:#dbe2ee; --line-2:#c6d0df;
+  --ink:#0e1a2e; --ink-2:#44536b; --ink-3:#6b7a96;
+  --bar:#0f2240; --bar-ink:#eaf1ff; --bar-ink-2:#9fb3d6;
+  --accent:#1e6bff; --accent-soft:#e3ecff; --accent-ink:#0b3fa8;
+  --h1:#5b0fb3; --h2:#b0209e; --h3:#e8445a; --h4:#f98d2b; --h5:#fde047;
+  --b1:#16a34a; --b2:#ca8a04; --b3:#ea580c; --b4:#dc2626;
+  --warn:#a15c00; --warn-bg:#fff1d6; --crit:#b42318; --crit-bg:#fde7e4; --ok:#15803d; --ok-bg:#e3f6ea;
+  --sim:#7c3aed; --sim-bg:#f1eaff;
+  --shadow:0 1px 2px rgba(15,34,64,.06),0 6px 20px rgba(15,34,64,.06);
+  --f-display:"Manrope","Segoe UI",Arial,sans-serif;
+  --f-body:"IBM Plex Sans","Segoe UI",Roboto,Arial,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --r:10px; --gut:clamp(16px,2.4vw,28px);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0a1120; --surface:#111a2c; --surface-2:#152036; --line:#22304a; --line-2:#2d3d5c;
+  --ink:#e8eefb; --ink-2:#a9b7d0; --ink-3:#7f8fae;
+  --bar:#07101f; --bar-ink:#eaf1ff; --bar-ink-2:#8fa3c8;
+  --accent:#5b9bff; --accent-soft:#16264a; --accent-ink:#a9c8ff;
+  --b1:#22c55e; --b2:#eab308; --b3:#f97316; --b4:#f87171;
+  --warn:#f5b451; --warn-bg:#3a2a12; --crit:#ff8a7a; --crit-bg:#3b1a18; --ok:#4ade80; --ok-bg:#12301f;
+  --sim:#b794ff; --sim-bg:#271a45; --shadow:none; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0a1120; --surface:#111a2c; --surface-2:#152036; --line:#22304a; --line-2:#2d3d5c;
+  --ink:#e8eefb; --ink-2:#a9b7d0; --ink-3:#7f8fae;
+  --bar:#07101f; --bar-ink:#eaf1ff; --bar-ink-2:#8fa3c8;
+  --accent:#5b9bff; --accent-soft:#16264a; --accent-ink:#a9c8ff;
+  --b1:#22c55e; --b2:#eab308; --b3:#f97316; --b4:#f87171;
+  --warn:#f5b451; --warn-bg:#3a2a12; --crit:#ff8a7a; --crit-bg:#3b1a18; --ok:#4ade80; --ok-bg:#12301f;
+  --sim:#b794ff; --sim-bg:#271a45; --shadow:none; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:14px/1.45 var(--f-body);-webkit-font-smoothing:antialiased}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* App bar */
+.appbar{background:var(--bar);color:var(--bar-ink);padding-inline:var(--gut);padding-block:18px 20px;position:relative}
+.appbar::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--h1),var(--h2),var(--h3),var(--h4),var(--h5))}
+.appbar .in{max-width:1480px;margin:0 auto;display:flex;flex-wrap:wrap;gap:10px 24px;align-items:flex-end;justify-content:space-between}
+.appbar .kick{font:600 11px/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase;color:var(--bar-ink-2);margin-bottom:8px}
+.appbar h1{margin:0;font:800 clamp(22px,2.6vw,30px)/1.1 var(--f-display);letter-spacing:-.02em;text-wrap:balance}
+.appbar .meta{font-size:12px;color:var(--bar-ink-2);text-align:right;line-height:1.6}
+.appbar .meta b{color:var(--bar-ink);font-weight:500}
+.src{display:inline-flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.src span{font-size:10.5px;padding:1px 8px;border-radius:9px;background:rgba(255,255,255,.08);color:var(--bar-ink-2)}
+
+.wrap{max-width:1480px;margin:0 auto;padding-inline:var(--gut);padding-block:18px 40px;display:grid;gap:16px}
+
+/* Filtros */
+.filters{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:end}
+.field{display:grid;gap:5px;flex:0 1 190px;min-width:0}
+.field label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.field select,.field input{height:38px;padding:0 12px;width:100%;background:var(--surface);border:1px solid var(--line-2);border-radius:8px}
+.field select:hover,.field input:hover{border-color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;align-self:center}
+.chip{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 12px;border-radius:999px;border:0;background:var(--accent-soft);color:var(--accent-ink);font-size:12px;font-weight:500;cursor:pointer}
+.chip span{opacity:.7;font-size:15px;line-height:1}
+.grow{flex:1}
+.btn{height:38px;padding:0 14px;border-radius:8px;border:1px solid var(--line-2);background:var(--surface);cursor:pointer;font-weight:500;white-space:nowrap}
+.btn:hover{border-color:var(--accent);color:var(--accent-ink)}
+.btn.sm{height:32px;padding:0 10px;font-size:12px}
+.btn.sim{border-color:var(--sim);color:var(--sim)}
+.btn.sim.on{background:var(--sim);color:#fff}
+
+/* Indicadores (3) */
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.kpi{position:relative;overflow:hidden;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px 16px 22px;box-shadow:var(--shadow);min-width:0}
+.kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c)}
+.kpi .v{font:700 30px/1 var(--f-mono);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.kpi .l{margin-top:8px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.kpi .s{margin-top:2px;font-size:12px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Simulação */
+.simbar{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;background:var(--sim-bg);border:1px solid color-mix(in srgb,var(--sim) 40%,transparent);border-radius:var(--r);padding:12px 16px;color:var(--ink)}
+.simbar b{color:var(--sim)}
+.simbar .d{display:grid;gap:1px}
+.simbar .d span{font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em}
+.simbar .d strong{font:600 15px var(--f-mono)}
+.up{color:var(--crit)} .down{color:var(--ok)}
+
+/* Mapa + painel */
+.main{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px}
+.mapcard{position:relative;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow);height:clamp(580px,72vh,800px);background:var(--surface-2)}
+#map{position:absolute;inset:0}
+.ov{position:absolute;z-index:3}
+.ov-top{top:12px;left:12px;right:12px;display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;pointer-events:none}
+.ov-top>*{pointer-events:auto}
+.seg{display:inline-flex;flex:none;background:var(--surface);border:1px solid var(--line-2);border-radius:8px;overflow:hidden;box-shadow:var(--shadow)}
+.seg button{height:32px;padding:0 10px;border:0;background:transparent;border-left:1px solid var(--line);font-size:12px;font-weight:500;color:var(--ink-2);cursor:pointer;white-space:nowrap}
+.seg button:first-child{border-left:0}
+.seg button:hover{color:var(--ink)}
+.seg button.on{background:var(--accent);color:#fff}
+.legend{left:12px;bottom:30px;background:color-mix(in srgb,var(--surface) 93%,transparent);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:grid;gap:8px;font-size:11px;color:var(--ink-2);width:250px;box-shadow:var(--shadow)}
+.legend .t{font-weight:600;color:var(--ink);display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.ramp{height:10px;border-radius:5px;background:linear-gradient(90deg,var(--h1),var(--h2),var(--h3),var(--h4),var(--h5))}
+.scale{display:flex;justify-content:space-between;color:var(--ink-3)}
+.rad{display:flex;gap:8px;align-items:center}
+.rad input{flex:1;accent-color:var(--h3)}
+.syms{display:flex;gap:12px}
+.syms i{display:inline-block;vertical-align:-1px;margin-right:5px}
+.i-city{width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #0f2240}
+.i-hub{width:11px;height:11px;border-radius:3px;background:#1e6bff;box-shadow:0 0 0 2px #fff}
+.i-aprox{width:10px;height:10px;border-radius:50%;border:2px dashed #f98d2b}
+.bands{display:flex;flex-wrap:wrap;gap:4px 10px}
+.bands i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px;vertical-align:-1px;box-shadow:0 0 0 1.5px #fff}
+.mini-seg{display:inline-flex;border:1px solid var(--line-2);border-radius:6px;overflow:hidden}
+.mini-seg button{border:0;background:none;font-size:10.5px;padding:2px 7px;cursor:pointer;color:var(--ink-3)}
+.mini-seg button.on{background:var(--accent);color:#fff}
+.notice{left:50%;top:56px;transform:translateX(-50%);width:min(560px,calc(100% - 24px));background:var(--warn-bg);color:var(--warn);border-radius:8px;padding:8px 12px;font-size:12px;box-shadow:var(--shadow)}
+.nomap{position:absolute;inset:0;z-index:4;display:grid;place-content:center;gap:8px;text-align:center;padding:24px;background:var(--surface-2);color:var(--ink-2);font-size:13px;max-width:none}
+.nomap b{color:var(--ink);font-size:15px}
+.nomap span{max-width:52ch;margin:0 auto}
+.simhint{left:50%;bottom:30px;transform:translateX(-50%);background:var(--sim);color:#fff;border-radius:999px;padding:6px 14px;font-size:12px;font-weight:600;box-shadow:var(--shadow)}
+.maplibregl-popup-content{background:var(--surface);color:var(--ink);border:1px solid var(--line-2);border-radius:8px;box-shadow:0 8px 24px rgba(10,20,40,.18);padding:9px 11px;font:12px/1.45 var(--f-body)}
+.maplibregl-popup-tip{display:none}
+.pp{min-width:250px}
+.eqb{margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
+.eqb .eh{display:flex;justify-content:space-between;gap:8px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px}
+.eqb .es{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:7px}
+.eqb .es div{background:var(--surface-2);border-radius:6px;padding:5px 7px;border-left:3px solid var(--c);min-width:0}
+.eqb .es b,.pp .eqb .es b{display:block;margin:0;font:700 15px/1.15 var(--f-mono);color:var(--ink);font-variant-numeric:tabular-nums}
+.eqb .es span{display:block;font-size:10px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.eqb table{width:100%;border-collapse:collapse;font-size:11px;font-variant-numeric:tabular-nums}
+.eqb th,.eqb td{padding:3px 5px;height:auto;text-align:right;white-space:nowrap;position:static;cursor:default;font-family:var(--f-mono)}
+.eqb th{font-family:var(--f-body);font-size:10px;letter-spacing:.05em;background:transparent}
+.eqb tbody tr:hover,.eqb tbody tr:nth-child(even){background:transparent}
+.eqb th:first-child,.eqb td:first-child{text-align:left;white-space:normal;font-family:var(--f-body)}
+.eqb th{color:var(--ink-3);font-weight:600;border-bottom:1px solid var(--line)}
+.eqb td{border-bottom:1px solid var(--line)}
+.eqb tr:last-child td{border-bottom:0}
+.eqb .none{font-size:11px;color:var(--ink-3)}
+.side .eqb{margin-top:10px}
+.f-eq{margin-top:4px;font-size:11px;color:var(--ink-2)}
+.f-eq b{font-family:var(--f-mono)}
+.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
+
+.pp b{display:block;font-size:13px;margin-bottom:4px}
+.pp dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:0}
+.pp dt{color:var(--ink-3)} .pp dd{margin:0}
+.hubmk{display:flex;align-items:center;gap:6px;cursor:pointer;transform-origin:left center}
+.hubmk .sq{width:14px;height:14px;border-radius:4px;background:#1e6bff;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.35);flex:none}
+.hubmk .lb{background:#0f2240;color:#fff;border-radius:6px;padding:2px 7px;font:700 11px/1.3 var(--f-display);white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.hubmk.sel .sq{background:#e8445a;width:18px;height:18px}
+.hubmk.moved .sq{background:#7c3aed}
+.hubmk.drag{cursor:grab}
+.hubmk.hide-lb .lb{display:none}
+.maplibregl-ctrl-attrib{font-size:10px}
+
+.side{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:0;max-height:clamp(580px,72vh,800px)}
+.side header{padding:14px 16px 10px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.side h2{margin:0;font:700 15px/1.2 var(--f-display)}
+.side header span{font-size:11px;color:var(--ink-3)}
+.rank{list-style:none;margin:0;padding:6px;overflow:auto}
+.rank li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 10px;padding:8px 10px;border-radius:8px;cursor:pointer}
+.rank li:hover{background:var(--surface-2)}
+.rank li.off{opacity:.4}
+.rank .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.rank .nm small{margin-left:6px;color:var(--ink-3);font-weight:400}
+.rank .ct{font:600 13px var(--f-mono)}
+.gbar{grid-column:1/-1;height:5px;background:var(--line);border-radius:3px;overflow:hidden}
+.gbar i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,var(--h1),var(--h3) 70%,var(--h4))}
+.stack{grid-column:1/-1;display:flex;height:6px;border-radius:3px;overflow:hidden;background:var(--line)}
+.stack i{display:block;height:100%}
+.side .hd{padding:14px 16px 12px;border-bottom:1px solid var(--line);display:grid;gap:8px}
+.back{justify-self:start;border:0;background:none;padding:0;color:var(--accent-ink);font-size:12px;font-weight:600;cursor:pointer}
+.back:hover{text-decoration:underline}
+.side .hd h2{font:800 20px/1.15 var(--f-display);margin:0}
+.side .hd h2 small{font:600 12px var(--f-body);color:var(--ink-3);margin-left:4px}
+.hd-sub{font-size:12px;color:var(--ink-3);margin-top:-4px}
+.hd-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.hd-kpis div{padding:8px 9px 7px;display:grid;gap:2px;border-left:1px solid var(--line);border-top:1px solid var(--line);min-width:0}
+.hd-kpis div:nth-child(3n+1){border-left:0}
+.hd-kpis div:nth-child(-n+3){border-top:0}
+.hd-kpis b{font-size:16px;line-height:1.1;color:var(--ink)}
+.hd-kpis span{font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hd-tools{display:flex;gap:8px}
+.hd-tools input{flex:1;min-width:0;height:32px;padding:0 10px;border:1px solid var(--line-2);border-radius:8px;background:var(--surface-2);font-size:12px}
+.clist{overflow:auto;padding:4px 8px 12px;flex:1;min-height:0}
+.cgroup h3{position:sticky;top:0;z-index:1;display:flex;justify-content:space-between;align-items:baseline;margin:0;padding:10px 8px 6px;background:var(--surface);font:700 12px/1 var(--f-display);letter-spacing:.06em}
+.cgroup h3 em{font:500 11px var(--f-body);font-style:normal;color:var(--ink-3)}
+.cgroup ol{list-style:none;margin:0;padding:0}
+.cgroup li{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:2px 8px;align-items:center;padding:6px 8px;border-radius:6px;cursor:pointer}
+.cgroup li:hover{background:var(--surface-2)}
+.cgroup .idx{font-size:11px;color:var(--ink-3);text-align:right}
+.cgroup .cn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cgroup .dist{font-size:12px;color:var(--ink-2);text-align:right}
+.cgroup .dist small{display:block;font-size:10.5px;color:var(--ink-3)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:0}
+.tag{font-style:normal;font-size:10px;font-weight:600;line-height:16px;padding:0 6px;border-radius:8px;margin-left:6px;vertical-align:1px;white-space:nowrap}
+.tag.warn{background:var(--warn-bg);color:var(--warn)}
+.tag.info{background:var(--accent-soft);color:var(--accent-ink)}
+.tag.sim{background:var(--sim-bg);color:var(--sim)}
+
+/* Resultado da busca */
+.found{list-style:none;margin:0;padding:8px;overflow:auto;display:grid;gap:8px;align-content:start}
+.found li{border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:grid;gap:6px;cursor:pointer}
+.found li:hover{border-color:var(--accent)}
+.f-top b{font:700 15px var(--f-display)} .f-top small{color:var(--ink-3);margin-left:4px}
+.f-hub{font-size:12px;color:var(--ink-2)}
+.f-kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0}
+.f-kv div{background:var(--surface-2);border-radius:6px;padding:6px 8px;min-width:0}
+.f-kv dt{font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3)}
+.f-kv dd{margin:0;font-size:13px;font-weight:600;white-space:nowrap}
+
+/* Tempo e distância */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 18px;min-width:0;display:grid;gap:14px}
+.card h3{margin:0;font:700 16px/1.2 var(--f-display);display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap}
+.card h3 span{font:500 12px var(--f-body);color:var(--ink-3)}
+.td-grid{display:grid;grid-template-columns:minmax(260px,360px) minmax(0,1fr);gap:18px;align-items:start}
+.td-sum{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0}
+.td-sum div{border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:grid;gap:3px;min-width:0}
+.td-sum dt{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.td-sum dd{margin:0;font-size:22px;font-weight:600;letter-spacing:-.02em}
+.td-sum small{font-size:11.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.td-list{overflow:auto;max-height:420px;border:1px solid var(--line);border-radius:8px}
+.td-list .sh{display:none}
+.td-list .alm-m{display:none;font-size:11.5px;color:var(--ink-3)}
+@media (max-width:640px){.td-list .lg{display:none}.td-list .sh{display:inline}.td-list th,.td-list td{padding-inline:8px}.td-list td:first-child{white-space:normal}.card.td{padding:14px 12px}.td-list .col-alm{display:none}.td-list .alm-m{display:block}.td-list td{height:auto;padding-block:7px}}
+.td-list th{cursor:pointer}
+.td-list td b{font-weight:600} .td-list td small{color:var(--ink-3);margin-left:4px}
+.td-list td.muted{color:var(--ink-2)}
+.td-tbl{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+.td-tbl th{cursor:default}
+.td-tbl tr.sel{background:var(--accent-soft)}
+
+/* Tabelas (virtualizadas) */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);min-width:0}
+.tabs{display:flex;gap:2px;padding:0 10px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{height:46px;padding:0 12px;border:0;background:none;border-bottom:3px solid transparent;color:var(--ink-3);cursor:pointer;white-space:nowrap;display:inline-flex;gap:8px;align-items:center;font-weight:500}
+.tab.on{color:var(--ink);border-bottom-color:var(--accent)}
+.badge{font:600 11px/19px var(--f-mono);padding:0 7px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line);color:var(--ink-2)}
+.tab.on .badge{background:var(--accent);border-color:var(--accent);color:#fff}
+.tbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;padding:10px 16px;font-size:12px;color:var(--ink-3)}
+.tbar .acts{display:flex;gap:8px}
+.twrap{overflow:auto;height:min(520px,60vh);position:relative}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:0 14px;height:37px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{position:sticky;top:0;z-index:1;background:var(--surface-2);font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);cursor:pointer;user-select:none}
+th.r,td.r{text-align:right}
+td.r{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+tbody tr:hover{background:var(--surface-2)}
+tbody tr.go{cursor:pointer}
+tr.spacer td{border:0;padding:0;height:auto}
+td.wrap{white-space:normal;min-width:300px;color:var(--ink-2)}
+.pill{display:inline-block;font-size:11px;font-weight:500;line-height:20px;padding:0 9px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line);color:var(--ink-2)}
+.pill.warn{background:var(--warn-bg);border-color:transparent;color:var(--warn)}
+.pill.crit{background:var(--crit-bg);border-color:transparent;color:var(--crit)}
+.pill.ok{background:var(--ok-bg);border-color:transparent;color:var(--ok)}
+.pill.info{background:var(--accent-soft);border-color:transparent;color:var(--accent-ink)}
+.hbar{display:inline-block;height:7px;border-radius:4px;margin-right:8px;vertical-align:middle;background:linear-gradient(90deg,var(--h1),var(--h3))}
+.empty{padding:28px;text-align:center;color:var(--ink-3)}
+.foot{font-size:12px;color:var(--ink-3);max-width:120ch;line-height:1.6;margin:0}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--bar);color:#fff;padding:9px 16px;border-radius:8px;font-size:13px;z-index:2000;box-shadow:var(--shadow)}
+.boot{max-width:1480px;margin:0 auto;padding-inline:var(--gut);padding-block:24px;color:var(--ink-3)}
+
+@media (max-width:900px){.td-grid{grid-template-columns:1fr}}
+@media (max-width:1020px){.main{grid-template-columns:1fr}.side{max-height:460px}}
+@media (max-width:640px){
+  .kpis{gap:8px}.kpi{padding:12px 10px 12px 14px}.kpi .v{font-size:22px}.kpi .l{font-size:10px;letter-spacing:.04em}.kpi .s{display:none}
+  .field{flex:1 1 140px}.grow{display:none}.appbar .meta{text-align:left}.src{justify-content:flex-start}
+  .mapcard{height:540px}.legend{width:auto;right:56px;bottom:34px}.legend .hide-m{display:none}
+  .ov-top{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;scrollbar-width:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ===== Refinamento visual v2 ===== */
+.appbar{padding-block:20px 22px}
+.appbar .in{align-items:center}
+.appbar .kick{display:flex;align-items:center;gap:8px}
+.appbar .kick i{width:8px;height:8px;border-radius:2px;background:linear-gradient(135deg,var(--h3),var(--h4))}
+.appbar .meta{display:grid;gap:4px;justify-items:end}
+.appbar .meta .pills{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.appbar .meta .pills span{font:600 11px/1 var(--f-body);padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:var(--bar-ink)}
+.appbar .meta .pills b{font-family:var(--f-mono);margin-right:4px}
+.filters{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;box-shadow:var(--shadow)}
+.field select,.field input{background:var(--surface-2);transition:border-color .15s}
+.kpi{padding:18px 20px 16px 24px;transition:transform .15s ease,box-shadow .15s ease}
+.kpi:hover{transform:translateY(-1px)}
+.kpi::before{width:4px}
+.kpi .v{font-size:32px}
+.seg{border-radius:9px}
+.seg button{height:30px;padding:0 11px}
+.legend{border-radius:10px;padding:12px 14px}
+/* Marcadores de almoxarifado: só o quadrado quando selecionado */
+.hubmk .sq{position:relative;width:14px;height:14px;border-radius:4px;background:#1e6bff;border:2px solid #fff;
+  box-shadow:0 0 0 1px rgba(15,34,64,.35),0 2px 6px rgba(0,0,0,.35);transition:transform .18s ease,background .18s ease,opacity .18s ease}
+.hubmk:hover .sq{transform:scale(1.2)}
+.hubmk .lb{background:rgba(15,34,64,.92);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:3px 9px;font:600 11px/1.3 var(--f-display);letter-spacing:.01em}
+.hubmk.sel .sq{width:14px;height:14px;background:#1e6bff;transform:scale(1.6);box-shadow:0 0 0 1px rgba(0,0,0,.25),0 4px 14px rgba(30,107,255,.55)}
+.hubmk.sel .sq::after{content:"";position:absolute;inset:-5px;border-radius:6px;border:2px solid #1e6bff;animation:hubpulse 1.8s ease-out infinite}
+@keyframes hubpulse{from{transform:scale(.8);opacity:.8}to{transform:scale(1.7);opacity:0}}
+.hubmk .lb{display:none!important}
+.hubmk.dim .sq{opacity:.45}
+.hubmk.sel{z-index:2}
+/* Painel lateral */
+.side{overflow:hidden}
+.side header{background:var(--surface-2)}
+.rank li{transition:background .12s}
+.rank .ct{color:var(--accent-ink)}
+.side .hd{background:linear-gradient(180deg,var(--accent-soft),var(--surface) 85%)}
+.side .hd h2::before{content:"";display:inline-block;width:12px;height:12px;border-radius:3px;background:#1e6bff;margin-right:9px;vertical-align:1px;box-shadow:0 0 0 2px var(--surface)}
+.hd-kpis{background:var(--surface)}
+.hd-kpis b{font-size:17px}
+/* Cartões e tabelas */
+.card h3,.panel .tabs{letter-spacing:-.005em}
+.tab{font-weight:600}
+th{letter-spacing:.06em}
+tbody tr:nth-child(even):not(.spacer){background:color-mix(in srgb,var(--surface-2) 55%,transparent)}
+tbody tr:hover{background:var(--accent-soft)}
+@media (max-width:640px){.appbar .meta{justify-items:start}.appbar .meta .pills{justify-content:flex-start}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="boot" class="boot">Carregando painel…</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.38/vue.global.prod.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.js"></script>
+<script src="data/cobertura.js"></script>
+<script src="data/equipamentos.js"></script>
+<script src="data/ufs.js"></script>
+<script>
+"use strict";
+/* ==========================================================================
+   Arquitetura (Vue 3 · Composition API · MapLibre GL / WebGL)
+   domain      normalização única dos dados + funções puras (haversine, faixas)
+   store       estado reativo (filtros, camadas, abas, simulação) + actions + sync com a URL
+   sel         seletores computed: linhas efetivas (reais ou simuladas) → filtradas
+   components  AppBar · FilterBar · KpiStrip · SimBar · MapPanel · SidePanel · Intel · DataTabs(virtual)
+   MapPanel    MapLibre imperativo fora da reatividade; GeoJSON reconstruído a cada mudança de dados
+   ========================================================================== */
+const {createApp, reactive, computed, watch, ref, onMounted, onBeforeUnmount, markRaw, nextTick} = Vue;
+
+/* ------------------------------- domain ------------------------------- */
+const RAW = window.DADOS_COBERTURA;
+const GEO = window.DADOS_UFS;
+const ENR = !!RAW.meta.enriquecido;
+const fold = s => String(s ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+const nf0 = new Intl.NumberFormat("pt-BR", {maximumFractionDigits: 0});
+const nf1 = new Intl.NumberFormat("pt-BR", {minimumFractionDigits: 1, maximumFractionDigits: 1});
+const pct = new Intl.NumberFormat("pt-BR", {style: "percent", minimumFractionDigits: 0, maximumFractionDigits: 1});
+const groupBy = (arr, f) => arr.reduce((m, x) => { const k = f(x); (m.get(k) || m.set(k, []).get(k)).push(x); return m; }, new Map());
+const mean = a => (a.length ? a.reduce((s, x) => s + x, 0) / a.length : 0);
+const sum = a => a.reduce((s, x) => s + (x || 0), 0);
+const reducedMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+const hav = (la1, lo1, la2, lo2) => { const R = 6371.0088, r = Math.PI / 180, a = Math.sin((la2 - la1) * r / 2) ** 2
+  + Math.cos(la1 * r) * Math.cos(la2 * r) * Math.sin((lo2 - lo1) * r / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(a)); };
+const fmtMin = m => (m == null ? "–" : m < 60 ? `${nf0.format(m)} min` : `${Math.floor(m / 60)}h${String(Math.round(m % 60)).padStart(2, "0")}`);
+
+const BANDS = [
+  {k: "até 2h", max: 120, c: "#16a34a", css: "var(--b1)"}, {k: "2–4h", max: 240, c: "#ca8a04", css: "var(--b2)"},
+  {k: "4–6h", max: 360, c: "#ea580c", css: "var(--b3)"}, {k: "acima de 6h", max: Infinity, c: "#dc2626", css: "var(--b4)"},
+];
+const bandOf = min => BANDS.findIndex(b => min <= b.max);
+
+const HUBS0 = RAW.hubs.map(h => Object.freeze({...h}));
+const HUB0 = new Map(HUBS0.map(h => [h.id, h]));
+const BASE_ROWS = Object.freeze(RAW.rows.map((r, i) => Object.freeze({
+  ...r, i, key: `${r.c}|${r.uf}`, q: fold(r.c),
+  km: r.km ?? r.d * 1.3, min: r.min ?? (r.d * 1.3) / 60 * 60,
+  aprox: r.s === "Aproximada" || r.s === "Localidade sem geocódigo" || r.s === "Localidade (não é município)",
+})));
+
+/* Equipamentos (SINAPSE): novos x reaproveitados x retirados por cidade */
+const EQ = window.DADOS_EQUIPAMENTOS;
+const eqOf = r => EQ.c[`${fold(r.c).trim()}|${r.uf}`] || null;
+const eqSum = rows => { const s = {n: 0, r: 0, t: 0, os: 0, nat: {}, cid: 0}, seen = new Set();
+  rows.forEach(x => { if (seen.has(x.key)) return; seen.add(x.key); const e = eqOf(x); if (!e) return; s.cid++;
+    s.n += e.n; s.r += e.r; s.t += e.t; s.os += e.os;
+    Object.entries(e.nat).forEach(([k, v]) => { const a = s.nat[k] || (s.nat[k] = [0, 0, 0]); v.forEach((q, j) => { a[j] += q; }); }); });
+  return s; };
+const eqHtml = (s, full = false) => {
+  const ap = s.n + s.r, rp = ap ? pct.format(s.r / ap) : "–";
+  const nat = Object.entries(s.nat).map(([k, v]) => ({k, n: v[0], r: v[1], t: v[2], tot: v[0] + v[1] + v[2]}))
+    .filter(x => x.tot).sort((a, b) => b.tot - a.tot);
+  const list = full ? nat : nat.slice(0, 6);
+  const head = `<div class="eh"><span>Equipamentos · ${EQ.meta.periodo}</span><span>${nf0.format(s.os)} OS</span></div>`;
+  if (!ap && !s.t) return `<div class="eqb">${head}<div class="none">Sem movimentação de equipamentos no relatório.</div></div>`;
+  return `<div class="eqb">${head}<div class="es">
+      <div style="--c:var(--accent)"><b>${nf0.format(s.n)}</b><span>Novos</span></div>
+      <div style="--c:var(--ok)"><b>${nf0.format(s.r)}</b><span>Reaprov. · ${rp}</span></div>
+      <div style="--c:var(--warn)"><b>${nf0.format(s.t)}</b><span>Retirados</span></div></div>
+    <table><thead><tr><th>Natureza</th><th>Novos</th><th>Reap.</th><th>Ret.</th></tr></thead><tbody>
+    ${list.map(x => `<tr><td>${esc(x.k)}</td><td>${nf0.format(x.n)}</td><td>${nf0.format(x.r)}</td><td>${nf0.format(x.t)}</td></tr>`).join("")}
+    ${nat.length > list.length ? `<tr><td colspan="4" class="none">+ ${nat.length - list.length} naturezas</td></tr>` : ""}</tbody></table></div>`;
+};
+const UFS = [...new Set(BASE_ROWS.map(r => r.uf))].sort();
+
+/* -------------------------------- store ------------------------------- */
+const safeLS = {get: k => { try { return localStorage.getItem(k); } catch { return null; } },
+                set: (k, v) => { try { localStorage.setItem(k, v); } catch { /* sem armazenamento */ } }};
+const TABS = ["cob", "alm", "uf", "realoc", "corr"];
+const store = reactive({
+  f: {hub: "", uf: "", band: "", q: ""},
+  layers: {heat: true, cities: true, hubs: true, links: false, realoc: false, cluster: false},
+  weight: "cidades", base: "escuro", radiusKm: 30,
+  tab: TABS.includes(safeLS.get("cob.tab")) ? safeLS.get("cob.tab") : "cob",
+  sort: {}, focus: null, toast: "",
+  sim: {on: false, pos: {}},
+});
+let toastT;
+const actions = {
+  setFilter(k, v) { store.f[k] = v; store.focus = null; },
+  toggleHub(id) { store.f.hub = store.f.hub === id ? "" : id; store.focus = null; },
+  reset() { Object.assign(store.f, {hub: "", uf: "", band: "", q: ""}); store.focus = null; },
+  toast(msg) { store.toast = msg; clearTimeout(toastT); toastT = setTimeout(() => { store.toast = ""; }, 2600); },
+  toggleSim() { store.sim.on = !store.sim.on; if (!store.sim.on) store.sim.pos = {}; },
+  moveHub(id, lat, lon) { store.sim.pos = {...store.sim.pos, [id]: [lat, lon]}; },
+  resetSim() { store.sim.pos = {}; },
+};
+
+// Filtros ↔ URL (#hub=A030&uf=CE): permite compartilhar uma visão já filtrada
+const readHash = () => { try {
+  const p = new URLSearchParams(location.hash.slice(1));
+  ["hub", "uf", "band", "q"].forEach(k => { if (p.get(k)) store.f[k] = p.get(k); });
+  if (store.f.hub && !HUB0.has(store.f.hub)) store.f.hub = "";
+} catch { /* hash indisponível */ } };
+readHash();
+watch(() => ({...store.f}), f => { try {
+  const p = new URLSearchParams(Object.entries(f).filter(([, v]) => v));
+  history.replaceState(null, "", p.toString() ? `#${p}` : location.pathname + location.search);
+} catch { /* ambiente sem history */ } });
+
+/* ---------------------------- selectors ------------------------------ */
+// Sedes efetivas (posição simulada quando movida) e linhas recalculadas para sedes movidas
+const hubs = computed(() => HUBS0.map(h => { const p = store.sim.pos[h.id];
+  return p ? {...h, lat: p[0], lon: p[1], moved: true} : h; }));
+const HUBm = computed(() => new Map(hubs.value.map(h => [h.id, h])));
+const rowsEff = computed(() => {
+  const moved = store.sim.pos;
+  return BASE_ROWS.map(r => {
+    const h = HUBm.value.get(r.h);
+    if (!moved[r.h]) return {...r, hub: h, fxI: bandOf(r.min), inter: r.uf !== h.uf};
+    const d = hav(h.lat, h.lon, r.lat, r.lon), km = d * h.f, min = km / h.v * 60;
+    return {...r, hub: h, d, km, min, fxI: bandOf(min), inter: r.uf !== h.uf, simulado: true};
+  });
+});
+const match = (r, f, ignoreHub = false) => (ignoreHub || !f.hub || r.h === f.hub) && (!f.uf || r.uf === f.uf)
+  && (f.band === "" || r.fxI === +f.band) && (!f.q || r.q.includes(fold(f.q.trim())));
+const sel = {
+  rows: computed(() => rowsEff.value.filter(r => match(r, store.f))),
+  rowsNoHub: computed(() => rowsEff.value.filter(r => match(r, store.f, true))),
+};
+const stats = rows => ({
+  n: rows.length, km: mean(rows.map(r => r.km)), min: mean(rows.map(r => r.min)),
+  ate2h: rows.length ? rows.filter(r => r.fxI === 0).length / rows.length : 0,
+  maxMin: Math.max(0, ...rows.map(r => r.min)), pop: sum(rows.map(r => r.pop)),
+});
+const baseline = computed(() => stats(BASE_ROWS.map(r => ({...r, fxI: bandOf(r.min)}))));
+
+/* ------------------------------ components ---------------------------- */
+const AppBar = {
+  template: `<header class="appbar"><div class="in">
+      <div><div class="kick"><i></i>Logística · Almoxarifados</div><h1>Cobertura Estoque</h1></div>
+      <div class="meta"><div class="pills"><span><b>{{ nHubs }}</b>almoxarifados</span><span><b>{{ nCities }}</b>cidades</span><span><b>{{ nUfs }}</b>estados</span></div>
+        <div>Atualizado em <b>{{ gerado }}</b></div></div>
+    </div></header>`,
+  setup: () => ({nHubs: HUBS0.length, nCities: nf0.format(new Set(BASE_ROWS.map(r => r.key)).size), nUfs: UFS.length, gerado: RAW.meta.geradoEm || "–"}),
+};
+
+const FilterBar = {
+  template: `<section class="filters" aria-label="Filtros">
+      <div class="field"><label for="fHub">Almoxarifado</label>
+        <select id="fHub" :value="f.hub" @change="set('hub', $event.target.value)"><option value="">Todos</option>
+          <option v-for="h in hubsSorted" :key="h.id" :value="h.id">{{ h.nome }} · {{ h.uf }}</option></select></div>
+      <div class="field"><label for="fUf">UF da cidade</label>
+        <select id="fUf" :value="f.uf" @change="set('uf', $event.target.value)"><option value="">Todas</option>
+          <option v-for="u in ufs" :key="u" :value="u">{{ u }}</option></select></div>
+      <div class="field"><label for="fBand">Tempo até a sede</label>
+        <select id="fBand" :value="f.band" @change="set('band', $event.target.value)"><option value="">Todos</option>
+          <option v-for="(b, i) in bands" :key="b.k" :value="String(i)">{{ b.k }}</option></select></div>
+      <div class="field"><label for="fQ">Buscar cidade</label>
+        <input id="fQ" type="search" placeholder="Ex.: Jacobina" autocomplete="off" :value="f.q" @input="onQ"></div>
+      <div class="chips"><button v-for="c in chips" :key="c.k" class="chip" type="button" @click="set(c.k, '')" :title="'Remover filtro ' + c.t">{{ c.t }} <span>×</span></button></div>
+      <div class="grow"></div>
+      <button class="btn sim" :class="{on: sim.on}" type="button" @click="toggleSim" :aria-pressed="sim.on"
+        title="Arraste as sedes no mapa para ver o efeito nas distâncias">{{ sim.on ? "Sair da simulação" : "Simular sedes" }}</button>
+      <button class="btn" type="button" @click="reset">Limpar filtros</button>
+    </section>`,
+  setup() {
+    const hubsSorted = [...HUBS0].sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+    let t; const onQ = e => { clearTimeout(t); t = setTimeout(() => actions.setFilter("q", e.target.value), 120); };
+    const chips = computed(() => [
+      store.f.hub && {k: "hub", t: HUB0.get(store.f.hub)?.nome}, store.f.uf && {k: "uf", t: `UF ${store.f.uf}`},
+      store.f.band !== "" && {k: "band", t: BANDS[+store.f.band]?.k}, store.f.q && {k: "q", t: `“${store.f.q}”`}].filter(Boolean));
+    return {f: store.f, sim: store.sim, hubsSorted, ufs: UFS, bands: BANDS, chips, onQ, set: actions.setFilter, reset: actions.reset, toggleSim: actions.toggleSim};
+  },
+};
+
+const KpiStrip = {
+  template: `<section class="kpis" aria-live="polite">
+      <div v-for="k in kpis" :key="k.l" class="kpi" :style="{'--c': k.c}">
+        <div class="v">{{ k.v }}</div><div class="l">{{ k.l }}</div><div class="s">{{ k.s }}</div></div>
+    </section>`,
+  setup() {
+    const kpis = computed(() => {
+      const rows = sel.rows.value, ufs = [...new Set(rows.map(r => r.uf))].sort(), e = eqSum(rows);
+      return [
+        {l: "Almoxarifados", v: nf0.format(new Set(rows.map(r => r.h)).size), s: `de ${HUBS0.length} na malha`, c: "var(--accent)"},
+        {l: "Cidades atendidas", v: nf0.format(new Set(rows.map(r => r.key)).size), s: `${nf0.format(rows.length)} vínculos almoxarifado → cidade`, c: "var(--h2)"},
+        {l: "Estados", v: nf0.format(ufs.length), s: ufs.join(" · ") || "–", c: "var(--h4)"},
+        {l: "Equip. novos", v: nf0.format(e.n), s: `aplicados · ${EQ.meta.periodo}`, c: "var(--accent)"},
+        {l: "Equip. reaproveitados", v: nf0.format(e.r), s: `${e.n + e.r ? pct.format(e.r / (e.n + e.r)) : "–"} do aplicado`, c: "var(--ok)"},
+        {l: "Equip. retirados", v: nf0.format(e.t), s: `de clientes · ${nf0.format(e.cid)} cidades com dados`, c: "var(--warn)"},
+      ];
+    });
+    return {kpis};
+  },
+};
+
+const SimBar = {
+  template: `<section v-if="sim.on" class="simbar" role="status">
+      <div><b>Modo simulação.</b> Arraste qualquer sede no mapa; as rotas das sedes movidas são estimadas
+        pela sinuosidade e velocidade reais de cada almoxarifado.</div>
+      <div class="d"><span>Sedes movidas</span><strong>{{ moved }}</strong></div>
+      <div class="d"><span>Km médio por estrada</span><strong>{{ nf1(base.km) }} → {{ nf1(now.km) }}
+        <em :class="now.km > base.km ? 'up' : 'down'" v-if="moved">({{ delta(now.km - base.km) }})</em></strong></div>
+      <div class="d"><span>Cidades até 2h</span><strong>{{ pct(base.ate2h) }} → {{ pct(now.ate2h) }}</strong></div>
+      <div class="d"><span>Maior tempo</span><strong>{{ fmtMin(base.maxMin) }} → {{ fmtMin(now.maxMin) }}</strong></div>
+      <button class="btn sm" type="button" @click="resetSim" :disabled="!moved">Desfazer movimentos</button>
+    </section>`,
+  setup() {
+    const now = computed(() => stats(rowsEff.value));
+    return {sim: store.sim, base: baseline, now, moved: computed(() => Object.keys(store.sim.pos).length),
+      nf1: v => nf1.format(v), pct: v => pct.format(v), fmtMin, delta: v => `${v > 0 ? "+" : ""}${nf1.format(v)} km`, resetSim: actions.resetSim};
+  },
+};
+
+/* SidePanel — ranking (sem seleção) ou ficha do almoxarifado (com seleção) */
+const SidePanel = {
+  template: `<aside class="side" aria-label="Almoxarifados">
+      <template v-if="!hub && searching">
+        <header><h2>Resultado da busca</h2><span>{{ found.length }} {{ found.length === 1 ? "cidade" : "cidades" }}</span></header>
+        <ul class="found">
+          <li v-for="r in found" :key="r.i" tabindex="0" @click="focus(r)" @keydown.enter.prevent="focus(r)" :title="'Localizar ' + r.c + ' no mapa'">
+            <div class="f-top"><b>{{ r.c }}</b> <small>{{ r.uf }}</small><i v-if="r.aprox" class="tag warn">aprox.</i></div>
+            <div class="f-hub">Atendida por <button type="button" class="link" @click.stop="toggle(r.h)">{{ r.hub.nome }} · {{ r.hub.uf }}</button></div>
+            <dl class="f-kv">
+              <div><dt>Tempo</dt><dd class="mono"><i class="dot" :style="{background: bands[r.fxI].css}"></i>{{ fmtMin(r.min) }}</dd></div>
+              <div><dt>Estrada</dt><dd class="mono">{{ nf1(r.km) }} km</dd></div>
+              <div><dt>Linha reta</dt><dd class="mono">{{ nf1(r.d) }} km</dd></div>
+            </dl>
+            <div class="f-eq" v-if="eqOf(r)">Equip.: <b>{{ eqOf(r).n }}</b> novos · <b>{{ eqOf(r).r }}</b> reaprov. · <b>{{ eqOf(r).t }}</b> retirados</div>
+          </li>
+          <li v-if="!found.length" class="empty">Nenhuma cidade encontrada.</li>
+        </ul>
+      </template>
+      <template v-else-if="!hub">
+        <header><h2>Cidades por almoxarifado</h2><span>clique para ver as cidades</span></header>
+        <ul class="rank" role="listbox">
+          <li v-for="x in list" :key="x.h.id" role="option" tabindex="0" aria-selected="false" :class="{off: !x.n}"
+              @click="toggle(x.h.id)" @keydown.enter.prevent="toggle(x.h.id)" @keydown.space.prevent="toggle(x.h.id)">
+            <span class="nm">{{ x.h.nome }}<small>{{ x.h.uf }}</small><i v-if="x.h.moved" class="tag sim">movida</i></span><span class="ct">{{ x.n }}</span>
+            <span class="gbar"><i :style="{width: (x.n / max * 100) + '%'}"></i></span></li>
+        </ul>
+      </template>
+      <template v-else>
+        <div class="hd">
+          <button class="back" type="button" @click="toggle(hub.id)">← Todos os almoxarifados</button>
+          <h2>{{ hub.nome }} <small>{{ hub.uf }}</small><i v-if="hub.moved" class="tag sim">posição simulada</i></h2>
+          <div class="hd-sub">Coordenada da sede: {{ hub.origem }}<i v-if="hub.inferida" class="tag warn">confirmar</i></div>
+          <div class="hd-kpis">
+            <div><b class="mono">{{ cities.length }}</b><span>cidades</span></div>
+            <div><b class="mono">{{ groups.length }}</b><span>{{ groups.length === 1 ? "estado" : "estados" }}</span></div>
+            <div><b class="mono">{{ popTxt }}</b><span>população</span></div>
+            <div><b class="mono">{{ nf1(st.km) }}</b><span>km médio (estrada)</span></div>
+            <div><b class="mono">{{ fmtMin(st.min) }}</b><span>tempo médio</span></div>
+            <div><b class="mono">{{ pct(st.ate2h) }}</b><span>até 2h</span></div>
+          </div>
+          <div v-html="eqHub"></div>
+          <div class="hd-tools">
+            <input id="fHubCity" type="search" v-model="q" placeholder="Filtrar cidades deste almoxarifado" autocomplete="off" aria-label="Filtrar cidades">
+            <button class="btn sm" type="button" @click="copy">Copiar lista</button>
+          </div>
+        </div>
+        <div class="clist" role="list">
+          <section v-for="g in shown" :key="g.uf" class="cgroup">
+            <h3><span>{{ g.uf }}</span><em>{{ g.items.length }} {{ g.items.length === 1 ? "cidade" : "cidades" }}</em></h3>
+            <ol>
+              <li v-for="(r, n) in g.items" :key="r.i" role="listitem" tabindex="0" @click="focus(r)" @keydown.enter.prevent="focus(r)" :title="'Localizar ' + r.c + ' no mapa'">
+                <span class="idx mono">{{ n + 1 }}</span>
+                <span class="cn"><i class="dot" :style="{background: bands[r.fxI].css}"></i>{{ r.c }}<i v-if="r.aprox" class="tag warn">aprox.</i><i v-if="r.inter" class="tag info">outra UF</i><i v-if="r.ufp" class="tag warn">UF provável {{ r.ufp }}</i><i v-if="realocIdx.has(r.i)" class="tag sim">realocar?</i></span>
+                <span class="dist mono">{{ nf1(r.km) }} km<small>{{ fmtMin(r.min) }}</small></span>
+              </li>
+            </ol>
+          </section>
+          <p v-if="!shown.length" class="empty">Nenhuma cidade corresponde a “{{ q }}”.</p>
+        </div>
+      </template>
+    </aside>`,
+  setup() {
+    const list = computed(() => {
+      const c = groupBy(sel.rowsNoHub.value, r => r.h);
+      return hubs.value.map(h => { const rs = c.get(h.id) || [];
+        return {h, n: rs.length, b: BANDS.map((_, k) => rs.filter(r => r.fxI === k).length)}; })
+        .sort((a, b) => b.n - a.n || a.h.nome.localeCompare(b.h.nome, "pt-BR"));
+    });
+    const max = computed(() => Math.max(1, ...list.value.map(x => x.n)));
+    const hub = computed(() => (store.f.hub ? HUBm.value.get(store.f.hub) : null));
+    const cities = computed(() => (hub.value ? rowsEff.value.filter(r => r.h === hub.value.id).sort((a, b) => a.km - b.km) : []));
+    const st = computed(() => stats(cities.value));
+    const groups = computed(() => [...groupBy(cities.value, r => r.uf)].map(([uf, items]) => ({uf, items}))
+      .sort((a, b) => (a.uf === hub.value.uf ? -1 : b.uf === hub.value.uf ? 1 : b.items.length - a.items.length)));
+    const q = ref(""); watch(() => store.f.hub, () => { q.value = ""; });
+    const shown = computed(() => { const t = fold(q.value.trim());
+      return t ? groups.value.map(g => ({...g, items: g.items.filter(r => r.q.includes(t))})).filter(g => g.items.length) : groups.value; });
+    const popTxt = computed(() => (st.value.pop ? (st.value.pop >= 1e6 ? `${nf1.format(st.value.pop / 1e6)} mi` : `${nf0.format(st.value.pop / 1e3)} mil`) : "–"));
+    const realocIdx = new Set(RAW.realoc.map(x => x.i));
+    const copy = async () => {
+      const lines = [`${hub.value.nome} (${hub.value.uf}) — ${cities.value.length} cidades`, "UF;Cidade;Km estrada;Tempo;Linha reta (km);População;Coordenada",
+        ...groups.value.flatMap(g => g.items.map(r => [r.uf, r.c, nf1.format(r.km), fmtMin(r.min), nf1.format(r.d), r.pop ?? "", r.s].join(";")))];
+      try { await navigator.clipboard.writeText(lines.join("\n")); actions.toast(`Lista de ${cities.value.length} cidades copiada.`); }
+      catch { actions.toast("Não foi possível copiar. Selecione a lista e use Ctrl+C."); }
+    };
+    const searching = computed(() => !!store.f.q.trim());
+    const eqHub = computed(() => (hub.value ? eqHtml(eqSum(cities.value), true) : ""));
+    const found = computed(() => [...sel.rows.value].sort((a, b) => a.c.localeCompare(b.c, "pt-BR")).slice(0, 60));
+    return {searching, found, eqHub, eqOf, list, max, bands: BANDS, toggle: actions.toggleHub, hub, cities, st, groups, shown, q, popTxt, realocIdx, copy,
+      focus: r => { store.focus = r; }, nf1: v => nf1.format(v), pct: v => pct.format(v), fmtMin};
+  },
+};
+
+/* MapPanel — MapLibre GL (WebGL). Um estilo com todas as bases raster; camadas de dados em GeoJSON. */
+const ESRI = "https://server.arcgisonline.com/ArcGIS/rest/services/";
+const BASES = {
+  ruas: {label: "Ruas", url: "World_Street_Map"}, claro: {label: "Claro", url: "Canvas/World_Light_Gray_Base", ref: "Canvas/World_Light_Gray_Reference"},
+  escuro: {label: "Escuro", url: "Canvas/World_Dark_Gray_Base", ref: "Canvas/World_Dark_Gray_Reference"},
+  satelite: {label: "Satélite", url: "World_Imagery", ref: "Reference/World_Boundaries_and_Places"},
+};
+// cor dos nomes das cidades conforme o mapa base (claro sobre escuro e vice-versa)
+const LBL = {
+  escuro: {"text-color": "#e8eefb", "text-halo-color": "#0a1120", "text-halo-width": 1.4},
+  satelite: {"text-color": "#ffffff", "text-halo-color": "#000000", "text-halo-width": 1.6},
+  ruas: {"text-color": "#0e1a2e", "text-halo-color": "#ffffff", "text-halo-width": 1.6},
+  claro: {"text-color": "#0e1a2e", "text-halo-color": "#ffffff", "text-halo-width": 1.6},
+};
+const tile = p => `${ESRI}${p}/MapServer/tile/{z}/{y}/{x}`;
+const PLASMA = ["interpolate", ["linear"], ["heatmap-density"], 0, "rgba(42,10,107,0)", 0.12, "rgba(91,15,179,.55)", 0.3, "#8a1bb0",
+  0.5, "#d0307c", 0.68, "#f25a4a", 0.85, "#fb9a2b", 1, "#fde047"];
+
+const MapPanel = {
+  template: `<div class="mapcard">
+      <div id="map" ref="el" role="region" aria-label="Mapa de calor da cobertura"></div>
+      <div class="ov ov-top">
+        <div class="seg" role="group" aria-label="Camadas">
+          <button v-for="(l, k) in layerLabels" :key="k" type="button" :class="{on: layers[k]}" :aria-pressed="layers[k]" @click="layers[k] = !layers[k]">{{ l }}</button>
+        </div>
+        <div class="seg" role="group" aria-label="Mapa base">
+          <button v-for="(b, k) in bases" :key="k" type="button" :class="{on: base === k}" :aria-pressed="base === k" @click="setBase(k)">{{ b.label }}</button>
+          <button type="button" @click="fit(true)" title="Enquadrar a seleção atual">Enquadrar</button>
+        </div>
+      </div>
+      <div v-if="semMapa" class="nomap" role="status"><b>O mapa não pode ser exibido nesta pré-visualização.</b>
+        <span>Este visualizador bloqueia o processamento do mapa em segundo plano. Abra o arquivo HTML direto no navegador (duplo clique) ou o link publicado. O restante do painel funciona normalmente.</span></div>
+      <div v-if="offline" class="ov notice" role="status">O mapa de ruas não carregou nesta visualização (sem acesso ao servidor de mapas). Exibindo os limites estaduais do IBGE; abra o arquivo HTML no navegador para ver o mapa completo.</div>
+      <div v-if="sim.on" class="ov simhint">Arraste as sedes para simular</div>
+      <div class="ov legend">
+        <div class="t"><span>Concentração de cidades atendidas</span>
+          <span class="mini-seg" role="group" aria-label="Peso do calor"><button type="button" :class="{on: weight === 'cidades'}" @click="setWeight('cidades')">cidades</button><button type="button" :class="{on: weight === 'populacao'}" @click="setWeight('populacao')" :disabled="!enr">população</button></span></div>
+        <div><div class="ramp"></div><div class="scale"><span>baixa</span><span>alta</span></div></div>
+        <div class="rad"><label for="rk">Raio</label><input id="rk" type="range" min="10" max="80" step="2" v-model.number="radius"><span class="mono">{{ radius }} km</span></div>
+        <div class="syms hide-m"><span><i class="i-city"></i>Cidade</span><span><i class="i-hub"></i>Almox.</span><span><i class="i-aprox"></i>Aprox.</span></div>
+      </div>
+    </div>`,
+  setup() {
+    const el = ref(null), offline = ref(false);
+    const radius = computed({get: () => store.radiusKm, set: v => { store.radiusKm = v; }});
+    let map, popup, ro, tileErr = 0, tileOk = 0, ready = false;
+    const markers = new Map();
+
+    /* GeoJSON a partir do estado */
+    const popMax = Math.max(1, ...BASE_ROWS.map(r => r.pop || 0));
+    const fcCities = rows => ({type: "FeatureCollection", features: rows.map(r => ({type: "Feature", id: r.i,
+      geometry: {type: "Point", coordinates: [r.lon, r.lat]},
+      properties: {i: r.i, n: r.c, b: r.fxI, a: r.aprox ? 1 : 0, w: store.weight === "populacao" ? Math.sqrt((r.pop || 0) / popMax) : 1}}))});
+    const fcLinks = rows => ({type: "FeatureCollection", features: rows.map(r => ({type: "Feature",
+      geometry: {type: "LineString", coordinates: [[r.hub.lon, r.hub.lat], [r.lon, r.lat]]}, properties: {b: r.fxI, i: r.i}}))});
+    const fcRealoc = rows => { const ids = new Set(rows.map(r => r.i));
+      return {type: "FeatureCollection", features: RAW.realoc.filter(x => ids.has(x.i)).map(x => { const r = BASE_ROWS[x.i], h = HUBm.value.get(x.sugerido_id);
+        return {type: "Feature", geometry: {type: "LineString", coordinates: [[r.lon, r.lat], [h.lon, h.lat]]}, properties: {g: x.ganho_km}}; })}; };
+
+    const style = () => {
+      const sources = {}, layers = [];
+      Object.entries(BASES).forEach(([k, b]) => {
+        sources[`b-${k}`] = {type: "raster", tiles: [tile(b.url)], tileSize: 256, maxzoom: 18, attribution: "Tiles © Esri — Esri, HERE, Garmin, USGS, © OpenStreetMap"};
+        layers.push({id: `b-${k}`, type: "raster", source: `b-${k}`, layout: {visibility: k === store.base ? "visible" : "none"}});
+        if (b.ref) sources[`r-${k}`] = {type: "raster", tiles: [tile(b.ref)], tileSize: 256, maxzoom: 18};
+      });
+      sources.uf = {type: "geojson", data: GEO, attribution: "Limites: IBGE"};
+      layers.push({id: "uf-fill", type: "fill", source: "uf", layout: {visibility: "none"}, paint: {"fill-color": "#f4f6fa", "fill-outline-color": "#9fb0c8"}});
+      layers.push({id: "uf-line", type: "line", source: "uf", layout: {visibility: "none"}, paint: {"line-color": "#9fb0c8", "line-width": 1}});
+      return {version: 8, glyphs: "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf", sources, layers};
+    };
+    const addData = () => {
+      const rows = sel.rows.value;
+      map.addSource("cities", {type: "geojson", data: fcCities(rows)});
+      map.addSource("cities-cl", {type: "geojson", data: fcCities(rows), cluster: true, clusterRadius: 42, clusterMaxZoom: 9});
+      map.addSource("links", {type: "geojson", data: fcLinks(rows)});
+      map.addSource("realoc", {type: "geojson", data: fcRealoc(rows)});
+      const bandColor = ["match", ["get", "b"], 0, BANDS[0].c, 1, BANDS[1].c, 2, BANDS[2].c, BANDS[3].c];
+      map.addLayer({id: "heat", type: "heatmap", source: "cities", maxzoom: 14, paint: {
+        "heatmap-weight": ["get", "w"], "heatmap-color": PLASMA, "heatmap-opacity": 0.72,
+        "heatmap-intensity": ["interpolate", ["linear"], ["zoom"], 3, 1.3, 8, 1.8, 12, 2.4]}});
+      map.addLayer({id: "links", type: "line", source: "links", paint: {"line-color": "#3b82f6", "line-width": ["interpolate", ["linear"], ["zoom"], 4, 1.2, 9, 2.4], "line-opacity": 0.6}});
+      // rótulos de referência do mapa base (cidades, estados) por cima do calor
+      Object.entries(BASES).forEach(([k, b]) => { if (b.ref) map.addLayer({id: `r-${k}`, type: "raster", source: `r-${k}`, layout: {visibility: k === store.base ? "visible" : "none"}}); });
+      map.addLayer({id: "realoc", type: "line", source: "realoc", layout: {"line-cap": "round"}, paint: {"line-color": "#7c3aed", "line-width": 2.2, "line-dasharray": [1.5, 1.5]}});
+      map.addLayer({id: "pts", type: "circle", source: "cities", paint: {
+        "circle-radius": ["interpolate", ["linear"], ["zoom"], 4, 3, 8, 4.5, 12, 6.5], "circle-color": "#ffffff",
+        "circle-stroke-color": ["case", ["==", ["get", "a"], 1], "#f98d2b", "#0f2240"], "circle-stroke-width": ["case", ["==", ["get", "a"], 1], 2, 1.5]}});
+      map.addLayer({id: "pts-lbl", type: "symbol", source: "cities", minzoom: 7, layout: {"text-field": ["get", "n"], "text-font": ["Noto Sans Regular"],
+        "text-size": 11, "text-offset": [0.8, 0], "text-anchor": "left", "text-optional": true}, paint: LBL[store.base] || LBL.escuro});
+      map.addLayer({id: "cl", type: "circle", source: "cities-cl", filter: ["has", "point_count"], paint: {
+        "circle-color": ["step", ["get", "point_count"], "#5b0fb3", 8, "#b0209e", 20, "#e8445a"], "circle-radius": ["step", ["get", "point_count"], 14, 8, 18, 20, 24],
+        "circle-stroke-color": "#fff", "circle-stroke-width": 2}});
+      map.addLayer({id: "cl-n", type: "symbol", source: "cities-cl", filter: ["has", "point_count"], layout: {"text-field": ["get", "point_count_abbreviated"],
+        "text-font": ["Noto Sans Regular"], "text-size": 12}, paint: {"text-color": "#fff"}});
+      map.addLayer({id: "cl-pt", type: "circle", source: "cities-cl", filter: ["!", ["has", "point_count"]], paint: {
+        "circle-radius": 4.5, "circle-color": "#ffffff", "circle-stroke-color": "#0f2240", "circle-stroke-width": 1.5}});
+      map.addLayer({id: "focus", type: "circle", source: "cities", filter: ["==", ["get", "i"], -1], paint: {
+        "circle-radius": 13, "circle-color": "rgba(0,0,0,0)", "circle-stroke-color": "#1e6bff", "circle-stroke-width": 3}});
+    };
+    const applyLayers = () => {
+      if (!ready) return;
+      const L = store.layers, vis = (id, on) => map.getLayer(id) && map.setLayoutProperty(id, "visibility", on ? "visible" : "none");
+      vis("heat", L.heat); vis("links", L.links || !!store.f.hub || !!store.f.q); vis("realoc", L.realoc);
+      vis("pts", L.cities && !L.cluster); vis("pts-lbl", L.cities && !L.cluster);
+      ["cl", "cl-n", "cl-pt"].forEach(id => vis(id, L.cities && L.cluster));
+      markers.forEach(m => { m.getElement().style.display = L.hubs ? "" : "none"; });
+      declutter();
+    };
+    const updateHeat = () => {
+      if (!ready) return;
+      // raio em km → pixels em cada zoom (Web Mercator: 156543 m/px no zoom 0, corrigido pela latitude)
+      const lat = map.getCenter().lat, mpp0 = 156543.03 * Math.cos(lat * Math.PI / 180);
+      const px = z => Math.max(16, Math.min(120, store.radiusKm * 1000 / (mpp0 / 2 ** z)));
+      map.setPaintProperty("heat", "heatmap-radius", ["interpolate", ["exponential", 2], ["zoom"], 3, px(3), 6, px(6), 9, px(9), 12, px(12)]);
+    };
+    const refreshData = () => {
+      if (!ready) return;
+      const rows = sel.rows.value;
+      map.getSource("cities").setData(fcCities(rows));
+      map.getSource("cities-cl").setData(fcCities(rows));
+      map.getSource("links").setData(fcLinks(rows));
+      map.getSource("realoc").setData(fcRealoc(rows));
+      syncMarkers();
+      applyLayers();
+    };
+
+    /* Sedes: marcadores HTML (arrastáveis na simulação) */
+    const countByHub = computed(() => groupBy(sel.rows.value, r => r.h));
+    const syncMarkers = () => {
+      if (!map) return;
+      const c = countByHub.value;
+      el.value?.parentElement.classList.toggle("has-sel", !!store.f.hub);
+      hubs.value.forEach(h => {
+        let m = markers.get(h.id);
+        const n = (c.get(h.id) || []).length;
+        if (!m) {
+          const e = document.createElement("div");
+          e.className = "hubmk"; e.innerHTML = `<span class="sq"></span><span class="lb"></span>`;
+          e.addEventListener("click", ev => { ev.stopPropagation(); if (!store.sim.on) actions.toggleHub(h.id); });
+          m = markRaw(new maplibregl.Marker({element: e, anchor: "left", offset: [-8, 0], draggable: false}).setLngLat([h.lon, h.lat]).addTo(map));
+          m.on("drag", () => { const p = m.getLngLat(); actions.moveHub(h.id, p.lat, p.lng); });
+          markers.set(h.id, m);
+        }
+        const e = m.getElement();
+        e.querySelector(".lb").textContent = `${h.nome} · ${n}`;
+        e.title = `${h.nome} (${h.uf}) — ${n} cidades${store.sim.on ? " · arraste para simular" : ""}`;
+        e.classList.toggle("sel", store.f.hub === h.id);
+        e.classList.toggle("dim", !!store.f.hub && store.f.hub !== h.id);
+        e.classList.toggle("moved", !!h.moved);
+        e.classList.toggle("drag", store.sim.on);
+        e.style.opacity = n || store.sim.on ? "1" : "0.25";
+        m.setDraggable(store.sim.on);
+        if (!m._dragging) m.setLngLat([h.lon, h.lat]);
+      });
+    };
+    // Rótulos das sedes sem sobreposição (guloso: maior almoxarifado primeiro)
+    const declutter = () => {
+      const c = countByHub.value, placed = [];
+      [...markers].sort((a, b) => (c.get(b[0]) || []).length - (c.get(a[0]) || []).length).forEach(([, m]) => {
+        const e = m.getElement(); e.classList.remove("hide-lb");
+        const lb = e.querySelector(".lb").getBoundingClientRect();
+        if (placed.some(p => !(lb.right < p.left || lb.left > p.right || lb.bottom < p.top || lb.top > p.bottom))) e.classList.add("hide-lb");
+        else placed.push(lb);
+      });
+    };
+
+    const setBase = k => {
+      store.base = k;
+      if (!ready || offline.value) return;
+      Object.keys(BASES).forEach(b => {
+        map.setLayoutProperty(`b-${b}`, "visibility", b === k ? "visible" : "none");
+        if (map.getLayer(`r-${b}`)) map.setLayoutProperty(`r-${b}`, "visibility", b === k ? "visible" : "none");
+      });
+      Object.entries(LBL[k] || LBL.escuro).forEach(([prop, v]) => map.setPaintProperty("pts-lbl", prop, v));
+    };
+    const useFallback = () => {
+      if (offline.value) return; offline.value = true;
+      Object.keys(BASES).forEach(b => { map.setLayoutProperty(`b-${b}`, "visibility", "none");
+        if (map.getLayer(`r-${b}`)) map.setLayoutProperty(`r-${b}`, "visibility", "none"); });
+      map.setLayoutProperty("uf-fill", "visibility", "visible"); map.setLayoutProperty("uf-line", "visibility", "visible");
+    };
+    const setWeight = w => { store.weight = w; refreshData(); };
+    const fit = (animate = true) => {
+      const rows = sel.rows.value; if (!rows.length || !ready) return;
+      const b = new maplibregl.LngLatBounds();
+      rows.forEach(r => { b.extend([r.lon, r.lat]); b.extend([r.hub.lon, r.hub.lat]); });
+      // a legenda ocupa o canto inferior: reserva a altura dela no enquadramento
+      const lg = el.value?.parentElement.querySelector(".legend")?.offsetHeight || 0, w = el.value?.clientWidth || 800;
+      const pad = {top: 64, bottom: lg + 40, left: w < 700 ? 24 : 60, right: w < 700 ? 24 : 60};
+      map.fitBounds(b, {padding: pad, maxZoom: 10.5, duration: animate && !reducedMotion() ? 700 : 0});
+    };
+
+    const showCity = r => { if (!ready) return; map.setFilter("focus", ["==", ["get", "i"], r.i]);
+      popup.setLngLat([r.lon, r.lat]).setHTML(tipCity(rowsEff.value[r.i])).addTo(map); };
+    const tipCity = r => `<div class="pp"><b>${esc(r.c)} · ${esc(r.uf)}</b><dl>
+      <dt>Almoxarifado</dt><dd>${esc(r.hub.nome)} (${esc(r.hub.uf)})</dd>
+      <dt>Tempo</dt><dd class="mono">${fmtMin(r.min)} · ${BANDS[r.fxI].k}${r.simulado ? " (simulado)" : r.est ? " (estimado)" : ""}</dd>
+      <dt>Estrada</dt><dd class="mono">${nf1.format(r.km)} km</dd>
+      <dt>Linha reta</dt><dd class="mono">${nf1.format(r.d)} km</dd>
+      ${r.pop ? `<dt>População</dt><dd class="mono">${nf0.format(r.pop)}</dd>` : ""}
+      <dt>Coordenada</dt><dd>${esc(r.s)}</dd></dl>${eqHtml(eqSum([r]))}</div>`;
+    const tipLink = r => `<div class="pp"><b>${esc(r.hub.nome)} → ${esc(r.c)} · ${esc(r.uf)}</b><dl>
+      <dt>Tempo</dt><dd class="mono">${fmtMin(r.min)} · ${BANDS[r.fxI].k}</dd>
+      <dt>Estrada</dt><dd class="mono">${nf1.format(r.km)} km</dd></dl>${eqHtml(eqSum([r]))}</div>`;
+
+    // O MapLibre desenha em threads (Web Workers criados a partir de blob:). Alguns visualizadores
+    // embutidos bloqueiam isso por segurança; nesse caso o painel segue funcionando sem o mapa.
+    const workersOk = () => { try { const u = URL.createObjectURL(new Blob([""], {type: "text/javascript"}));
+      const w = new Worker(u); w.terminate(); URL.revokeObjectURL(u); return true; } catch { return false; } };
+    const semMapa = ref(false);
+    onMounted(() => {
+      if (!window.maplibregl || !workersOk()) { semMapa.value = true; return; }
+      map = markRaw(new maplibregl.Map({container: el.value, style: style(), center: [-45, -14], zoom: 3.6, minZoom: 2.5, maxZoom: 17,
+        attributionControl: {compact: true}, dragRotate: false, pitchWithRotate: false, cooperativeGestures: false}));
+      map.addControl(new maplibregl.NavigationControl({showCompass: false}), "bottom-right");
+      map.touchZoomRotate.disableRotation();
+      popup = markRaw(new maplibregl.Popup({closeButton: false, closeOnClick: false, offset: 10, maxWidth: "340px"}));
+      map.on("error", e => { if (e?.sourceId?.startsWith?.("b-")) { if (++tileErr > 6 && !tileOk) useFallback(); } });
+      map.on("sourcedata", e => { if (e.sourceId?.startsWith?.("b-") && e.tile) tileOk++; });
+      map.on("load", () => {
+        addData(); ready = true; updateHeat(); syncMarkers(); applyLayers(); fit(false);
+        // fallback de segurança: se nenhum tile carregar em 6 s, usa a malha do IBGE
+        setTimeout(() => { if (!tileOk && tileErr) useFallback(); }, 8000);
+      });
+      map.on("zoomend", updateHeat);
+      map.on("moveend", declutter);
+      const hover = e => {
+        const f = e.features?.[0]; if (!f) return;
+        const r = rowsEff.value[f.properties.i]; map.getCanvas().style.cursor = "pointer";
+        popup.setLngLat([r.lon, r.lat]).setHTML(tipCity(r)).addTo(map);
+      };
+      ["pts", "cl-pt"].forEach(id => {
+        map.on("mousemove", id, hover);
+        map.on("mouseleave", id, () => { map.getCanvas().style.cursor = ""; popup.remove(); });
+        map.on("click", id, e => { const f = e.features?.[0]; if (f) store.focus = rowsEff.value[f.properties.i]; });
+      });
+      map.on("mousemove", "links", e => {
+        if (map.queryRenderedFeatures(e.point, {layers: ["pts", "cl-pt"].filter(id => map.getLayer(id))}).length) return;
+        const f = e.features?.[0]; if (!f) return; const r = rowsEff.value[f.properties.i];
+        map.getCanvas().style.cursor = "pointer"; popup.setLngLat(e.lngLat).setHTML(tipLink(r)).addTo(map); });
+      map.on("mouseleave", "links", () => { map.getCanvas().style.cursor = ""; popup.remove(); });
+      map.on("click", "links", e => { const f = e.features?.[0]; if (f) store.focus = rowsEff.value[f.properties.i]; });
+      map.on("click", "cl", e => { const f = e.features[0];
+        map.getSource("cities-cl").getClusterExpansionZoom(f.properties.cluster_id).then(z => map.easeTo({center: f.geometry.coordinates, zoom: z})); });
+      let firstSize = true;
+      ro = new ResizeObserver(() => { map.resize(); if (ready && firstSize) { firstSize = false; fit(false); } }); ro.observe(el.value);
+    });
+    onBeforeUnmount(() => { ro?.disconnect(); map?.remove(); });
+
+    let rafId = 0;
+    const schedule = () => { if (!rafId) rafId = requestAnimationFrame(() => { rafId = 0; refreshData(); }); };
+    watch(sel.rows, schedule);
+    watch(() => ({...store.f}), () => nextTick(() => {
+      fit(true);
+      // busca com um único resultado: abre a ficha da cidade (sede e ligação ficam enquadradas)
+      const rows = sel.rows.value;
+      if (store.f.q && rows.length === 1) setTimeout(() => showCity(rows[0]), reducedMotion() ? 0 : 750);
+      else if (!store.focus) { popup?.remove(); if (ready) map.setFilter("focus", ["==", ["get", "i"], -1]); }
+    }));
+    watch(() => ({...store.layers}), applyLayers);
+    watch(() => store.sim.on, () => { syncMarkers(); });
+    watch(() => store.radiusKm, updateHeat);
+    watch(() => store.focus, r => {
+      if (!ready) return;
+      map.setFilter("focus", ["==", ["get", "i"], r ? r.i : -1]);
+      if (r) { map.flyTo({center: [r.lon, r.lat], zoom: Math.max(map.getZoom(), 10.5), duration: reducedMotion() ? 0 : 700});
+        popup.setLngLat([r.lon, r.lat]).setHTML(tipCity(rowsEff.value[r.i])).addTo(map); }
+    });
+
+    return {el, offline, semMapa, radius, layers: store.layers, sim: store.sim, bases: BASES, bands: BANDS, enr: ENR,
+      base: computed(() => store.base), weight: computed(() => store.weight), setBase, setWeight, fit,
+      layerLabels: {heat: "Calor", cities: "Cidades", hubs: "Almoxarifados", links: "Ligações", realoc: "Realocações", cluster: "Agrupar"}};
+  },
+};
+
+/* Distância e tempo por cidade — lista limpa: cidade → almoxarifado, km e horas por estrada */
+const Intel = {
+  template: `<section class="card td" v-if="rows.length">
+      <h3>Distância e tempo até o almoxarifado <span>por estrada · {{ rows.length }} {{ rows.length === 1 ? "cidade" : "cidades" }}</span></h3>
+      <div class="td-list">
+        <table>
+          <thead><tr>
+            <th v-for="c in cols" :key="c.k" :class="[{r: c.r}, c.cls]" scope="col" @click="sortBy(c.k)"
+                :aria-sort="sk === c.k ? (sd > 0 ? 'ascending' : 'descending') : 'none'"><span class="lg">{{ c.t }}</span><span class="sh">{{ c.s || c.t }}</span><span v-if="sk === c.k">{{ sd > 0 ? " ↑" : " ↓" }}</span></th>
+          </tr></thead>
+          <tbody>
+            <tr v-for="r in sorted" :key="r.i" class="go" @click="focus(r)" :title="'Localizar ' + r.c + ' no mapa'">
+              <td><b>{{ r.c }}</b> <small>{{ r.uf }}</small><span class="alm-m">{{ r.hub.nome }}</span></td>
+              <td class="muted col-alm">{{ r.hub.nome }}</td>
+              <td class="r">{{ nf1(r.km) }} km</td>
+              <td class="r">{{ fmtMin(r.min) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>`,
+  setup() {
+    const rows = computed(() => sel.rows.value);
+    const cols = [{k: "c", t: "Cidade"}, {k: "hubNome", t: "Almoxarifado", cls: "col-alm"}, {k: "km", t: "Distância (km)", s: "Km", r: true}, {k: "min", t: "Tempo (horas)", s: "Tempo", r: true}];
+    const sk = ref("hubNome"), sd = ref(1);
+    const sorted = computed(() => rows.value.map(r => ({...r, hubNome: r.hub.nome})).sort((a, b) => {
+      const x = a[sk.value], y = b[sk.value];
+      return (typeof x === "number" ? x - y : String(x).localeCompare(String(y), "pt-BR")) * sd.value || a.km - b.km;
+    }));
+    const sortBy = k => { if (sk.value === k) sd.value = -sd.value; else { sk.value = k; sd.value = 1; } };
+    return {rows, cols, sorted, sk, sd, sortBy, focus: r => { store.focus = r;
+      document.querySelector(".mapcard").scrollIntoView({behavior: reducedMotion() ? "auto" : "smooth", block: "center"}); },
+      nf1: v => nf1.format(v), fmtMin};
+  },
+};
+
+/* DataTabs — colunas declarativas + rolagem virtual (renderiza só as linhas visíveis) */
+const bandPill = i => [["ok", "warn", "warn", "crit"][i], BANDS[i].k];
+const TABLES = {
+  cob: {label: "Cobertura", go: "city", sort: ["hubNome", 1],
+    rows: () => sel.rows.value.map(r => ({...r, hubNome: r.hub.nome, hubUf: r.hub.uf})),
+    cols: [{k: "hubNome", t: "Almoxarifado"}, {k: "hubUf", t: "UF sede"}, {k: "c", t: "Cidade"}, {k: "uf", t: "UF"},
+      {k: "km", t: "Km estrada", r: true, f: v => nf1.format(v)}, {k: "min", t: "Tempo", r: true, f: fmtMin},
+      {k: "fxI", t: "Faixa", pill: bandPill, f: v => BANDS[v].k}, {k: "d", t: "Linha reta (km)", r: true, f: v => nf1.format(v)},
+      {k: "pop", t: "População", r: true, f: v => (v ? nf0.format(v) : "–")},
+      {k: "s", t: "Coordenada", pill: v => (v === "Precisa" ? ["", v] : v.startsWith("Corrigida") ? ["ok", v] : ["warn", v])}]},
+  alm: {label: "Almoxarifados", go: "hub", sort: ["n", -1],
+    rows: () => [...groupBy(sel.rows.value, r => r.h)].map(([id, g]) => { const h = HUBm.value.get(id), s = stats(g);
+      return {id, nome: h.nome, uf: h.uf, origem: h.origem, n: g.length, ufs: new Set(g.map(r => r.uf)).size, km: s.km, min: s.min, ate2h: s.ate2h, mx: s.maxMin, pop: s.pop,
+        re: RAW.realoc.filter(x => x.atual_id === id).length}; }),
+    cols: [{k: "nome", t: "Almoxarifado"}, {k: "uf", t: "UF"}, {k: "n", t: "Cidades", r: true, bar: true}, {k: "ufs", t: "UFs", r: true},
+      {k: "km", t: "Km médio", r: true, f: v => nf1.format(v)}, {k: "min", t: "Tempo médio", r: true, f: fmtMin},
+      {k: "ate2h", t: "Até 2h", r: true, f: v => pct.format(v)}, {k: "mx", t: "Maior tempo", r: true, f: fmtMin},
+      {k: "pop", t: "População", r: true, f: v => (v ? nf0.format(v) : "–")}, {k: "re", t: "Realocar?", r: true},
+      {k: "origem", t: "Coordenada da sede", pill: v => (v.includes("inferida") ? ["warn", v] : v.startsWith("IBGE") ? ["ok", v] : null)}]},
+  uf: {label: "Estados", sort: ["n", -1],
+    rows: () => { const rs = sel.rows.value, tot = rs.length || 1;
+      return [...groupBy(rs, r => r.uf)].map(([uf, g]) => { const s = stats(g);
+        return {uf, n: g.length, p: g.length / tot, hubs: new Set(g.map(r => r.h)).size, km: s.km, min: s.min, ate2h: s.ate2h, pop: s.pop}; }); },
+    cols: [{k: "uf", t: "UF"}, {k: "n", t: "Cidades", r: true, bar: true}, {k: "p", t: "% da malha", r: true, f: v => pct.format(v)},
+      {k: "hubs", t: "Almoxarifados", r: true}, {k: "km", t: "Km médio", r: true, f: v => nf1.format(v)}, {k: "min", t: "Tempo médio", r: true, f: fmtMin},
+      {k: "ate2h", t: "Até 2h", r: true, f: v => pct.format(v)}, {k: "pop", t: "População", r: true, f: v => (v ? nf0.format(v) : "–")}]},
+  realoc: {label: "Realocações", go: "realoc", sort: ["ganho_km", -1],
+    rows: () => { const ids = new Set(sel.rows.value.map(r => r.i)); return RAW.realoc.filter(x => ids.has(x.i)); },
+    cols: [{k: "cidade", t: "Cidade"}, {k: "uf", t: "UF"}, {k: "atual", t: "Atende hoje"}, {k: "km_atual", t: "Km hoje", r: true, f: v => nf1.format(v)},
+      {k: "sugerido", t: "Sede sugerida"}, {k: "km_sugerido", t: "Km sugerido", r: true, f: v => nf1.format(v)},
+      {k: "ganho_km", t: "Economia (km)", r: true, f: v => nf1.format(v)}, {k: "ganho_pct", t: "Economia", r: true, f: v => pct.format(v)},
+      {k: "min_sugerido", t: "Tempo sugerido", r: true, f: fmtMin}]},
+  corr: {label: "Correções de dados", sort: ["tipo", 1],
+    rows: () => RAW.corr.map((x, i) => ({...x, i, st: x.confirmar ? "Confirmar" : "Aplicada"})),
+    cols: [{k: "tipo", t: "Tipo"}, {k: "item", t: "Item"}, {k: "uf", t: "UF"}, {k: "almox", t: "Almoxarifado"},
+      {k: "de", t: "Antes"}, {k: "para", t: "Depois", wrap: true}, {k: "desloc_km", t: "Desloc. (km)", r: true, f: v => nf1.format(v)},
+      {k: "st", t: "Status", pill: v => (v === "Aplicada" ? ["ok", v] : ["warn", v])}]},
+};
+const ROW_H = 37, OVERSCAN = 8;
+const DataTabs = {
+  template: `<section class="panel">
+      <div class="tabs" role="tablist">
+        <button v-for="(d, k) in defs" :key="k" class="tab" :class="{on: tab === k}" role="tab" type="button" :aria-selected="tab === k" @click="setTab(k)">
+          {{ d.label }} <span class="badge">{{ counts[k] }}</span></button>
+      </div>
+      <div class="tbar"><span>{{ info }}</span><div class="acts">
+        <button class="btn sm" type="button" @click="download">Baixar CSV</button><button class="btn sm" type="button" @click="copy">Copiar</button></div></div>
+      <div class="twrap" ref="wrap" @scroll.passive="onScroll"><table>
+        <thead><tr><th v-for="c in def.cols" :key="c.k" :class="{r: c.r}" scope="col" @click="sortBy(c)"
+            :aria-sort="sortState[0] === c.k ? (sortState[1] > 0 ? 'ascending' : 'descending') : 'none'">
+            {{ c.t }}<span v-if="sortState[0] === c.k">{{ sortState[1] > 0 ? ' ↑' : ' ↓' }}</span></th></tr></thead>
+        <tbody>
+          <tr class="spacer" v-if="win.top"><td :colspan="def.cols.length" :style="{height: win.top + 'px'}"></td></tr>
+          <tr v-for="r in win.items" :key="r._k" :class="{go: def.go}" @click="open(r)">
+            <td v-for="c in def.cols" :key="c.k" :class="{r: c.r, wrap: c.wrap}">
+              <template v-if="c.bar"><span class="hbar" :style="{width: Math.round(r[c.k] / maxN * 80) + 'px'}"></span>{{ r[c.k] }}</template>
+              <template v-else-if="c.pill && c.pill(r[c.k])"><span class="pill" :class="c.pill(r[c.k])[0]">{{ c.pill(r[c.k])[1] }}</span></template>
+              <template v-else>{{ c.f ? c.f(r[c.k]) : r[c.k] }}</template>
+            </td></tr>
+          <tr class="spacer" v-if="win.bottom"><td :colspan="def.cols.length" :style="{height: win.bottom + 'px'}"></td></tr>
+          <tr v-if="!rows.length"><td class="empty" :colspan="def.cols.length">Nenhum registro para os filtros atuais. Use “Limpar filtros” para ver toda a malha.</td></tr>
+        </tbody></table></div>
+    </section>`,
+  setup() {
+    const wrap = ref(null), scrollTop = ref(0), viewH = ref(520);
+    const def = computed(() => TABLES[store.tab]);
+    const sortState = computed(() => store.sort[store.tab] || def.value.sort);
+    const rows = computed(() => {
+      const [k, d] = sortState.value;
+      return def.value.rows().map((r, i) => ({...r, _k: `${store.tab}-${r.i ?? r.id ?? r.uf ?? i}-${i}`}))
+        .sort((a, b) => { const x = a[k], y = b[k];
+          return (typeof x === "number" || typeof y === "number" ? (x ?? -1) - (y ?? -1) : String(x ?? "").localeCompare(String(y ?? ""), "pt-BR")) * d || (a.km ?? 0) - (b.km ?? 0); });
+    });
+    const win = computed(() => {
+      const n = rows.value.length, start = Math.max(0, Math.floor(scrollTop.value / ROW_H) - OVERSCAN);
+      const end = Math.min(n, Math.ceil((scrollTop.value + viewH.value) / ROW_H) + OVERSCAN);
+      return {items: rows.value.slice(start, end), top: start * ROW_H, bottom: (n - end) * ROW_H};
+    });
+    const onScroll = e => { scrollTop.value = e.target.scrollTop; };
+    watch(() => store.tab, () => { scrollTop.value = 0; if (wrap.value) wrap.value.scrollTop = 0; });
+    onMounted(() => { const ro = new ResizeObserver(() => { viewH.value = wrap.value?.clientHeight || 520; }); ro.observe(wrap.value); });
+    const maxN = computed(() => Math.max(1, ...rows.value.map(r => r.n || 0)));
+    const counts = computed(() => ({cob: sel.rows.value.length, alm: new Set(sel.rows.value.map(r => r.h)).size, uf: new Set(sel.rows.value.map(r => r.uf)).size,
+      realoc: TABLES.realoc.rows().length, corr: RAW.corr.length}));
+    const info = computed(() => `${nf0.format(rows.value.length)} ${rows.value.length === 1 ? "linha" : "linhas"}` + ({city: " · clique para localizar no mapa",
+      hub: " · clique para abrir o almoxarifado", realoc: " · clique para ver a rota sugerida no mapa"}[def.value.go] || ""));
+    const sortBy = c => { const [ck, cd] = sortState.value;
+      store.sort[store.tab] = [c.k, ck === c.k ? -cd : (typeof rows.value[0]?.[c.k] === "number" ? -1 : 1)]; };
+    const setTab = k => { store.tab = k; safeLS.set("cob.tab", k); if (k === "realoc") store.layers.realoc = true; };
+    const toMap = () => document.querySelector(".mapcard").scrollIntoView({behavior: reducedMotion() ? "auto" : "smooth", block: "center"});
+    const open = r => {
+      const go = def.value.go;
+      if (go === "city") { store.focus = rowsEff.value[r.i]; toMap(); }
+      else if (go === "hub") { actions.toggleHub(r.id); toMap(); }
+      else if (go === "realoc") { store.layers.realoc = true; store.focus = rowsEff.value[r.i]; toMap(); }
+    };
+    const csv = () => { const q = v => (/[;"\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v ?? ""));
+      const cols = def.value.cols;
+      return [cols.map(c => c.t).join(";"), ...rows.value.map(r => cols.map(c => q(c.f ? c.f(r[c.k]) : r[c.k])).join(";"))].join("\r\n"); };
+    const copy = async () => { try { await navigator.clipboard.writeText(csv()); actions.toast(`${rows.value.length} linhas copiadas. Cole no Excel.`); }
+      catch { actions.toast("Não foi possível copiar. Selecione a tabela e use Ctrl+C."); } };
+    const download = () => {
+      try {
+        const a = Object.assign(document.createElement("a"), {href: URL.createObjectURL(new Blob(["﻿" + csv()], {type: "text/csv;charset=utf-8"})),
+          download: `cobertura_${store.tab}.csv`});
+        document.body.appendChild(a); a.click(); a.remove();
+        actions.toast("Download iniciado. Se nada acontecer, use Copiar.");
+      } catch { copy(); }
+    };
+    return {wrap, defs: TABLES, def, rows, win, onScroll, sortState, maxN, counts, info, sortBy, setTab, open, copy, download, tab: computed(() => store.tab)};
+  },
+};
+
+/* --------------------------------- app -------------------------------- */
+createApp({
+  components: {AppBar, FilterBar, KpiStrip, SimBar, MapPanel, SidePanel, Intel, DataTabs},
+  template: `<app-bar></app-bar>
+    <main class="wrap">
+      <filter-bar></filter-bar>
+      <kpi-strip></kpi-strip>
+      <sim-bar></sim-bar>
+      <section class="main"><map-panel></map-panel><side-panel></side-panel></section>
+      <intel></intel>
+      <data-tabs></data-tabs>
+      <p class="foot">Km e tempo por estrada calculados com OSRM sobre a malha viária do OpenStreetMap (sem trânsito). Coordenadas oficiais e população (Censo 2022) do IBGE;
+        distritos e bairros geolocalizados pelo OpenStreetMap estão marcados para confirmação. Sedes “inferidas” (por prefixo ou sigla) devem ser confirmadas.
+        Na simulação, as rotas das sedes movidas são estimadas pela sinuosidade e velocidade médias reais de cada almoxarifado.
+        Realocação sugerida quando outra sede fica ao menos 20 km e 15% mais perto por estrada.</p>
+    </main>
+    <div v-if="toast" class="toast" role="status">{{ toast }}</div>`,
+  setup: () => ({toast: computed(() => store.toast)}),
+}).mount("#app");
+document.getElementById("boot").remove();
+</script>
+</body>
+</html>

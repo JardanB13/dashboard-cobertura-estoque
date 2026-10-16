@@ -1,0 +1,7 @@
+# Planilhas de origem têm nome e CPF/CNPJ de clientes: nunca subir para o repositório
+*.xlsx
+*.xls
+*.csv
+entrada/
+__pycache__/
+.DS_Store
