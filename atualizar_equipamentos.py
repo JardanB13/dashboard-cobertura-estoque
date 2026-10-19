@@ -1,9 +1,9 @@
 """
-Atualiza data/equipamentos.js a partir do relatório SINAPSE
+Atualiza equipamentos.js a partir do relatório SINAPSE
 (Relatório de Materiais Aplicados/Retirados).
 
 Uso:
-    python scripts/atualizar_equipamentos.py caminho/da/planilha.xlsx
+    python atualizar_equipamentos.py caminho/da/planilha.xlsx
 
 Regras:
   - Só linhas com N° de Série (equipamentos).
@@ -15,14 +15,14 @@ import json, re, sys, unicodedata
 from pathlib import Path
 import pandas as pd
 
-RAIZ = Path(__file__).resolve().parent.parent
+RAIZ = Path(__file__).resolve().parent
 UF_CONTRATO = {"1": "PB", "2": "RN", "3": "PE", "4": "BA"}
 MESES = "jan fev mar abr mai jun jul ago set out nov dez".split()
 
 fold = lambda x: unicodedata.normalize("NFD", str(x)).encode("ascii", "ignore").decode().lower().strip()
 
 def carregar_js(nome):
-    txt = (RAIZ / "data" / nome).read_text(encoding="utf-8")
+    txt = (RAIZ / nome).read_text(encoding="utf-8")
     return json.loads(txt[txt.index("=") + 1:].strip().rstrip(";"))
 
 def main(xlsx):
@@ -63,7 +63,7 @@ def main(xlsx):
         },
         "c": no_mapa,
     }
-    destino = RAIZ / "data" / "equipamentos.js"
+    destino = RAIZ / "equipamentos.js"
     destino.write_text("/* gerado automaticamente — não editar à mão */\nwindow.DADOS_EQUIPAMENTOS = "
                        + json.dumps(saida, ensure_ascii=False, separators=(",", ":")) + ";\n", encoding="utf-8")
     m = saida["meta"]
@@ -73,5 +73,5 @@ def main(xlsx):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        sys.exit("Uso: python scripts/atualizar_equipamentos.py caminho/da/planilha.xlsx")
+        sys.exit("Uso: python atualizar_equipamentos.py caminho/da/planilha.xlsx")
     main(sys.argv[1])
