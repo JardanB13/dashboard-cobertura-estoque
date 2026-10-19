@@ -658,7 +658,11 @@ const KpiStrip = {
     </section>`,
   setup() {
     const groups = computed(() => {
-      const rows = sel.rows.value, e = eqSum(rows), apl = e.n + e.r;
+      const rows = sel.rows.value, e = {...eqSum(rows)};
+      /* Visão geral (sem filtro): soma também as cidades sem almoxarifado vinculado */
+      const geral = !store.f.hub && !store.f.uf && store.f.band === "" && !store.f.q, fo = EQ.meta.fora || {};
+      if (geral) { e.n += fo.n || 0; e.r += fo.r || 0; e.t += fo.t || 0; e.cid += fo.cid || 0; }
+      const apl = e.n + e.r;
       const pn = apl ? e.n / apl : null, pr = apl ? e.r / apl : null;
       return [
         {t: "Cobertura", cls: "cov", items: [
@@ -668,7 +672,7 @@ const KpiStrip = {
         {t: `Equipamentos · ${EQ.meta.periodo}`, x: `${nf0.format(apl)} aplicados`, cls: "eq", items: [
           {l: "Equip. novos", v: nf0.format(e.n), p: pn, s: `${pn != null ? pct.format(pn) : "–"} do aplicado`, c: "var(--accent)", i: KPI_ICO.novo},
           {l: "Equip. reaproveitados", v: nf0.format(e.r), p: pr, s: `${pr != null ? pct.format(pr) : "–"} do aplicado`, c: "var(--ok)", i: KPI_ICO.reap},
-          {l: "Equip. retirados", v: nf0.format(e.t), s: `de clientes · ${nf0.format(e.cid)} cidades com dados`, c: "var(--warn)", i: KPI_ICO.ret},
+          {l: "Equip. retirados", v: nf0.format(e.t), s: `de clientes · ${nf0.format(e.cid)} cidades${geral && fo.cid ? ` (${nf0.format(fo.cid)} sem almox.)` : " com dados"}`, c: "var(--warn)", i: KPI_ICO.ret},
         ]},
       ];
     });
