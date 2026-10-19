@@ -404,6 +404,10 @@ tbody tr:hover{background:var(--accent-soft)}
   .sub .fl{grid-template-columns:minmax(0,1fr) 52px 48px}
   .dst-hero .k .n{font-size:26px}.dst-flow{padding:16px 18px}
   .fl{grid-template-columns:minmax(0,1fr) 52px 48px;gap:8px}.fl .tr{grid-column:1/-1;grid-row:2}}
+.dst-note{justify-self:end;max-width:680px;margin:2px 2px 0;display:flex;gap:8px;align-items:flex-start;font-size:11.5px;line-height:1.5;color:var(--ink-3);text-align:right}
+.dst-note b{color:var(--ink-2);font-weight:600}
+.dst-note .ic{flex:none;width:15px;height:15px;margin-top:1px;border-radius:50%;border:1px solid var(--line-2);display:grid;place-items:center;font:700 9px/1 var(--f-mono);color:var(--ink-3)}
+@media (max-width:640px){.dst-note{justify-self:stretch;text-align:left}}
 </style>
 </head>
 <body>
@@ -617,6 +621,7 @@ const ConvPanel = {
           </div>
         </div>
       </div>
+      <p class="dst-note"><span class="ic" aria-hidden="true">i</span><span>Os cards de cima mostram o <b>campo</b> (instalado e retirado no cliente) e este painel mostra o <b>almoxarifado</b> (triagem do que voltou, feita dias depois), por isso os totais de retirados não batem exatamente.</span></p>
     </section>`,
   setup() {
     const D = CONV.meta.destinos, open = ref(false), C = 2 * Math.PI * 52;
