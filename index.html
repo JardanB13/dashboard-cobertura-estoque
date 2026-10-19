@@ -327,6 +327,32 @@ th{letter-spacing:.06em}
 tbody tr:nth-child(even):not(.spacer){background:color-mix(in srgb,var(--surface-2) 55%,transparent)}
 tbody tr:hover{background:var(--accent-soft)}
 @media (max-width:640px){.appbar .meta{justify-items:start}.appbar .meta .pills{justify-content:flex-start}}
+/* ===== Indicadores agrupados v3 ===== */
+.kpis{display:grid;grid-template-columns:2fr 3fr;gap:14px}
+.kg{display:grid;gap:8px;min-width:0;grid-template-rows:auto 1fr}
+.kg-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:0 2px}
+.kg-h span{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.kg-h em{font:600 11px var(--f-mono);font-style:normal;color:var(--ink-2)}
+.kg-c{display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.kg.eq .kg-c{grid-template-columns:repeat(3,minmax(0,1fr))}
+.kpi{height:100%;display:flex;flex-direction:column;background:linear-gradient(160deg,color-mix(in srgb,var(--c) 9%,var(--surface)) 0%,var(--surface) 55%)}
+.kpi .ico{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:9px;display:grid;place-items:center;
+  background:color-mix(in srgb,var(--c) 16%,transparent);color:var(--c)}
+.kpi .ico svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.kpi .v{padding-right:42px}
+.kpi .bar{margin-top:10px;height:6px;border-radius:99px;background:color-mix(in srgb,var(--c) 14%,var(--surface-2));overflow:hidden}
+.kpi .bar i{display:block;height:100%;border-radius:inherit;background:var(--c);transition:width .4s ease}
+.kpi .bar + .s{margin-top:6px}
+.kpi .s{margin-top:auto;padding-top:4px}
+.kpi .bar + .s{padding-top:0}
+@media (max-width:1100px){.kpis{grid-template-columns:1fr}}
+@media (max-width:640px){
+  .kg-c,.kg.eq .kg-c{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .kg.eq .kpi:last-child{grid-column:1/-1}
+  .kpi .ico{width:26px;height:26px;top:10px;right:10px}.kpi .ico svg{width:14px;height:14px}
+  .kpi .v{padding-right:30px}
+  .kpi .bar + .s{display:block;font-size:11px}
+}
 </style>
 </head>
 <body>
@@ -483,12 +509,6 @@ const FilterBar = {
       <div class="field"><label for="fHub">Almoxarifado</label>
         <select id="fHub" :value="f.hub" @change="set('hub', $event.target.value)"><option value="">Todos</option>
           <option v-for="h in hubsSorted" :key="h.id" :value="h.id">{{ h.nome }} · {{ h.uf }}</option></select></div>
-      <div class="field"><label for="fUf">UF da cidade</label>
-        <select id="fUf" :value="f.uf" @change="set('uf', $event.target.value)"><option value="">Todas</option>
-          <option v-for="u in ufs" :key="u" :value="u">{{ u }}</option></select></div>
-      <div class="field"><label for="fBand">Tempo até a sede</label>
-        <select id="fBand" :value="f.band" @change="set('band', $event.target.value)"><option value="">Todos</option>
-          <option v-for="(b, i) in bands" :key="b.k" :value="String(i)">{{ b.k }}</option></select></div>
       <div class="field"><label for="fQ">Buscar cidade</label>
         <input id="fQ" type="search" placeholder="Ex.: Jacobina" autocomplete="off" :value="f.q" @input="onQ"></div>
       <div class="chips"><button v-for="c in chips" :key="c.k" class="chip" type="button" @click="set(c.k, '')" :title="'Remover filtro ' + c.t">{{ c.t }} <span>×</span></button></div>
@@ -507,24 +527,43 @@ const FilterBar = {
   },
 };
 
+const KPI_ICO = {
+  hub: '<path d="M3 10.5 12 4l9 6.5V20H3z"/><path d="M9 20v-6h6v6"/>',
+  city: '<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+  novo: '<path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/>',
+  reap: '<path d="M4 12a8 8 0 0 1 14-5.3L20 9"/><path d="M20 4v5h-5"/><path d="M20 12a8 8 0 0 1-14 5.3L4 15"/><path d="M4 20v-5h5"/>',
+  ret: '<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',
+};
 const KpiStrip = {
   template: `<section class="kpis" aria-live="polite">
-      <div v-for="k in kpis" :key="k.l" class="kpi" :style="{'--c': k.c}">
-        <div class="v">{{ k.v }}</div><div class="l">{{ k.l }}</div><div class="s">{{ k.s }}</div></div>
+      <div v-for="g in groups" :key="g.t" class="kg" :class="g.cls">
+        <div class="kg-h"><span>{{ g.t }}</span><em v-if="g.x">{{ g.x }}</em></div>
+        <div class="kg-c">
+          <div v-for="k in g.items" :key="k.l" class="kpi" :style="{'--c': k.c}">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" v-html="k.i"></svg></span>
+            <div class="v">{{ k.v }}</div><div class="l">{{ k.l }}</div>
+            <div v-if="k.p != null" class="bar" role="img" :aria-label="k.s"><i :style="{width: (k.p * 100) + '%'}"></i></div>
+            <div class="s">{{ k.s }}</div></div>
+        </div>
+      </div>
     </section>`,
   setup() {
-    const kpis = computed(() => {
-      const rows = sel.rows.value, ufs = [...new Set(rows.map(r => r.uf))].sort(), e = eqSum(rows);
+    const groups = computed(() => {
+      const rows = sel.rows.value, e = eqSum(rows), apl = e.n + e.r;
+      const pn = apl ? e.n / apl : null, pr = apl ? e.r / apl : null;
       return [
-        {l: "Almoxarifados", v: nf0.format(new Set(rows.map(r => r.h)).size), s: `de ${HUBS0.length} na malha`, c: "var(--accent)"},
-        {l: "Cidades atendidas", v: nf0.format(new Set(rows.map(r => r.key)).size), s: `${nf0.format(rows.length)} vínculos almoxarifado → cidade`, c: "var(--h2)"},
-        {l: "Estados", v: nf0.format(ufs.length), s: ufs.join(" · ") || "–", c: "var(--h4)"},
-        {l: "Equip. novos", v: nf0.format(e.n), s: `aplicados · ${EQ.meta.periodo}`, c: "var(--accent)"},
-        {l: "Equip. reaproveitados", v: nf0.format(e.r), s: `${e.n + e.r ? pct.format(e.r / (e.n + e.r)) : "–"} do aplicado`, c: "var(--ok)"},
-        {l: "Equip. retirados", v: nf0.format(e.t), s: `de clientes · ${nf0.format(e.cid)} cidades com dados`, c: "var(--warn)"},
+        {t: "Cobertura", cls: "cov", items: [
+          {l: "Almoxarifados", v: nf0.format(new Set(rows.map(r => r.h)).size), s: `de ${HUBS0.length} na malha`, c: "var(--accent)", i: KPI_ICO.hub},
+          {l: "Cidades atendidas", v: nf0.format(new Set(rows.map(r => r.key)).size), s: `${nf0.format(rows.length)} vínculos almoxarifado → cidade`, c: "var(--h2)", i: KPI_ICO.city},
+        ]},
+        {t: `Equipamentos · ${EQ.meta.periodo}`, x: `${nf0.format(apl)} aplicados`, cls: "eq", items: [
+          {l: "Equip. novos", v: nf0.format(e.n), p: pn, s: `${pn != null ? pct.format(pn) : "–"} do aplicado`, c: "var(--accent)", i: KPI_ICO.novo},
+          {l: "Equip. reaproveitados", v: nf0.format(e.r), p: pr, s: `${pr != null ? pct.format(pr) : "–"} do aplicado`, c: "var(--ok)", i: KPI_ICO.reap},
+          {l: "Equip. retirados", v: nf0.format(e.t), s: `de clientes · ${nf0.format(e.cid)} cidades com dados`, c: "var(--warn)", i: KPI_ICO.ret},
+        ]},
       ];
     });
-    return {kpis};
+    return {groups};
   },
 };
 
