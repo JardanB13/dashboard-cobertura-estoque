@@ -354,6 +354,46 @@ tbody tr:hover{background:var(--accent-soft)}
   .kpi .bar + .s{display:block;font-size:11px}
 }
 .appbar h1 .mes{font-weight:500;color:var(--bar-ink-2);margin-left:.25em}
+/* ===== Destino dos retirados (conversão) ===== */
+.conv{gap:12px}
+.cv-grid{display:grid;grid-template-columns:minmax(260px,1fr) minmax(0,1.5fr) minmax(220px,1fr);gap:22px;align-items:start}
+.cv-big{display:flex;align-items:baseline;gap:10px}
+.cv-big b{font:700 32px/1 var(--f-mono);letter-spacing:-.03em}
+.cv-big span{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.cv-bar{display:flex;gap:2px;height:14px;margin:14px 0 12px;border-radius:99px;overflow:hidden;background:var(--surface-2)}
+.cv-bar i{display:block;min-width:3px;flex-basis:0}
+.cv-leg{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.cv-leg li{display:grid;grid-template-columns:10px 1fr auto 52px;gap:8px;align-items:center;font-size:13px}
+.cv-leg li i{width:10px;height:10px;border-radius:3px;background:var(--c)}
+.cv-leg small{color:var(--ink-3);font-size:11px;margin-left:6px}
+.cv-leg b{font-weight:600;text-align:right}
+.cv-leg em{font-style:normal;color:var(--ink-2);text-align:right;font-size:12px}
+.cv-note{margin:12px 0 0;font-size:12px;color:var(--ink-2);line-height:1.5}
+.cv-note b{color:var(--ink);font-family:var(--f-mono)}
+.cv-h{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px;display:flex;justify-content:space-between;gap:8px}
+.cv-h small{font-weight:500;letter-spacing:0;text-transform:none}
+.cv-tab{max-height:330px;overflow:auto;min-width:0}
+.cv-tab table{width:100%;border-collapse:collapse;font-size:12px}
+.cv-tab th{position:sticky;top:0;background:var(--surface);text-align:right;font-size:10px;font-weight:600;letter-spacing:.05em;color:var(--ink-3);padding:4px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+.cv-tab td{padding:5px 6px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+.cv-tab th:first-child,.cv-tab td:first-child{text-align:left}
+.cv-tab td small{color:var(--ink-3);font-size:10px}
+.cv-tab td.z{color:var(--ink-3)}
+.cv-tab th.w{text-align:left}
+.cv-tab td.w{text-align:left;display:flex;align-items:center;gap:8px}
+.cv-tab .pb{flex:1;min-width:50px;height:6px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.cv-tab .pb i{display:block;height:100%;background:var(--ok);border-radius:inherit}
+.cv-tab tbody tr{cursor:pointer}
+.cv-tab tbody tr.on{background:var(--accent-soft)}
+.cv-mod ol{margin:0;padding:0;list-style:none;display:grid;gap:7px;counter-reset:m}
+.cv-mod li{display:grid;grid-template-columns:18px minmax(0,1fr) auto auto;gap:6px;align-items:baseline;font-size:12px;counter-increment:m}
+.cv-mod li::before{content:counter(m);color:var(--ink-3);font:600 11px var(--f-mono)}
+.cv-mod li.none{display:block;color:var(--ink-3)}.cv-mod li.none::before{content:none}
+.cv-mod .t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cv-mod b{color:var(--crit);font-weight:600}
+.cv-mod em{font-style:normal;color:var(--ink-3);font-size:11px}
+@media (max-width:1200px){.cv-grid{grid-template-columns:1fr 1fr}.cv-tab{grid-column:1/-1;grid-row:2}}
+@media (max-width:700px){.cv-grid{grid-template-columns:1fr}.cv-tab{grid-row:auto}}
 </style>
 </head>
 <body>
@@ -364,6 +404,7 @@ tbody tr:hover{background:var(--accent-soft)}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.js"></script>
 <script src="cobertura.js"></script>
 <script src="equipamentos.js"></script>
+<script src="conversao.js"></script>
 <script src="ufs.js"></script>
 <script>
 "use strict";
@@ -525,6 +566,71 @@ const FilterBar = {
       store.f.hub && {k: "hub", t: HUB0.get(store.f.hub)?.nome}, store.f.uf && {k: "uf", t: `UF ${store.f.uf}`},
       store.f.band !== "" && {k: "band", t: BANDS[+store.f.band]?.k}, store.f.q && {k: "q", t: `“${store.f.q}”`}].filter(Boolean));
     return {f: store.f, sim: store.sim, hubsSorted, ufs: UFS, bands: BANDS, chips, onQ, set: actions.setFilter, reset: actions.reset, toggleSim: actions.toggleSim};
+  },
+};
+
+/* Conversão de materiais (SINAPSE): destino dos equipamentos retirados (RET-) */
+const CONV = window.DADOS_CONVERSAO || null;
+const CONV_DEF = {
+  REAP: {t: "Reaproveitado", c: "var(--ok)"}, SUC: {t: "Sucata", c: "var(--crit)"},
+  DET: {t: "DET", c: "var(--warn)"}, DEF: {t: "DEF", c: "var(--h2)"},
+};
+const ConvPanel = {
+  template: `<section class="card conv" aria-label="Destino dos equipamentos retirados">
+      <h3>Destino dos retirados · {{ mes }}
+        <span>conversões RET → {{ meta.de.slice(0, 5) }} a {{ meta.ate.slice(0, 5) }} · {{ escopo }}</span></h3>
+      <div class="cv-grid">
+        <div class="cv-sum">
+          <div class="cv-big"><b class="mono">{{ nf0.format(tot.n) }}</b><span>retirados convertidos</span></div>
+          <div class="cv-bar" role="img" :aria-label="aria">
+            <i v-for="d in tot.ds" :key="d.k" v-show="d.q" :style="{flexGrow: d.q, background: d.c}" :title="d.t + ': ' + nf0.format(d.q)"></i></div>
+          <ul class="cv-leg">
+            <li v-for="d in tot.ds" :key="d.k" :style="{'--c': d.c}">
+              <i></i><span class="t">{{ d.t }}<small v-if="d.t !== d.k"> {{ d.k }}</small></span>
+              <b class="mono">{{ nf0.format(d.q) }}</b><em class="mono">{{ tot.n ? pct.format(d.q / tot.n) : "–" }}</em></li>
+          </ul>
+          <p class="cv-note" v-if="tot.n">De cada 10 equipamentos retirados, <b>{{ nf1.format(tot.ds[0].q / tot.n * 10) }}</b> voltaram para o campo como REAP
+            e <b>{{ nf1.format((tot.n - tot.ds[0].q) / tot.n * 10) }}</b> saíram de circulação.</p>
+        </div>
+        <div class="cv-tab">
+          <div class="cv-h">Por almoxarifado <small>clique para filtrar</small></div>
+          <table><thead><tr><th>Almoxarifado</th><th>Conv.</th><th class="w">% reaproveitado</th>
+            <th v-for="d in rest" :key="d">{{ d }}</th></tr></thead>
+            <tbody><tr v-for="h in porHub" :key="h.id" :class="{on: h.id === f.hub}" @click="set('hub', h.id === f.hub ? '' : h.id)">
+              <td>{{ h.nome }} <small>{{ h.uf }}</small></td><td class="mono">{{ nf0.format(h.n) }}</td>
+              <td class="w"><span class="pb"><i :style="{width: (h.p * 100) + '%'}"></i></span><span class="mono">{{ pct.format(h.p) }}</span></td>
+              <td v-for="(q, j) in h.rest" :key="j" class="mono" :class="{z: !q}">{{ q ? nf0.format(q) : "–" }}</td></tr></tbody></table>
+        </div>
+        <div class="cv-mod">
+          <div class="cv-h">Modelos que mais saem de circulação <small>sucata + DET + DEF</small></div>
+          <ol><li v-for="m in modelos" :key="m.m"><span class="t" :title="m.m">{{ m.m }}</span>
+            <b class="mono">{{ nf0.format(m.x) }}</b><em class="mono">de {{ nf0.format(m.n) }}</em></li>
+            <li v-if="!modelos.length" class="none">Nenhum equipamento descartado.</li></ol>
+        </div>
+      </div>
+    </section>`,
+  setup() {
+    const D = CONV.meta.destinos, meta = CONV.meta;
+    const info = k => ({k, ...(CONV_DEF[k] || {t: k, c: "var(--ink-3)"})});
+    const hubIds = computed(() => store.f.hub ? [store.f.hub] : Object.keys(CONV.hubs));
+    const tot = computed(() => {
+      const v = D.map((_, i) => sum(hubIds.value.map(h => (CONV.hubs[h] || [])[i] || 0)));
+      return {n: sum(v), ds: D.map((k, i) => ({...info(k), q: v[i]}))};
+    });
+    const porHub = computed(() => Object.entries(CONV.hubs).map(([id, v]) => {
+      const h = HUB0.get(id) || {nome: id, uf: ""}, n = sum(v);
+      return {id, nome: h.nome, uf: h.uf, n, p: n ? v[0] / n : 0, rest: v.slice(1)};
+    }).sort((a, b) => b.n - a.n));
+    const modelos = computed(() => {
+      const ids = new Set(hubIds.value), m = new Map();
+      CONV.modelos.forEach(([nome, h, ...v]) => { if (!ids.has(h)) return;
+        const a = m.get(nome) || m.set(nome, {m: nome, n: 0, x: 0}).get(nome); a.n += sum(v); a.x += sum(v.slice(1)); });
+      return [...m.values()].filter(a => a.x).sort((a, b) => b.x - a.x || b.n - a.n).slice(0, 7);
+    });
+    const escopo = computed(() => store.f.hub ? (HUB0.get(store.f.hub)?.nome || "") : "todos os almoxarifados");
+    const aria = computed(() => tot.value.ds.map(d => `${d.t} ${d.q}`).join(", "));
+    const mes = MES_EXT[String(meta.periodo).slice(0, 3)] || meta.periodo;
+    return {meta, mes, tot, porHub, modelos, escopo, aria, rest: D.slice(1), f: store.f, set: actions.setFilter, nf0, nf1, pct};
   },
 };
 
@@ -1107,11 +1213,12 @@ const DataTabs = {
 
 /* --------------------------------- app -------------------------------- */
 createApp({
-  components: {AppBar, FilterBar, KpiStrip, SimBar, MapPanel, SidePanel, Intel, DataTabs},
+  components: {AppBar, FilterBar, KpiStrip, ConvPanel, SimBar, MapPanel, SidePanel, Intel, DataTabs},
   template: `<app-bar></app-bar>
     <main class="wrap">
       <filter-bar></filter-bar>
       <kpi-strip></kpi-strip>
+      <conv-panel v-if="hasConv"></conv-panel>
       <sim-bar></sim-bar>
       <section class="main"><map-panel></map-panel><side-panel></side-panel></section>
       <intel></intel>
@@ -1122,7 +1229,7 @@ createApp({
         Realocação sugerida quando outra sede fica ao menos 20 km e 15% mais perto por estrada.</p>
     </main>
     <div v-if="toast" class="toast" role="status">{{ toast }}</div>`,
-  setup: () => ({toast: computed(() => store.toast)}),
+  setup: () => ({toast: computed(() => store.toast), hasConv: !!CONV}),
 }).mount("#app");
 document.getElementById("boot").remove();
 </script>
