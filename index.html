@@ -353,6 +353,7 @@ tbody tr:hover{background:var(--accent-soft)}
   .kpi .v{padding-right:30px}
   .kpi .bar + .s{display:block;font-size:11px}
 }
+.appbar h1 .mes{font-weight:500;color:var(--bar-ink-2);margin-left:.25em}
 </style>
 </head>
 <body>
@@ -495,13 +496,13 @@ const stats = rows => ({
 const baseline = computed(() => stats(BASE_ROWS.map(r => ({...r, fxI: bandOf(r.min)}))));
 
 /* ------------------------------ components ---------------------------- */
+const MES_EXT = {jan: "Janeiro", fev: "Fevereiro", mar: "Março", abr: "Abril", mai: "Maio", jun: "Junho",
+  jul: "Julho", ago: "Agosto", set: "Setembro", out: "Outubro", nov: "Novembro", dez: "Dezembro"};
 const AppBar = {
   template: `<header class="appbar"><div class="in">
-      <div><div class="kick"><i></i>Logística · Almoxarifados</div><h1>Cobertura Estoque</h1></div>
-      <div class="meta"><div class="pills"><span><b>{{ nHubs }}</b>almoxarifados</span><span><b>{{ nCities }}</b>cidades</span><span><b>{{ nUfs }}</b>estados</span></div>
-        <div>Atualizado em <b>{{ gerado }}</b></div></div>
+      <h1>Cobertura Estoque <span class="mes">{{ mes }}</span></h1>
     </div></header>`,
-  setup: () => ({nHubs: HUBS0.length, nCities: nf0.format(new Set(BASE_ROWS.map(r => r.key)).size), nUfs: UFS.length, gerado: RAW.meta.geradoEm || "–"}),
+  setup: () => ({mes: MES_EXT[String(EQ.meta.periodo || "").slice(0, 3).toLowerCase()] || ""}),
 };
 
 const FilterBar = {
