@@ -565,13 +565,7 @@ const FilterBar = {
       <div class="field"><label for="fHub">Almoxarifado</label>
         <select id="fHub" :value="f.hub" @change="set('hub', $event.target.value)"><option value="">Todos</option>
           <option v-for="h in hubsSorted" :key="h.id" :value="h.id">{{ h.nome }} · {{ h.uf }}</option></select></div>
-      <div class="field"><label for="fQ">Buscar cidade</label>
-        <input id="fQ" type="search" placeholder="Ex.: Jacobina" autocomplete="off" :value="f.q" @input="onQ"></div>
       <div class="chips"><button v-for="c in chips" :key="c.k" class="chip" type="button" @click="set(c.k, '')" :title="'Remover filtro ' + c.t">{{ c.t }} <span>×</span></button></div>
-      <div class="grow"></div>
-      <button class="btn sim" :class="{on: sim.on}" type="button" @click="toggleSim" :aria-pressed="sim.on"
-        title="Arraste as sedes no mapa para ver o efeito nas distâncias">{{ sim.on ? "Sair da simulação" : "Simular sedes" }}</button>
-      <button class="btn" type="button" @click="reset">Limpar filtros</button>
     </section>`,
   setup() {
     const hubsSorted = [...HUBS0].sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
@@ -1166,7 +1160,7 @@ const DataTabs = {
               <template v-else>{{ c.f ? c.f(r[c.k]) : r[c.k] }}</template>
             </td></tr>
           <tr class="spacer" v-if="win.bottom"><td :colspan="def.cols.length" :style="{height: win.bottom + 'px'}"></td></tr>
-          <tr v-if="!rows.length"><td class="empty" :colspan="def.cols.length">Nenhum registro para os filtros atuais. Use “Limpar filtros” para ver toda a malha.</td></tr>
+          <tr v-if="!rows.length"><td class="empty" :colspan="def.cols.length">Nenhum registro para o almoxarifado selecionado. Escolha “Todos” para ver toda a malha.</td></tr>
         </tbody></table></div>
     </section>`,
   setup() {
