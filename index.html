@@ -408,6 +408,24 @@ tbody tr:hover{background:var(--accent-soft)}
 .dst-note b{color:var(--ink-2);font-weight:600}
 .dst-note .ic{flex:none;width:15px;height:15px;margin-top:1px;border-radius:50%;border:1px solid var(--line-2);display:grid;place-items:center;font:700 9px/1 var(--f-mono);color:var(--ink-3)}
 @media (max-width:640px){.dst-note{justify-self:stretch;text-align:left}}
+/* Status dos REAP convertidos */
+.st-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:20px 24px;display:grid;gap:14px}
+.st-h{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.st-h b{font:700 15px/1.2 var(--f-display)}
+.st-h span{display:block;margin-top:3px;font-size:12px;color:var(--ink-3)}
+.st-tot{text-align:right}.st-tot b{font:700 24px/1 var(--f-mono);letter-spacing:-.02em}
+.st-tot span{margin-top:2px}
+.st-bar{display:flex;gap:3px;height:14px;border-radius:99px;overflow:hidden;background:var(--surface-2)}
+.st-bar i{display:block;min-width:3px;flex-basis:0;transition:flex-grow .5s ease}
+.st-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.st-it{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:linear-gradient(160deg,color-mix(in srgb,var(--c) 9%,var(--surface)) 0%,var(--surface) 60%)}
+.st-top{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--ink-2)}
+.st-top i{width:10px;height:10px;border-radius:3px;background:var(--c)}
+.st-v{display:flex;align-items:baseline;gap:8px;margin-top:6px}
+.st-v b{font:700 26px/1 var(--f-mono);letter-spacing:-.02em}
+.st-v em{font:600 12px var(--f-mono);font-style:normal;color:var(--c)}
+.st-it p{margin:4px 0 0;font-size:11.5px;color:var(--ink-3);line-height:1.4}
+@media (max-width:640px){.st-card{padding:16px 18px}.st-grid{grid-template-columns:1fr}.st-tot{text-align:left}}
 </style>
 </head>
 <body>
@@ -598,7 +616,7 @@ const ConvPanel = {
             <div class="c"><b>{{ pct.format(p) }}</b><span>reaproveitado</span></div></div>
           <div class="k"><span class="tag">RET → REAP</span>
             <div class="n">{{ nf0.format(reap.q) }}</div>
-            <div class="t">equipamentos voltaram ao campo, de <b>{{ nf0.format(n) }}</b> retirados convertidos{{ escopo }}</div></div>
+            <div class="t">aprovados como REAP na triagem, de <b>{{ nf0.format(n) }}</b> retirados convertidos{{ escopo }}</div></div>
         </div>
         <div class="dst-flow">
           <div class="fl root" :style="{'--c': 'var(--ink-3)'}"><span class="nm">Retirados · RET</span>
@@ -613,6 +631,19 @@ const ConvPanel = {
             <div v-for="d in resto" :key="d.k" class="fl" :style="{'--c': d.c}"><span class="nm"><i></i>{{ d.t }}<code v-if="d.t !== d.k">{{ d.k }}</code></span>
               <span class="tr"><i :style="{width: w(d.q)}"></i></span><span class="q">{{ nf0.format(d.q) }}</span><span class="p">{{ pf(d.q) }}</span></div>
           </div>
+        </div>
+      </div>
+      <div v-if="st" class="st-card">
+        <div class="st-h"><div><b>Onde estão os REAP convertidos</b>
+          <span>status em {{ meta.ate.slice(0, 5) }} de cada série que voltou do cliente e virou REAP{{ escopo }}</span></div>
+          <div class="st-tot"><b class="mono">{{ nf0.format(st.n) }}</b><span>séries rastreadas</span></div></div>
+        <div class="st-bar" role="img" :aria-label="st.aria">
+          <i v-for="x in st.items" :key="x.k" v-show="x.q" :style="{flexGrow: x.q, background: x.c}" :title="x.t + ': ' + nf0.format(x.q)"></i></div>
+        <div class="st-grid">
+          <div v-for="x in st.items" :key="x.k" class="st-it" :style="{'--c': x.c}">
+            <div class="st-top"><i></i><span>{{ x.t }}</span></div>
+            <div class="st-v"><b class="mono">{{ nf0.format(x.q) }}</b><em class="mono">{{ st.n ? pct.format(x.q / st.n) : "–" }}</em></div>
+            <p>{{ x.d }}</p></div>
         </div>
       </div>
       <p class="dst-note"><span class="ic" aria-hidden="true">i</span><span>Os cards de cima mostram o <b>campo</b> (instalado e retirado no cliente) e este painel mostra o <b>almoxarifado</b> (triagem do que voltou, feita dias depois), por isso os totais de retirados não batem exatamente.</span></p>
@@ -633,7 +664,18 @@ const ConvPanel = {
     const pf = q => (n.value ? pct.format(q / n.value) : "–");
     const escopo = computed(() => store.f.hub ? ` em ${HUB0.get(store.f.hub)?.nome || ""}` : "");
     const periodo = MES_EXT[String(CONV.meta.periodo).slice(0, 3)] || CONV.meta.periodo;
-    return {open, C, n: n, reap, resto, outros, p, w, pf, escopo, periodo, chev: CHEV, nf0, pct};
+    const ST_DEF = {
+      instalado: {t: "Instalado no cliente", c: "var(--ok)", d: "voltou ao campo e já está em um cliente"},
+      tecnico: {t: "Com o técnico", c: "var(--warn)", d: "entregue ao técnico, ainda não instalado"},
+      almox: {t: "No almoxarifado", c: "var(--accent)", d: "convertido e parado no estoque"},
+    };
+    const st = computed(() => {
+      if (!CONV.status) return null;
+      const ids = store.f.hub ? [store.f.hub] : Object.keys(CONV.status), K = CONV.meta.status || ["instalado", "tecnico", "almox"];
+      const items = K.map((k, i) => ({k, ...ST_DEF[k], q: sum(ids.map(h => (CONV.status[h] || [])[i] || 0))}));
+      return {items, n: sum(items.map(x => x.q)), aria: items.map(x => `${x.t} ${x.q}`).join(", ")};
+    });
+    return {open, C, n: n, reap, resto, outros, p, w, pf, escopo, periodo, chev: CHEV, nf0, pct, st, meta: CONV.meta};
   },
 };
 const KPI_ICO = {
