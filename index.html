@@ -771,6 +771,62 @@ body{background:var(--bg)}
 .t2-crow .q{font:600 13px var(--f-mono);text-align:right;color:var(--ink)}.t2-crow .p{font:500 11.5px var(--f-mono);text-align:right;color:var(--ink-3)}
 @media (max-width:900px){.tri2.com-cat .t2-top{grid-template-columns:1fr}.t2-cat{border-left:0;border-top:1px solid var(--line)}}
 .t2-tot{margin-top:4px;padding-top:9px;border-top:1px solid var(--line-2)}.t2-tot .nm,.t2-tot .q{font-weight:700;color:var(--ink)}
+
+/* ===== Sistema visual v8: arquitetura técnica ===== */
+.appbar,.filters{background-color:var(--band);background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:32px 32px}
+.filters{box-shadow:0 0 0 100vmax var(--band)}
+.appbar h1{letter-spacing:-.025em}
+/* títulos de seção numerados com régua */
+.tri-rh.sec-h b{display:flex;align-items:center;gap:12px;width:100%;font:700 16px/1.2 var(--f-display)}
+.tri-rh.sec-h b::before{display:none}
+.tri-rh.sec-h b i{font:600 11px/1 var(--f-mono);font-style:normal;letter-spacing:.06em;color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,#fff);border:1px solid color-mix(in srgb,var(--accent) 22%,#fff);padding:5px 7px;border-radius:6px}
+.tri-rh.sec-h b::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line-2),transparent);margin-left:6px}
+.tri-rh.sec-h.sec-top b i{color:#cfe0f5;background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18)}
+.tri-rh.sec-h.sec-top b::after{background:linear-gradient(90deg,rgba(255,255,255,.22),transparent)}
+.tri-rh.sec-h{margin:14px 0 -6px}
+/* indicadores: rótulos técnicos */
+.kpi .l{font:600 11.5px/1.3 var(--f-body);letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3)}
+.kpi.big .l{font-size:12px;color:var(--ink-2)}
+.kpi .v{font-variant-numeric:tabular-nums}
+.kg.eq .kg-c{border:1px solid var(--line)}
+.kg.eq .kpi.big{background:linear-gradient(150deg,#f3f7fd 0%,#fff 70%),repeating-linear-gradient(0deg,transparent 0 23px,rgba(22,54,95,.035) 23px 24px)}
+/* cartões com cabeçalho interno */
+.duo{display:grid;grid-template-columns:repeat(auto-fit,minmax(440px,1fr));gap:18px;align-items:start}
+.duo > .dst{display:block}
+.card2{position:relative;overflow:visible;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);box-shadow:var(--shadow)}
+.c2-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px 14px;border-bottom:1px solid var(--line)}
+.c2-t{display:grid;gap:3px;min-width:0}
+.c2-k{font:600 10.5px/1 var(--f-mono);letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
+.c2-t b{font:700 15px/1.2 var(--f-display);color:var(--ink)}
+.c2-h .tri-dd summary{height:34px;font-size:12px}
+.c2-h .tri-pop{left:auto;right:0}
+/* categoria: número principal + 3 colunas */
+.cats1 .cat1{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:0}
+.cats1 .cat1-k{padding:18px 20px}
+.cats1 .cat1-k.cat1-main{grid-column:1/-1;border-bottom:1px solid var(--line);padding:22px 20px 20px}
+.cats1 .cat1-k + .cat1-k{border-left:0}
+.cats1 .cat1-k:not(.cat1-main) + .cat1-k{border-left:1px solid var(--line)}
+.cats1 .cat1-k .cat-v{font-size:26px}.cats1 .cat1-k.cat1-main .cat-v{font-size:38px}
+.cats1 .cat1-k .cat-v.sm{font-size:22px}
+.cats1 .cat-s{letter-spacing:.02em}
+/* triagem dentro do cartão */
+.tri2.card2 .t2-k{padding:22px 20px}
+.tri2.card2 .t2-k .t2-v{font-size:28px}.tri2.card2 .t2-k.t2-main .t2-v{font-size:32px}
+.tri2.card2.com-cat .t2-top{grid-template-columns:1fr}
+.tri2.card2 .t2-cat{border-left:0;border-top:1px solid var(--line)}
+.tri2.card2 .t2-det{grid-template-columns:1fr;border-radius:0 0 var(--r) var(--r)}
+.tri2.card2 .t2-cat:last-child{border-radius:0 0 var(--r) var(--r)}
+.t2-l{letter-spacing:.01em}
+/* mapa e lista */
+.mapcard,.side{border:1px solid var(--line)}
+.side header{border-bottom:1px solid var(--line)}
+@media (max-width:980px){.duo{grid-template-columns:1fr}}
+@media (max-width:640px){.cats1 .cat1{grid-template-columns:1fr 1fr 1fr}.cats1 .cat1-k{padding:14px}.cats1 .cat1-k .cat-v.sm{font-size:18px}
+  .c2-h{flex-wrap:wrap}.c2-h .tri-pop{right:auto;left:0}.tri-rh.sec-h b{font-size:15px}}
+.card2.cats1{display:block}
+.card2{display:flex;flex-direction:column}
+.tri2.card2 .t2-top,.tri2.card2.com-cat .t2-top{flex:1;display:flex;flex-direction:column}
+.tri2.card2 .t2-kpis{flex:1}
 </style>
 </head>
 <body>
@@ -982,7 +1038,8 @@ const RET_DEF = {
 const ConvPanel = {
   template: `<section class="dst" aria-label="Triagem dos retirados por região">
       <div v-for="g in blocos" :key="g.reg" class="tri-reg">
-        <div class="tri-rh">
+        <div class="tri tri2 card2" :class="{'com-cat': verCat}">
+          <header class="c2-h"><div class="c2-t"><span class="c2-k">Almoxarifado · {{ periodo }}</span><b>Triagem dos retirados</b></div>
           <details class="tri-dd" :open="aberto === g.reg" @toggle="onToggle(g.reg, $event)">
             <summary><span class="dot"></span>Reaproveitado<em v-if="nSel(g.reg)">+{{ nSel(g.reg) }} status</em><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
             <div class="tri-pop" role="group" aria-label="Status exibidos">
@@ -991,8 +1048,7 @@ const ConvPanel = {
               <label v-for="o in gr.itens" :key="o.k"><input type="checkbox" :checked="tem(g.reg, o.k)" @change="alterna(g.reg, o.k)"><i :style="{'--c': o.c}"></i>{{ o.t }}<code v-if="o.cod">{{ o.cod }}</code></label></template>
               <div class="tri-pop-a"><button type="button" @click="todos(g.reg, true)">Marcar todos</button><button type="button" @click="todos(g.reg, false)">Limpar</button></div>
             </div>
-          </details></div>
-        <div class="tri tri2" :class="{'com-cat': verCat}">
+          </details></header>
           <div class="t2-top"><div class="t2-kpis">
             <div v-for="t in resumo(g)" :key="t.k" class="t2-k" :class="t.cls">
               <div class="t2-v">{{ t.v }}</div>
@@ -1093,15 +1149,16 @@ const KPI_ICO = {
 const CAT_T = {"ONT WIFI 6": "ONT Wi-Fi 6", "ONT 5G": "ONT 5G", "ONU": "ONU", "ROTEADOR WIFI 6": "Roteador Wi-Fi 6", "ROTEADOR 5G": "Roteador 5G",
   "ROTEADOR 5G MESH": "Roteador 5G Mesh", "RADIO": "Rádio", "OUTROS": "Outros"};
 const CatPanel = {
-  template: `<section class="cats1" aria-label="Equipamentos por categoria">
+  template: `<section class="tri card2 cats1" aria-label="Equipamentos por categoria">
+      <header class="c2-h"><div class="c2-t"><span class="c2-k">Categoria tecnológica</span><b>Aplicados e retirados</b></div>
       <details class="tri-dd cat-dd" :open="aberto" @toggle="aberto = $event.target.open">
         <summary><span class="dot" style="background:var(--navy)"></span>{{ atual ? atual.l : "Categoria" }}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
         <div class="tri-pop" role="listbox" aria-label="Categoria">
           <button v-for="c in cats" :key="c.k" type="button" role="option" class="cat-opt" :class="{on: atual && c.k === atual.k}" :aria-selected="atual && c.k === atual.k" @click="escolher(c.k)">
             <span>{{ c.l }}</span><b>{{ nf0.format(c.ap) }}</b></button>
         </div>
-      </details>
-      <div v-if="atual" class="tri cat1">
+      </details></header>
+      <div v-if="atual" class="cat1">
         <div class="cat1-k cat1-main"><div class="cat-v">{{ nf0.format(atual.ap) }}</div><div class="cat-s">Aplicados em cliente</div>
           <div class="cat-bar"><i :style="{flexGrow: atual.n, background: 'var(--c-novo)'}"></i><i :style="{flexGrow: atual.r, background: 'var(--c-reap)'}"></i></div></div>
         <div class="cat1-k"><div class="cat-v sm" style="color:var(--c-novo)">{{ nf0.format(atual.n) }}</div><div class="cat-s">Novos · {{ atual.ap ? pct.format(atual.n / atual.ap) : "–" }}</div></div>
@@ -1724,12 +1781,11 @@ createApp({
   template: `<app-bar></app-bar>
     <main class="wrap">
       <filter-bar></filter-bar>
-      <div class="tri-rh sec-h sec-top"><b>Equipamentos em campo</b></div>
+      <div class="tri-rh sec-h sec-top"><b><i>01</i>Equipamentos em campo</b></div>
       <kpi-strip class="over"></kpi-strip>
-      <template v-if="hasCat"><div class="tri-rh sec-h"><b>Equipamentos por categoria</b></div>
-      <cat-panel></cat-panel></template>
-      <conv-panel v-if="hasConv && showConv"></conv-panel>
-      <div class="tri-rh sec-h"><b>Cobertura por Cidades</b></div>
+      <div class="tri-rh sec-h"><b><i>02</i>Categoria e triagem</b></div>
+      <div class="duo"><cat-panel v-if="hasCat"></cat-panel><conv-panel v-if="hasConv && showConv"></conv-panel></div>
+      <div class="tri-rh sec-h"><b><i>03</i>Cobertura por Cidades</b></div>
       <sim-bar></sim-bar>
       <section class="main"><map-panel></map-panel><side-panel></side-panel></section>
       <intel></intel>
