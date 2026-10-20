@@ -728,6 +728,21 @@ body{background:var(--bg)}
 .t2-row .q{font:600 14px var(--f-mono);text-align:right}.t2-row .p{font:500 12px var(--f-mono);text-align:right;color:var(--ink-3)}
 @media (max-width:760px){.t2-kpis{grid-template-columns:1fr}.t2-k + .t2-k{border-left:0;border-top:1px solid var(--line)}.t2-k{padding:18px}
   .t2-det{padding:14px 18px}.t2-row{grid-template-columns:minmax(0,1fr) 56px 46px}.t2-row .tr{display:none}}
+/* Categorias */
+.cats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+@media (max-width:1100px){.cats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.cat-t{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);padding:20px 22px;display:flex;flex-direction:column;min-width:0}
+.cat-n{font:700 13.5px/1.2 var(--f-display);color:var(--ink);letter-spacing:-.005em}
+.cat-v{margin-top:14px;font:600 28px/1 var(--f-mono);letter-spacing:-.03em;color:var(--navy)}
+.cat-s{margin-top:6px;font-size:12px;color:var(--ink-3)}
+.cat-bar{display:flex;gap:3px;height:6px;margin-top:14px;border-radius:99px;overflow:hidden;background:#edf0f5}
+.cat-bar i{display:block;min-width:0;border-radius:99px}
+.cat-d{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:10px;font-size:12px;color:var(--ink-2)}
+.cat-d span{display:inline-flex;align-items:center;gap:6px}.cat-d b{font:600 12px var(--f-mono);color:var(--ink)}
+.cat-d em{width:8px;height:8px;border-radius:50%;background:var(--lc)}
+.cat-ret{margin-top:auto;padding-top:12px;border-top:1px dashed var(--line);margin-block-start:12px;font-size:12px;color:var(--ink-3)}
+.cat-ret b{font:600 13px var(--f-mono);color:var(--ink-2);margin-left:4px}
+@media (max-width:640px){.cats{grid-template-columns:1fr 1fr;gap:10px}.cat-t{padding:16px}.cat-v{font-size:22px}}
 </style>
 </head>
 <body>
@@ -789,7 +804,8 @@ const eqOf = r => EQ.c[`${fold(r.c).trim()}|${r.uf}`] || null;
 const eqSum = rows => { const s = {n: 0, r: 0, t: 0, os: 0, nat: {}, cid: 0}, seen = new Set();
   rows.forEach(x => { if (seen.has(x.key)) return; seen.add(x.key); const e = eqOf(x); if (!e) return; s.cid++;
     s.n += e.n; s.r += e.r; s.t += e.t; s.os += e.os;
-    Object.entries(e.nat).forEach(([k, v]) => { const a = s.nat[k] || (s.nat[k] = [0, 0, 0]); v.forEach((q, j) => { a[j] += q; }); }); });
+    Object.entries(e.nat).forEach(([k, v]) => { const a = s.nat[k] || (s.nat[k] = [0, 0, 0]); v.forEach((q, j) => { a[j] += q; }); });
+    Object.entries(e.cat || {}).forEach(([k, v]) => { const a = (s.cat || (s.cat = {}))[k] || (s.cat[k] = [0, 0, 0]); v.forEach((q, j) => { a[j] += q; }); }); });
   return s; };
 const eqHtml = (s, full = false) => {
   const ap = s.n + s.r, rp = ap ? pct.format(s.r / ap) : "–";
@@ -1029,6 +1045,38 @@ const KPI_ICO = {
   total: '<path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/>',
   test: '<path d="M9 11l3 3 7-7"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/>',
 };
+/* Equipamentos por categoria tecnológica (mesmos filtros dos indicadores) */
+const CAT_T = {"ONT WIFI 6": "ONT Wi-Fi 6", "ONT 5G": "ONT 5G", "ONU": "ONU", "ROTEADOR WIFI 6": "Roteador Wi-Fi 6", "ROTEADOR 5G": "Roteador 5G",
+  "ROTEADOR 5G MESH": "Roteador 5G Mesh", "RADIO": "Rádio", "OUTROS": "Outros"};
+const CatPanel = {
+  template: `<section class="cats" aria-label="Equipamentos por categoria">
+      <div v-for="c in cats" :key="c.k" class="cat-t" :class="{dimc: !c.ap && !c.t}">
+        <div class="cat-n">{{ c.l }}</div>
+        <div class="cat-v">{{ nf0.format(c.ap) }}</div>
+        <div class="cat-s">aplicados em cliente</div>
+        <div class="cat-bar" role="img" :aria-label="'Novos ' + c.n + ', reaproveitados ' + c.r">
+          <i :style="{flexGrow: c.n, background: 'var(--c-novo)'}"></i><i :style="{flexGrow: c.r, background: 'var(--c-reap)'}"></i></div>
+        <div class="cat-d"><span><em style="--lc:var(--c-novo)"></em>Novos <b>{{ nf0.format(c.n) }}</b></span><span><em style="--lc:var(--c-reap)"></em>Reaprov. <b>{{ nf0.format(c.r) }}</b></span></div>
+        <div class="cat-ret">Retirados <b>{{ nf0.format(c.t) }}</b></div>
+      </div>
+    </section>`,
+  setup() {
+    const cats = computed(() => {
+      const s = eqSum(sel.rows.value), cat = {};
+      Object.entries(s.cat || {}).forEach(([k, v]) => { cat[k] = [...v]; });
+      const semFiltro = !store.f.hub && !store.f.uf && store.f.band === "" && !store.f.q;
+      if (semFiltro) {
+        const fc = EQ.meta.foraCat || {}, regs = store.f.reg ? [store.f.reg] : ["ne", "ss"];
+        regs.forEach(g => Object.entries(fc[g] || {}).forEach(([k, v]) => { const a = cat[k] || (cat[k] = [0, 0, 0]); v.forEach((q, j) => { a[j] += q; }); }));
+      }
+      return (EQ.meta.categorias || Object.keys(cat)).map(k => { const v = cat[k] || [0, 0, 0];
+        return {k, l: CAT_T[k] || k, n: v[0], r: v[1], t: v[2], ap: v[0] + v[1]}; })
+        .filter(c => c.ap || c.t).sort((a, b) => (a.k === "OUTROS") - (b.k === "OUTROS") || (b.ap - a.ap) || (b.t - a.t));
+    });
+    return {cats, nf0};
+  },
+};
+
 const KpiStrip = {
   template: `<section class="kpis" aria-live="polite">
       <div v-for="g in groups" :key="g.t" class="kg" :class="g.cls">
@@ -1617,12 +1665,14 @@ const DataTabs = {
 
 /* --------------------------------- app -------------------------------- */
 createApp({
-  components: {AppBar, FilterBar, KpiStrip, ConvPanel, SimBar, MapPanel, SidePanel, Intel, DataTabs},
+  components: {AppBar, FilterBar, KpiStrip, CatPanel, ConvPanel, SimBar, MapPanel, SidePanel, Intel, DataTabs},
   template: `<app-bar></app-bar>
     <main class="wrap">
       <filter-bar></filter-bar>
       <div class="tri-rh sec-h sec-top"><b>Equipamentos em campo</b></div>
       <kpi-strip class="over"></kpi-strip>
+      <template v-if="hasCat"><div class="tri-rh sec-h"><b>Equipamentos por categoria</b></div>
+      <cat-panel></cat-panel></template>
       <conv-panel v-if="hasConv && showConv"></conv-panel>
       <div class="tri-rh sec-h"><b>Cobertura por Cidades</b></div>
       <sim-bar></sim-bar>
@@ -1630,7 +1680,7 @@ createApp({
       <intel></intel>
     </main>
     <div v-if="toast" class="toast" role="status">{{ toast }}</div>`,
-  setup: () => ({toast: computed(() => store.toast), regiaoTxt: computed(() => (store.f.hub ? HUB0.get(store.f.hub)?.nome : REG_T[store.f.reg] || "Todas as regiões")), hasConv: !!CONV, showConv: computed(() => !store.metric || ["ret", "test"].includes(store.metric))}),
+  setup: () => ({toast: computed(() => store.toast), regiaoTxt: computed(() => (store.f.hub ? HUB0.get(store.f.hub)?.nome : REG_T[store.f.reg] || "Todas as regiões")), hasConv: !!CONV, hasCat: !!(EQ.meta.categorias || []).length, showConv: computed(() => !store.metric || ["ret", "test"].includes(store.metric))}),
 }).mount("#app");
 document.getElementById("boot").remove();
 </script>

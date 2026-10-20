@@ -3,7 +3,7 @@ Atualiza equipamentos.js a partir de um ou mais relatórios SINAPSE
 (Relatório de Materiais Aplicados/Retirados), do mesmo mês.
 
 Uso:
-    python atualizar_equipamentos.py planilha1.xlsx [planilha2.xlsx ...]
+    python atualizar_equipamentos.py planilha1.xlsx [planilha2.xlsx ...] [--categorias CATEGORIA_TECNOLOGICA.xlsx]
 
 Exemplo (Nordeste + Sul/Sudeste):
     python atualizar_equipamentos.py aplicados_nordeste.xlsx aplicados_sul.xlsx
@@ -18,6 +18,9 @@ Regras:
       2. senão, pelo contrato: final 1 = PB, 2 = RN, 3 = PE, 4 = BA (operação Nordeste).
   - O cabeçalho da planilha é localizado automaticamente (linha que começa com "Contrato").
   - Só entram dados agregados por cidade (nenhum dado de cliente vai para o site).
+  - Categoria tecnológica (opcional, --categorias): pelo nome do aparelho na planilha de referência
+    (coluna "Equipamentos" -> "Categoria Tecnologia"); modelos que não estão nela são classificados
+    por palavras-chave do nome (ver categoria_por_nome).
 """
 import json, re, sys, unicodedata
 from pathlib import Path
@@ -33,6 +36,34 @@ UF_PROJETO = {"santa rita": "MG"}  # projeto sem almoxarifado no mapa: UF de ref
 fold = lambda x: unicodedata.normalize("NFD", str(x)).encode("ascii", "ignore").decode().lower().strip()
 chave = lambda x: re.sub(r"[^a-z0-9]+", " ", fold(x)).strip()
 
+PREFIXO = r"^((REAP|RET|REA|DEF|DET|SUC|PO)\s*-\s*)+"
+base_nome = lambda x: re.sub(PREFIXO, "", re.sub(r"\s+", " ", str(x).strip().upper())).strip()
+
+def ler_categorias(xlsx):
+    ref = pd.read_excel(xlsx, dtype=str)
+    ref.columns = ["cod", "nome", "cat"][:len(ref.columns)]
+    return {base_nome(n): str(c).strip().upper() for n, c in zip(ref["nome"], ref["cat"]) if str(c).strip() not in ("", "nan")}
+
+WIFI6 = r"WIFI ?6|WI-FI ?6|\bW6\b|\bAX ?\d{3,4}|AX3000|AX1800|X6\b|X6-|F6600|G1426|G-2426|VANTIVA|HG6145F|HG6145 - AX|XC220|EX 141"
+AC = r"\bAC\b|\bAC ?\d{3,4}|AC\d{3,4}|1200|DUAL BAND|8145|8245|HS8546|G ?-? ?140 ?W|G-240W-G|G-?1425|G-0425|F67\d|HG6245|HG6143|HG6145D|121 ?AC|GW24|V2801SGA|DM985-424|DM986-416|WS5200"
+PON = r"\bONU\b|\bONT\b|ONU-|GPON|XPON|EPON|ECHOLIFE|FIBERHOME|NOKIA|HG[68]\d|EG8\d|HS85|AN5506|G-140|G-240|G-1425|G-0425|VANTIVA|XZ000|F6\d\d"
+RADIO = r"^RADIO|^ANTENA|\bLHG\b|LITEBEAM|\bSXT\b|AIRGRID|POWER ?BEAM|NANO ?STATION|WOM AC|5GHZ.*DBI"
+
+def categoria_por_nome(nome, ref):
+    b = base_nome(nome)
+    if b in ref: return ref[b]
+    if re.search(RADIO, b) and not re.search(r"\bONU\b", b): return "RADIO"
+    if re.search(PON, b):
+        if re.search(WIFI6, b): return "ONT WIFI 6"
+        if re.search(AC, b): return "ONT 5G"
+        return "ONU"
+    if re.search(r"ROTEADOR|^ROT |WS7\d|WS5\d|DIR-|ARCHER|MERCUSYS|GREATEK|AC12G|MW301|EX 141", b):
+        if re.search(r"WS7\d", b): return "ROTEADOR 5G"        # mesma regra da planilha de referência (WS7001)
+        if re.search(r"MESH", b): return "ROTEADOR WIFI 6" if re.search(WIFI6, b) else "ROTEADOR 5G MESH"
+        if re.search(WIFI6, b): return "ROTEADOR WIFI 6"
+        if re.search(AC + r"|\bC[2-8]0?\b|H19\dA|ZT199|EMG3524|HUAWEI$", b): return "ROTEADOR 5G"
+    return "OUTROS"
+
 def carregar_js(nome):
     txt = (RAIZ / nome).read_text(encoding="utf-8")
     return json.loads(txt[txt.index("=") + 1:].strip().rstrip(";"))
@@ -45,7 +76,8 @@ def ler(xlsx):
     df.columns = [str(c).strip() for c in df.columns]
     return df, periodo_txt
 
-def main(arquivos):
+def main(arquivos, cat_xlsx=None):
+    ref_cat = ler_categorias(cat_xlsx) if cat_xlsx else None
     cob = carregar_js("cobertura.js")
     hubs = {chave(h["nome"]): h for h in cob["hubs"]}
     cid_hub = {}                                   # (hub_id, cidade) -> UF
@@ -89,6 +121,8 @@ def main(arquivos):
     eq = df[~df["N° Serie"].astype(str).str.strip().isin(["-", "", "nan"])].copy()
     eq["T"] = eq["Material"].astype(str).str.extract(r"^(REAP|RET)-")[0].fillna("NOVO")
     eq["q"] = eq["Qtde. Aplic."].where(eq["T"] != "RET", eq["Qtde. Remov."])
+    if ref_cat is not None:
+        eq["Cat"] = eq["Material"].map(lambda m: categoria_por_nome(m, ref_cat))
 
     cid = {k: {"n": 0, "r": 0, "t": 0, "os": int(g["OS"].nunique()), "nat": {}} for k, g in df.groupby("k")}
     idx = {"NOVO": 0, "REAP": 1, "RET": 2}
@@ -96,6 +130,9 @@ def main(arquivos):
         c = cid[k]; i = idx[t]
         c["nrt"[i]] += int(q)
         c["nat"].setdefault(nat, [0, 0, 0])[i] += int(q)
+    if ref_cat is not None:
+        for (k, ct, t), q in eq.groupby(["k", "Cat", "T"])["q"].sum().items():
+            cid[k].setdefault("cat", {}).setdefault(ct, [0, 0, 0])[idx[t]] += int(q)
 
     mapa = {f"{fold(r['c'])}|{r['uf']}" for r in cob["rows"]}
     no_mapa = {k: v for k, v in cid.items() if k in mapa}
@@ -103,6 +140,12 @@ def main(arquivos):
     reg = lambda k: "ss" if k.split("|")[-1] in ("SP", "PR", "MG") else "ne"
     soma = lambda vs: {"cid": len(vs), "n": sum(v["n"] for v in vs), "r": sum(v["r"] for v in vs), "t": sum(v["t"] for v in vs)}
     fora_reg = {g: soma([v for k, v in cid.items() if k not in mapa and (v["n"] or v["r"] or v["t"]) and reg(k) == g]) for g in ("ne", "ss")}
+    def soma_cat(vs):
+        out = {}
+        for v in vs:
+            for ct, a in v.get("cat", {}).items():
+                o = out.setdefault(ct, [0, 0, 0]); o[0] += a[0]; o[1] += a[1]; o[2] += a[2]
+        return out
     tot = lambda tipo: int(eq.loc[eq["T"] == tipo, "q"].sum())
     saida = {
         "meta": {
@@ -111,6 +154,8 @@ def main(arquivos):
             "tot": {"n": tot("NOVO"), "r": tot("REAP"), "t": tot("RET")},
             "fora": {"cid": len(fora), "n": sum(v["n"] for v in fora), "r": sum(v["r"] for v in fora), "t": sum(v["t"] for v in fora)},
             "foraReg": fora_reg,
+            **({"foraCat": {g: soma_cat([v for k, v in cid.items() if k not in mapa and reg(k) == g]) for g in ("ne", "ss")},
+                "categorias": sorted(eq["Cat"].unique().tolist(), key=lambda c: (c == "OUTROS", c))} if ref_cat is not None else {}),
         },
         "c": no_mapa,
     }
@@ -120,9 +165,18 @@ def main(arquivos):
     m = saida["meta"]
     print(f"OK · {periodo}: {m['tot']['n']} novos, {m['tot']['r']} reaproveitados, {m['tot']['t']} retirados")
     print(f"   {len(no_mapa)} cidades no mapa · {m['fora']['cid']} cidades sem vínculo com almoxarifado (fora do mapa)")
+    if ref_cat is not None:
+        print("   por categoria (novos, reaprov., retirados):")
+        tab = eq.groupby(["Cat", "T"])["q"].sum().unstack(fill_value=0)
+        for ct, r in tab.iterrows(): print(f"     {ct:<18} {int(r.get('NOVO', 0)):>6} {int(r.get('REAP', 0)):>6} {int(r.get('RET', 0)):>6}")
+        outros = eq.loc[eq["Cat"] == "OUTROS", "Material"].map(base_nome).value_counts()
+        if len(outros): print("   OUTROS (sem categoria):", ", ".join(f"{n} ({q})" for n, q in outros.items()))
     print(f"   gravado em {destino.name}")
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        sys.exit("Uso: python atualizar_equipamentos.py planilha1.xlsx [planilha2.xlsx ...]")
-    main(sys.argv[1:])
+    args, cat = sys.argv[1:], None
+    if "--categorias" in args:
+        i = args.index("--categorias"); cat = args[i + 1]; args = args[:i] + args[i + 2:]
+    if not args:
+        sys.exit("Uso: python atualizar_equipamentos.py planilha1.xlsx [planilha2.xlsx ...] [--categorias CATEGORIAS.xlsx]")
+    main(args, cat)

@@ -20,7 +20,7 @@ atualizar_conversao.py
 
 ```bash
 pip install -r requirements.txt
-python atualizar_equipamentos.py "C:\caminho\Aplicados_Nordeste.xlsx" "C:\caminho\Aplicados_Sul_Sudeste.xlsx"
+python atualizar_equipamentos.py "C:\caminho\Aplicados_Nordeste.xlsx" "C:\caminho\Aplicados_Sul_Sudeste.xlsx" --categorias "C:\caminho\CATEGORIA_TECNOLOGICA_DOS_EQUIPAMENTOS.xlsx"
 python atualizar_conversao.py "C:\caminho\Movimentacao_Nordeste.xlsx" "C:\caminho\Aplicados_Nordeste.xlsx" "C:\caminho\Movimentacao_Sul.xlsx" "C:\caminho\Aplicados_Sul_Sudeste.xlsx"
 ```
 
@@ -31,6 +31,7 @@ Depois suba `equipamentos.js` e `conversao.js` (Add file → Upload files → Co
 ## Regras de cálculo
 
 - Só projetos de operação (Projeto começando com `OP-`) e só itens com N° de Série (equipamentos); materiais de consumo ficam fora.
+- Categoria tecnológica (card "Equipamentos por categoria"): pelo nome do aparelho na planilha de categorias; modelos que não estão nela são classificados pelo nome (Wi-Fi 6/AX, AC/dual band, bridge, rádio). O script lista no final o que ficou em "Outros".
 - Região: almoxarifados de SP, PR e MG = Sul/Sudeste; os demais = Norte/Nordeste.
 - `REAP-` = reaproveitado · `RET-` = retirado do cliente · sem prefixo = novo.
 - Estado da cidade pelo almoxarifado da coluna Projeto (ex.: OP-OSASCO → Osasco/SP); sem almoxarifado, pelo contrato (final 1 = PB, 2 = RN, 3 = PE, 4 = BA).
