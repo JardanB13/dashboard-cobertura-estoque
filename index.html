@@ -524,6 +524,7 @@ body{background:var(--bg)}
 .seg button.on,.seg .on{background:var(--accent);border-color:var(--accent)}
 .chip{background:var(--accent-soft);color:var(--accent-ink)}
 @media (max-width:640px){.kg-h{flex-direction:column;gap:2px}}
+.tri-row .nm,.tri-row.main .nm{font-weight:700;color:var(--ink)}
 </style>
 </head>
 <body>
@@ -671,8 +672,7 @@ const MES_EXT = {jan: "Janeiro", fev: "Fevereiro", mar: "Março", abr: "Abril", 
   jul: "Julho", ago: "Agosto", set: "Setembro", out: "Outubro", nov: "Novembro", dez: "Dezembro"};
 const AppBar = {
   template: `<header class="appbar"><div class="in">
-      <div><h1>Controle de Equipamentos Aplicados <span class="mes">{{ mes }}</span></h1>
-      <p class="hsub">{{ nHubs }} almoxarifados · {{ nCid }} cidades atendidas · fonte SINAPSE</p></div>
+      <div><h1>Controle de Equipamentos Aplicados <span class="mes">{{ mes }}</span></h1></div>
     </div></header>`,
   setup: () => ({mes: String(EQ.meta.periodo || "").slice(0, 3).toUpperCase(), nHubs: HUBS0.length, nCid: nf0.format(new Set(BASE_ROWS.map(r => r.key)).size)}),
 };
@@ -703,7 +703,7 @@ const CONV_DEF = {
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>';
 const ConvPanel = {
   template: `<section class="dst" aria-label="Triagem dos retirados">
-      <div class="kg-h"><span>2 · Triagem: destino dos retirados</span><em>conversões no almoxarifado · {{ periodo }}</em></div>
+      <div class="kg-h"><span>Triagem: destino dos retirados</span><em>conversões no almoxarifado · {{ periodo }}</em></div>
       <div class="tri">
         <div class="tri-col">
           <div class="tri-h"><b>Resultado da triagem</b><span>{{ nf0.format(n) }} equipamentos testados{{ escopo }}</span></div>
@@ -787,7 +787,7 @@ const KpiStrip = {
       if (typeof CONV !== "undefined" && CONV) (store.f.hub ? [store.f.hub] : Object.keys(CONV.hubs)).forEach(h => {
         const v = CONV.hubs[h] || []; ts.n += sum(v); ts.r += v[0] || 0; });
       return [
-        {t: "1 · Campo: aplicação e retirada", x: `Equipamentos com N° de série · ${EQ.meta.periodo}`, cls: "eq", items: [
+        {t: "Campo: aplicação e retirada", x: `Equipamentos com N° de série · ${EQ.meta.periodo}`, cls: "eq", items: [
           {l: "Aplicados em cliente", v: nf0.format(apl), s: "novos + reaproveitados", c: "var(--navy)", i: KPI_ICO.total, w: "big"},
           {l: "Equipamentos novos", v: nf0.format(e.n), p: pn, s: `${pn != null ? pct.format(pn) : "–"} do total aplicado`, c: "var(--c-novo)", i: KPI_ICO.novo},
           {l: "Reaproveitados (REAP)", v: nf0.format(e.r), p: pr, s: `${pr != null ? pct.format(pr) : "–"} do total aplicado`, c: "var(--c-reap)", i: KPI_ICO.reap},
@@ -1345,7 +1345,7 @@ createApp({
       <filter-bar></filter-bar>
       <kpi-strip></kpi-strip>
       <conv-panel v-if="hasConv"></conv-panel>
-      <div class="kg-h sec3"><span>3 · Cobertura: almoxarifados, cidades e distâncias</span><em>mapa e tabelas de apoio</em></div>
+      <div class="kg-h sec3"><span>Cobertura: almoxarifados, cidades e distâncias</span><em>mapa e tabelas de apoio</em></div>
       <sim-bar></sim-bar>
       <section class="main"><map-panel></map-panel><side-panel></side-panel></section>
       <intel></intel>
