@@ -525,6 +525,17 @@ body{background:var(--bg)}
 .chip{background:var(--accent-soft);color:var(--accent-ink)}
 @media (max-width:640px){.kg-h{flex-direction:column;gap:2px}}
 .tri-row .nm,.tri-row.main .nm{font-weight:700;color:var(--ink)}
+/* Card selecionado */
+.kg.eq .kpi{cursor:pointer;transition:background .15s,border-color .15s,opacity .15s,box-shadow .15s}
+.kg.eq .kpi:hover{border-color:var(--line-2);box-shadow:0 2px 8px rgba(15,28,46,.08)}
+.kg.eq .kpi:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.kg.eq .kpi.sel,.kg.eq .kpi.big.sel{background:var(--navy);border-color:var(--navy);box-shadow:0 4px 14px rgba(22,54,95,.28)}
+.kpi.sel .v,.kpi.big.sel .v,.kpi.sel .l,.kpi.big.sel .l{color:#fff}
+.kpi.sel .s,.kpi.big.sel .s{color:#c7d4e6}
+.kpi.sel .l::before{background:#fff}
+.kpi.sel .bar{background:rgba(255,255,255,.2)}.kpi.sel .bar i{background:#fff}
+.kg.eq .kpi.dim{opacity:.5}
+.chip-m{background:var(--navy);color:#fff}
 </style>
 </head>
 <body>
@@ -612,7 +623,7 @@ const TABS = ["cob", "alm", "uf", "realoc", "corr"];
 const store = reactive({
   f: {hub: "", uf: "", band: "", q: ""},
   layers: {heat: true, cities: true, hubs: true, links: false, realoc: false, cluster: false},
-  weight: "cidades", base: "claro", radiusKm: 30,
+  weight: "cidades", base: "claro", radiusKm: 30, metric: "",
   tab: TABS.includes(safeLS.get("cob.tab")) ? safeLS.get("cob.tab") : "cob",
   sort: {}, focus: null, toast: "",
   sim: {on: false, pos: {}},
@@ -682,7 +693,8 @@ const FilterBar = {
       <div class="field"><label for="fHub">Almoxarifado</label>
         <select id="fHub" :value="f.hub" @change="set('hub', $event.target.value)"><option value="">Todos</option>
           <option v-for="h in hubsSorted" :key="h.id" :value="h.id">{{ h.nome }} · {{ h.uf }}</option></select></div>
-      <div class="chips"><button v-for="c in chips" :key="c.k" class="chip" type="button" @click="set(c.k, '')" :title="'Remover filtro ' + c.t">{{ c.t }} <span>×</span></button></div>
+      <div class="chips"><button v-for="c in chips" :key="c.k" class="chip" type="button" @click="set(c.k, '')" :title="'Remover filtro ' + c.t">{{ c.t }} <span>×</span></button>
+        <button v-if="metric" class="chip chip-m" type="button" @click="clearMetric" title="Voltar à visão geral">Analisando: {{ metric }} <span>×</span></button></div>
     </section>`,
   setup() {
     const hubsSorted = [...HUBS0].sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
@@ -690,7 +702,8 @@ const FilterBar = {
     const chips = computed(() => [
       store.f.hub && {k: "hub", t: HUB0.get(store.f.hub)?.nome}, store.f.uf && {k: "uf", t: `UF ${store.f.uf}`},
       store.f.band !== "" && {k: "band", t: BANDS[+store.f.band]?.k}, store.f.q && {k: "q", t: `“${store.f.q}”`}].filter(Boolean));
-    return {f: store.f, sim: store.sim, hubsSorted, ufs: UFS, bands: BANDS, chips, onQ, set: actions.setFilter, reset: actions.reset, toggleSim: actions.toggleSim};
+    const metric = computed(() => (store.metric ? METRICS[store.metric].t : "")), clearMetric = () => { store.metric = ""; };
+    return {metric, clearMetric, f: store.f, sim: store.sim, hubsSorted, ufs: UFS, bands: BANDS, chips, onQ, set: actions.setFilter, reset: actions.reset, toggleSim: actions.toggleSim};
   },
 };
 
@@ -700,6 +713,17 @@ const CONV_DEF = {
   REAP: {t: "Reaproveitado", c: "var(--c-reap)"}, SUC: {t: "Sucata", c: "#475569"},
   DET: {t: "DET", c: "#94a3b8"}, DEF: {t: "DEF", c: "#cbd5e1"},
 };
+/* Card selecionado: métrica que passa a guiar mapa, ranking e painéis */
+const METRICS = {
+  total: {t: "Aplicados em cliente", f: e => e.n + e.r}, novo: {t: "Equipamentos novos", f: e => e.n},
+  reap: {t: "Reaproveitados (REAP)", f: e => e.r}, ret: {t: "Retirados de clientes", f: e => e.t},
+  test: {t: "Equipamentos testados"},
+};
+const hubTest = h => (CONV && CONV.hubs[h] ? sum(CONV.hubs[h]) : 0);
+const metricCity = r => { const m = store.metric; if (!m) return 1;
+  if (m === "test") return hubTest(r.h); const e = eqOf(r); return e ? METRICS[m].f(e) : 0; };
+const metricHub = (h, rows) => { const m = store.metric; if (m === "test") return hubTest(h);
+  const seen = new Set(); return sum(rows.filter(r => !seen.has(r.key) && seen.add(r.key)).map(metricCity)); };
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>';
 const ConvPanel = {
   template: `<section class="dst" aria-label="Triagem dos retirados">
@@ -765,7 +789,9 @@ const KpiStrip = {
   template: `<section class="kpis" aria-live="polite">
       <div v-for="g in groups" :key="g.t" class="kg" :class="g.cls">
         <div class="kg-c">
-          <div v-for="k in g.items" :key="k.l" class="kpi" :class="k.w" :style="{'--c': k.c}">
+          <div v-for="k in g.items" :key="k.l" class="kpi" :class="[k.w, {sel: metric === k.k, dim: metric && metric !== k.k}]" :style="{'--c': k.c}"
+            role="button" tabindex="0" :aria-pressed="metric === k.k" :title="metric === k.k ? 'Clique para voltar à visão geral' : 'Clique para analisar só este indicador'"
+            @click="pick(k.k)" @keydown.enter.prevent="pick(k.k)" @keydown.space.prevent="pick(k.k)">
             <div class="v">{{ k.v }}</div><div class="l">{{ k.l }}</div>
             <div v-if="k.p != null" class="bar" role="img" :aria-label="k.s"><i :style="{width: (k.p * 100) + '%'}"></i></div>
             <div class="s">{{ k.s }}</div></div>
@@ -786,15 +812,17 @@ const KpiStrip = {
         const v = CONV.hubs[h] || []; ts.n += sum(v); ts.r += v[0] || 0; });
       return [
         {t: "Campo: aplicação e retirada", x: `Equipamentos com N° de série · ${EQ.meta.periodo}`, cls: "eq", items: [
-          {l: "Aplicados em cliente", v: nf0.format(apl), s: "novos + reaproveitados", c: "var(--navy)", i: KPI_ICO.total, w: "big"},
-          {l: "Equipamentos novos", v: nf0.format(e.n), p: pn, s: `${pn != null ? pct.format(pn) : "–"} do total aplicado`, c: "var(--c-novo)", i: KPI_ICO.novo},
-          {l: "Reaproveitados (REAP)", v: nf0.format(e.r), p: pr, s: `${pr != null ? pct.format(pr) : "–"} do total aplicado`, c: "var(--c-reap)", i: KPI_ICO.reap},
-          {l: "Retirados de clientes", v: nf0.format(e.t), s: `${nf0.format(e.cid)} cidades${geral && fo.cid ? ` (${nf0.format(fo.cid)} sem almox.)` : " com dados"}`, c: "var(--c-ret)", i: KPI_ICO.ret, w: "half"},
-          {l: "Equipamentos testados", v: nf0.format(ts.n), p: ts.n ? ts.r / ts.n : null, s: `${ts.n ? pct.format(ts.r / ts.n) : "–"} aprovados como REAP`, c: "var(--c-reap)", i: KPI_ICO.test, w: "half"},
+          {k: "total", l: "Aplicados em cliente", v: nf0.format(apl), s: "novos + reaproveitados", c: "var(--navy)", i: KPI_ICO.total, w: "big"},
+          {k: "novo", l: "Equipamentos novos", v: nf0.format(e.n), p: pn, s: `${pn != null ? pct.format(pn) : "–"} do total aplicado`, c: "var(--c-novo)", i: KPI_ICO.novo},
+          {k: "reap", l: "Reaproveitados (REAP)", v: nf0.format(e.r), p: pr, s: `${pr != null ? pct.format(pr) : "–"} do total aplicado`, c: "var(--c-reap)", i: KPI_ICO.reap},
+          {k: "ret", l: "Retirados de clientes", v: nf0.format(e.t), s: `${nf0.format(e.cid)} cidades${geral && fo.cid ? ` (${nf0.format(fo.cid)} sem almox.)` : " com dados"}`, c: "var(--c-ret)", i: KPI_ICO.ret, w: "half"},
+          {k: "test", l: "Equipamentos testados", v: nf0.format(ts.n), p: ts.n ? ts.r / ts.n : null, s: `${ts.n ? pct.format(ts.r / ts.n) : "–"} aprovados como REAP`, c: "var(--c-reap)", i: KPI_ICO.test, w: "half"},
         ]},
       ];
     });
-    return {groups};
+    const metric = computed(() => store.metric);
+    const pick = k => { store.metric = store.metric === k ? "" : k; };
+    return {groups, metric, pick};
   },
 };
 
@@ -836,11 +864,11 @@ const SidePanel = {
         </ul>
       </template>
       <template v-else-if="!hub">
-        <header><h2>Cidades por almoxarifado</h2><span>clique para ver as cidades</span></header>
+        <header><h2>{{ rankTitle }}</h2><span>clique para ver as cidades</span></header>
         <ul class="rank" role="listbox">
           <li v-for="x in list" :key="x.h.id" role="option" tabindex="0" aria-selected="false" :class="{off: !x.n}"
               @click="toggle(x.h.id)" @keydown.enter.prevent="toggle(x.h.id)" @keydown.space.prevent="toggle(x.h.id)">
-            <span class="nm">{{ x.h.nome }}<small>{{ x.h.uf }}</small><i v-if="x.h.moved" class="tag sim">movida</i></span><span class="ct">{{ x.n }}</span>
+            <span class="nm">{{ x.h.nome }}<small>{{ x.h.uf }}</small><i v-if="x.h.moved" class="tag sim">movida</i></span><span class="ct">{{ fmt(x.n) }}</span>
             <span class="gbar"><i :style="{width: (x.n / max * 100) + '%'}"></i></span></li>
         </ul>
       </template>
@@ -882,7 +910,7 @@ const SidePanel = {
     const list = computed(() => {
       const c = groupBy(sel.rowsNoHub.value, r => r.h);
       return hubs.value.map(h => { const rs = c.get(h.id) || [];
-        return {h, n: rs.length, b: BANDS.map((_, k) => rs.filter(r => r.fxI === k).length)}; })
+        return {h, n: store.metric ? metricHub(h.id, rs) : rs.length, b: BANDS.map((_, k) => rs.filter(r => r.fxI === k).length)}; })
         .sort((a, b) => b.n - a.n || a.h.nome.localeCompare(b.h.nome, "pt-BR"));
     });
     const max = computed(() => Math.max(1, ...list.value.map(x => x.n)));
@@ -905,7 +933,8 @@ const SidePanel = {
     const searching = computed(() => !!store.f.q.trim());
     const eqHub = computed(() => (hub.value ? eqHtml(eqSum(cities.value), true) : ""));
     const found = computed(() => [...sel.rows.value].sort((a, b) => a.c.localeCompare(b.c, "pt-BR")).slice(0, 60));
-    return {searching, found, eqHub, eqOf, list, max, bands: BANDS, toggle: actions.toggleHub, hub, cities, st, groups, shown, q, popTxt, realocIdx, copy,
+    const rankTitle = computed(() => (store.metric ? `${METRICS[store.metric].t} por almoxarifado` : "Cidades por almoxarifado"));
+    return {rankTitle, fmt: v => nf0.format(v), searching, found, eqHub, eqOf, list, max, bands: BANDS, toggle: actions.toggleHub, hub, cities, st, groups, shown, q, popTxt, realocIdx, copy,
       focus: r => { store.focus = r; }, nf1: v => nf1.format(v), pct: v => pct.format(v), fmtMin};
   },
 };
@@ -960,9 +989,10 @@ const MapPanel = {
 
     /* GeoJSON a partir do estado */
     const popMax = Math.max(1, ...BASE_ROWS.map(r => r.pop || 0));
+    const metricMax = () => Math.max(1, ...BASE_ROWS.map(metricCity));
     const fcCities = rows => ({type: "FeatureCollection", features: rows.map(r => ({type: "Feature", id: r.i,
       geometry: {type: "Point", coordinates: [r.lon, r.lat]},
-      properties: {i: r.i, n: r.c, b: r.fxI, a: r.aprox ? 1 : 0, w: store.weight === "populacao" ? Math.sqrt((r.pop || 0) / popMax) : 1}}))});
+      properties: {i: r.i, n: r.c, b: r.fxI, a: r.aprox ? 1 : 0, w: store.metric ? Math.pow(metricCity(r) / metricMax(), 0.4) : store.weight === "populacao" ? Math.sqrt((r.pop || 0) / popMax) : 1}}))});
     const fcLinks = rows => ({type: "FeatureCollection", features: rows.map(r => ({type: "Feature",
       geometry: {type: "LineString", coordinates: [[r.hub.lon, r.hub.lat], [r.lon, r.lat]]}, properties: {b: r.fxI, i: r.i}}))});
     const fcRealoc = rows => { const ids = new Set(rows.map(r => r.i));
@@ -1163,6 +1193,7 @@ const MapPanel = {
     let rafId = 0;
     const schedule = () => { if (!rafId) rafId = requestAnimationFrame(() => { rafId = 0; refreshData(); }); };
     watch(sel.rows, schedule);
+    watch(() => store.metric, schedule);
     watch(() => ({...store.f}), () => nextTick(() => {
       fit(true);
       // busca com um único resultado: abre a ficha da cidade (sede e ligação ficam enquadradas)
@@ -1342,7 +1373,7 @@ createApp({
     <main class="wrap">
       <filter-bar></filter-bar>
       <kpi-strip></kpi-strip>
-      <conv-panel v-if="hasConv"></conv-panel>
+      <conv-panel v-if="hasConv && showConv"></conv-panel>
       <div class="kg-h sec3"><span>Cobertura: almoxarifados, cidades e distâncias</span><em>mapa e tabelas de apoio</em></div>
       <sim-bar></sim-bar>
       <section class="main"><map-panel></map-panel><side-panel></side-panel></section>
@@ -1354,7 +1385,7 @@ createApp({
         Realocação sugerida quando outra sede fica ao menos 20 km e 15% mais perto por estrada.</p>
     </main>
     <div v-if="toast" class="toast" role="status">{{ toast }}</div>`,
-  setup: () => ({toast: computed(() => store.toast), hasConv: !!CONV}),
+  setup: () => ({toast: computed(() => store.toast), hasConv: !!CONV, showConv: computed(() => !store.metric || ["ret", "test"].includes(store.metric))}),
 }).mount("#app");
 document.getElementById("boot").remove();
 </script>
