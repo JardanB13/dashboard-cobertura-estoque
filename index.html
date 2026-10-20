@@ -536,6 +536,23 @@ body{background:var(--bg)}
 .kpi.sel .bar{background:rgba(255,255,255,.2)}.kpi.sel .bar i{background:#fff}
 .kg.eq .kpi.dim{opacity:.5}
 .chip-m{background:var(--navy);color:#fff}
+/* Região */
+.regseg{display:inline-flex;gap:2px;padding:3px;border-radius:8px;background:var(--surface);border:1px solid var(--line-2);height:38px;align-items:center}
+.regseg button{height:30px;padding:0 12px;border:0;border-radius:6px;background:transparent;color:var(--ink-2);font:600 12px var(--f-body);cursor:pointer;white-space:nowrap}
+.regseg button.on{background:var(--navy);color:#fff}
+.field.reg-f{flex:0 0 auto}
+.tri-reg{display:grid;gap:8px}
+.tri-rh{display:flex;align-items:baseline;gap:10px;padding:0 2px}
+.tri-rh b{font:700 15px/1.2 var(--f-display);color:var(--ink)}
+.tri-rh span{font-size:12px;color:var(--ink-3)}
+.tri.tri3{grid-template-columns:1.15fr 1fr 1fr}
+.tri3 .tri-row{grid-template-columns:minmax(120px,1.2fr) minmax(40px,1fr) 60px 46px;gap:10px}
+.tri3 .tri-col{padding:18px 20px}
+.tri3 .tri-col + .tri-col{border-left:1px solid var(--line)}
+.tri-obs{margin:4px 0 0;font-size:11.5px;color:var(--ink-3)}
+.dst{gap:16px}
+@media (max-width:1100px){.tri.tri3{grid-template-columns:1fr}.tri3 .tri-col + .tri-col{border-left:0;border-top:1px solid var(--line)}}
+@media (max-width:640px){.tri3 .tri-row{grid-template-columns:minmax(0,1fr) 52px 46px}.regseg button{padding:0 8px;font-size:11px}}
 </style>
 </head>
 <body>
@@ -621,7 +638,7 @@ const safeLS = {get: k => { try { return localStorage.getItem(k); } catch { retu
                 set: (k, v) => { try { localStorage.setItem(k, v); } catch { /* sem armazenamento */ } }};
 const TABS = ["cob", "alm", "uf", "realoc", "corr"];
 const store = reactive({
-  f: {hub: "", uf: "", band: "", q: ""},
+  f: {hub: "", uf: "", band: "", q: "", reg: ""},
   layers: {heat: true, cities: true, hubs: true, links: false, realoc: false, cluster: false},
   weight: "cidades", base: "claro", radiusKm: 30, metric: "",
   tab: TABS.includes(safeLS.get("cob.tab")) ? safeLS.get("cob.tab") : "cob",
@@ -632,7 +649,7 @@ let toastT;
 const actions = {
   setFilter(k, v) { store.f[k] = v; store.focus = null; },
   toggleHub(id) { store.f.hub = store.f.hub === id ? "" : id; store.focus = null; },
-  reset() { Object.assign(store.f, {hub: "", uf: "", band: "", q: ""}); store.focus = null; },
+  reset() { Object.assign(store.f, {hub: "", uf: "", band: "", q: "", reg: ""}); store.focus = null; },
   toast(msg) { store.toast = msg; clearTimeout(toastT); toastT = setTimeout(() => { store.toast = ""; }, 2600); },
   toggleSim() { store.sim.on = !store.sim.on; if (!store.sim.on) store.sim.pos = {}; },
   moveHub(id, lat, lon) { store.sim.pos = {...store.sim.pos, [id]: [lat, lon]}; },
@@ -665,7 +682,10 @@ const rowsEff = computed(() => {
     return {...r, hub: h, d, km, min, fxI: bandOf(min), inter: r.uf !== h.uf, simulado: true};
   });
 });
-const match = (r, f, ignoreHub = false) => (ignoreHub || !f.hub || r.h === f.hub) && (!f.uf || r.uf === f.uf)
+const SS_UF = new Set(["SP", "PR", "MG"]);
+const REG = id => (SS_UF.has(HUB0.get(id)?.uf) ? "ss" : "ne");
+const REG_T = {ne: "Norte/Nordeste", ss: "Sul/Sudeste"};
+const match = (r, f, ignoreHub = false) => (ignoreHub || !f.hub || r.h === f.hub) && (!f.reg || REG(r.h) === f.reg) && (!f.uf || r.uf === f.uf)
   && (f.band === "" || r.fxI === +f.band) && (!f.q || r.q.includes(fold(f.q.trim())));
 const sel = {
   rows: computed(() => rowsEff.value.filter(r => match(r, store.f))),
@@ -690,6 +710,9 @@ const AppBar = {
 
 const FilterBar = {
   template: `<section class="filters" aria-label="Filtros">
+      <div class="field reg-f"><label>Região</label>
+        <div class="regseg" role="group" aria-label="Região">
+          <button v-for="o in regs" :key="o.k" type="button" :class="{on: f.reg === o.k}" :aria-pressed="f.reg === o.k" @click="setReg(o.k)">{{ o.t }}</button></div></div>
       <div class="field"><label for="fHub">Almoxarifado</label>
         <select id="fHub" :value="f.hub" @change="set('hub', $event.target.value)"><option value="">Todos</option>
           <option v-for="h in hubsSorted" :key="h.id" :value="h.id">{{ h.nome }} · {{ h.uf }}</option></select></div>
@@ -697,13 +720,15 @@ const FilterBar = {
         <button v-if="metric" class="chip chip-m" type="button" @click="clearMetric" title="Voltar à visão geral">Analisando: {{ metric }} <span>×</span></button></div>
     </section>`,
   setup() {
-    const hubsSorted = [...HUBS0].sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+    const hubsSorted = computed(() => [...HUBS0].filter(h => !store.f.reg || REG(h.id) === store.f.reg).sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR")));
+    const regs = [{k: "", t: "Todas"}, {k: "ne", t: "Norte/Nordeste"}, {k: "ss", t: "Sul/Sudeste"}];
+    const setReg = k => { store.f.reg = k; if (store.f.hub && k && REG(store.f.hub) !== k) store.f.hub = ""; store.focus = null; };
     let t; const onQ = e => { clearTimeout(t); t = setTimeout(() => actions.setFilter("q", e.target.value), 120); };
     const chips = computed(() => [
       store.f.hub && {k: "hub", t: HUB0.get(store.f.hub)?.nome}, store.f.uf && {k: "uf", t: `UF ${store.f.uf}`},
       store.f.band !== "" && {k: "band", t: BANDS[+store.f.band]?.k}, store.f.q && {k: "q", t: `“${store.f.q}”`}].filter(Boolean));
     const metric = computed(() => (store.metric ? METRICS[store.metric].t : "")), clearMetric = () => { store.metric = ""; };
-    return {metric, clearMetric, f: store.f, sim: store.sim, hubsSorted, ufs: UFS, bands: BANDS, chips, onQ, set: actions.setFilter, reset: actions.reset, toggleSim: actions.toggleSim};
+    return {regs, setReg, metric, clearMetric, f: store.f, sim: store.sim, hubsSorted, ufs: UFS, bands: BANDS, chips, onQ, set: actions.setFilter, reset: actions.reset, toggleSim: actions.toggleSim};
   },
 };
 
@@ -725,57 +750,70 @@ const metricCity = r => { const m = store.metric; if (!m) return 1;
 const metricHub = (h, rows) => { const m = store.metric; if (m === "test") return hubTest(h);
   const seen = new Set(); return sum(rows.filter(r => !seen.has(r.key) && seen.add(r.key)).map(metricCity)); };
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>';
+const ST_DEF = {
+  instalado: {t: "Instalado no cliente", c: "var(--c-reap)", d: "voltou ao campo"},
+  tecnico: {t: "Com o técnico", c: "var(--c-att)", d: "entregue, não instalado"},
+  almox: {t: "No almoxarifado", c: "#94a3b8", d: "parado no estoque"},
+};
+const RET_DEF = {
+  REAP: {t: "Virou REAP", c: "var(--c-reap)"}, SUC: {t: "Sucata", c: "#475569"}, DET: {t: "DET", c: "#94a3b8"}, DEF: {t: "DEF", c: "#cbd5e1"},
+  estorno: {t: "Conversão estornada", c: "#cbd5e1"}, aguardando: {t: "Devolvido · aguardando triagem", c: "#7b93b3"},
+  naodev: {t: "Não devolvido · com o técnico", c: "var(--c-att)"},
+};
 const ConvPanel = {
-  template: `<section class="dst" aria-label="Triagem dos retirados">
-      <div class="tri">
-        <div class="tri-col">
-          <div class="tri-h"><b>Resultado da triagem</b><span>{{ nf0.format(n) }} equipamentos testados{{ escopo }}</span></div>
-          <div v-for="d in vals" :key="d.k" class="tri-row" :class="{main: d.k === 'REAP'}" :style="{'--c': d.c}">
-            <span class="nm"><i></i>{{ d.t }}<code v-if="d.t !== d.k">{{ d.k }}</code></span>
-            <span class="tr"><i :style="{width: w(d.q)}"></i></span>
-            <span class="q">{{ nf0.format(d.q) }}</span><span class="p">{{ pf(d.q) }}</span></div>
-        </div>
-        <div v-if="st" class="tri-col">
-          <div class="tri-h"><b>Onde estão os {{ nf0.format(st.n) }} REAP</b><span>situação em {{ meta.ate.slice(0, 5) }}, rastreado por N° de série</span></div>
-          <div class="st-bar" role="img" :aria-label="st.aria">
-            <i v-for="x in st.items" :key="x.k" v-show="x.q" :style="{flexGrow: x.q, background: x.c}" :title="x.t + ': ' + nf0.format(x.q)"></i></div>
-          <div v-for="x in st.items" :key="x.k" class="tri-row" :style="{'--c': x.c}">
-            <span class="nm"><i></i>{{ x.t }}</span><span class="dsc">{{ x.d }}</span>
-            <span class="q">{{ nf0.format(x.q) }}</span><span class="p">{{ st.n ? pct.format(x.q / st.n) : "–" }}</span></div>
+  template: `<section class="dst" aria-label="Triagem dos retirados por região">
+      <div v-for="g in blocos" :key="g.reg" class="tri-reg">
+        <div class="tri-rh"><b>{{ g.titulo }}</b><span>triagem dos retirados · {{ periodo }}{{ escopo }}</span></div>
+        <div class="tri tri3">
+          <div class="tri-col">
+            <div class="tri-h"><b>Retirados do mês: situação</b><span>{{ nf0.format(g.ret.n) }} séries retiradas em {{ periodo.toLowerCase() }}</span></div>
+            <div v-for="x in g.ret.items" :key="x.k" class="tri-row" :class="{main: x.k === 'REAP'}" :style="{'--c': x.c}">
+              <span class="nm"><i></i>{{ x.t }}</span>
+              <span class="tr"><i :style="{width: g.ret.n ? (x.q / g.ret.n * 100) + '%' : 0}"></i></span>
+              <span class="q">{{ nf0.format(x.q) }}</span><span class="p">{{ g.ret.n ? pct.format(x.q / g.ret.n) : "–" }}</span></div>
+          </div>
+          <div class="tri-col">
+            <div class="tri-h"><b>Resultado da triagem</b><span>{{ nf0.format(g.cv.n) }} equipamentos testados no mês</span></div>
+            <div v-for="x in g.cv.items" :key="x.k" class="tri-row" :class="{main: x.k === 'REAP'}" :style="{'--c': x.c}">
+              <span class="nm"><i></i>{{ x.t }}<code v-if="x.t !== x.k">{{ x.k }}</code></span>
+              <span class="tr"><i :style="{width: g.cv.n ? (x.q / g.cv.n * 100) + '%' : 0}"></i></span>
+              <span class="q">{{ nf0.format(x.q) }}</span><span class="p">{{ g.cv.n ? pct.format(x.q / g.cv.n) : "–" }}</span></div>
+          </div>
+          <div class="tri-col">
+            <div class="tri-h"><b>Onde estão os {{ nf0.format(g.st.n) }} REAP</b><span>situação em {{ meta.ate.slice(0, 5) }}, por N° de série</span></div>
+            <div class="st-bar" role="img" :aria-label="g.st.aria">
+              <i v-for="x in g.st.items" :key="x.k" v-show="x.q" :style="{flexGrow: x.q, background: x.c}" :title="x.t + ': ' + nf0.format(x.q)"></i></div>
+            <div v-for="x in g.st.items" :key="x.k" class="tri-row" :style="{'--c': x.c}">
+              <span class="nm"><i></i>{{ x.t }}</span>
+              <span class="tr"><i :style="{width: g.st.n ? (x.q / g.st.n * 100) + '%' : 0}"></i></span>
+              <span class="q">{{ x.na ? "s/ dado" : nf0.format(x.q) }}</span><span class="p">{{ x.na ? "" : g.st.n ? pct.format(x.q / g.st.n) : "–" }}</span></div>
+            <p v-if="g.reg === 'ss'" class="tri-obs">Instalação no cliente ainda não informada para o Sul/Sudeste (falta o relatório de aplicados completo).</p>
+          </div>
         </div>
       </div>
-      <p class="dst-note">Cards de cima: <b>campo</b> (instalado e retirado no cliente). Este painel: <b>almoxarifado</b> (triagem feita dias depois) — por isso retirados e testados não são iguais.</p>
+      <p class="dst-note">Cards de cima: <b>campo</b> (instalado e retirado no cliente). Painéis de triagem: <b>almoxarifado</b>, rastreado por N° de série — a triagem acontece dias depois da retirada.</p>
     </section>`,
   setup() {
-    const D = CONV.meta.destinos, open = ref(false), C = 2 * Math.PI * 52;
-    const info = k => ({k, ...(CONV_DEF[k] || {t: k, c: "var(--ink-3)"})});
-    const vals = computed(() => {
-      const ids = store.f.hub ? [store.f.hub] : Object.keys(CONV.hubs);
-      return D.map((k, i) => ({...info(k), q: sum(ids.map(h => (CONV.hubs[h] || [])[i] || 0))}));
+    const M = CONV.meta, periodo = MES_EXT[String(M.periodo).slice(0, 3)] || M.periodo;
+    const ids = (src, reg) => (store.f.hub ? (REG(store.f.hub) === reg ? [store.f.hub] : []) : Object.keys(src || {}).filter(h => REG(h) === reg));
+    const soma = (src, reg, i) => sum(ids(src, reg).map(h => (src[h] || [])[i] || 0));
+    const blocos = computed(() => {
+      const regs = store.f.hub ? [REG(store.f.hub)] : store.f.reg ? [store.f.reg] : ["ne", "ss"];
+      return regs.map(reg => {
+        const sem = !store.f.hub ? (CONV.retSem || {})[reg] || [] : [];
+        const rit = (M.retK || []).map((k, i) => ({k, ...RET_DEF[k], q: soma(CONV.ret, reg, i) + (sem[i] || 0)})).filter(x => x.q || ["REAP", "aguardando", "naodev"].includes(x.k));
+        const cit = M.destinos.map((k, i) => ({k, ...(CONV_DEF[k] || {t: k, c: "var(--ink-3)"}), q: soma(CONV.hubs, reg, i)}));
+        const sit = (M.status || []).map((k, i) => ({k, ...ST_DEF[k], q: soma(CONV.status, reg, i), na: reg === "ss" && k === "instalado"}));
+        return {reg, titulo: REG_T[reg],
+          ret: {items: rit, n: sum(rit.map(x => x.q))}, cv: {items: cit, n: sum(cit.map(x => x.q))},
+          st: {items: sit, n: sum(sit.map(x => x.q)), aria: sit.map(x => `${x.t} ${x.q}`).join(", ")}};
+      });
     });
-    const n = computed(() => sum(vals.value.map(d => d.q)));
-    const reap = computed(() => vals.value[0]);
-    const resto = computed(() => vals.value.slice(1));
-    const outros = computed(() => n.value - reap.value.q);
-    const p = computed(() => n.value ? reap.value.q / n.value : 0);
-    const w = q => (n.value ? (q / n.value * 100) : 0) + "%";
-    const pf = q => (n.value ? pct.format(q / n.value) : "–");
-    const escopo = computed(() => store.f.hub ? ` em ${HUB0.get(store.f.hub)?.nome || ""}` : "");
-    const periodo = MES_EXT[String(CONV.meta.periodo).slice(0, 3)] || CONV.meta.periodo;
-    const ST_DEF = {
-      instalado: {t: "Instalado no cliente", c: "var(--c-reap)", d: "voltou ao campo"},
-      tecnico: {t: "Com o técnico", c: "var(--c-att)", d: "entregue, não instalado"},
-      almox: {t: "No almoxarifado", c: "#94a3b8", d: "parado no estoque"},
-    };
-    const st = computed(() => {
-      if (!CONV.status) return null;
-      const ids = store.f.hub ? [store.f.hub] : Object.keys(CONV.status), K = CONV.meta.status || ["instalado", "tecnico", "almox"];
-      const items = K.map((k, i) => ({k, ...ST_DEF[k], q: sum(ids.map(h => (CONV.status[h] || [])[i] || 0))}));
-      return {items, n: sum(items.map(x => x.q)), aria: items.map(x => `${x.t} ${x.q}`).join(", ")};
-    });
-    return {open, C, n: n, vals, reap, resto, outros, p, w, pf, escopo, periodo, chev: CHEV, nf0, pct, st, meta: CONV.meta};
+    const escopo = computed(() => (store.f.hub ? ` · ${HUB0.get(store.f.hub)?.nome || ""}` : ""));
+    return {blocos, escopo, periodo, meta: M, nf0, pct};
   },
 };
+
 const KPI_ICO = {
   hub: '<path d="M3 10.5 12 4l9 6.5V20H3z"/><path d="M9 20v-6h6v6"/>',
   city: '<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
@@ -802,13 +840,14 @@ const KpiStrip = {
     const groups = computed(() => {
       const rows = sel.rows.value, e = {...eqSum(rows)};
       /* Visão geral (sem filtro): soma também as cidades sem almoxarifado vinculado */
-      const geral = !store.f.hub && !store.f.uf && store.f.band === "" && !store.f.q, fo = EQ.meta.fora || {};
+      const semFiltro = !store.f.hub && !store.f.uf && store.f.band === "" && !store.f.q;
+      const fo = semFiltro ? (store.f.reg ? (EQ.meta.foraReg || {})[store.f.reg] || {} : EQ.meta.fora || {}) : {}, geral = semFiltro;
       if (geral) { e.n += fo.n || 0; e.r += fo.r || 0; e.t += fo.t || 0; e.cid += fo.cid || 0; }
       const apl = e.n + e.r;
       const pn = apl ? e.n / apl : null, pr = apl ? e.r / apl : null;
       /* Testados = retirados que passaram pela triagem (conversão RET) */
       const ts = {n: 0, r: 0};
-      if (typeof CONV !== "undefined" && CONV) (store.f.hub ? [store.f.hub] : Object.keys(CONV.hubs)).forEach(h => {
+      if (typeof CONV !== "undefined" && CONV) (store.f.hub ? [store.f.hub] : Object.keys(CONV.hubs).filter(h => !store.f.reg || REG(h) === store.f.reg)).forEach(h => {
         const v = CONV.hubs[h] || []; ts.n += sum(v); ts.r += v[0] || 0; });
       return [
         {t: "Campo: aplicação e retirada", x: `Equipamentos com N° de série · ${EQ.meta.periodo}`, cls: "eq", items: [

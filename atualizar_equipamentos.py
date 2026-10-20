@@ -98,6 +98,9 @@ def main(arquivos):
     mapa = {f"{fold(r['c'])}|{r['uf']}" for r in cob["rows"]}
     no_mapa = {k: v for k, v in cid.items() if k in mapa}
     fora = [v for k, v in cid.items() if k not in mapa and (v["n"] or v["r"] or v["t"])]
+    reg = lambda k: "ss" if k.split("|")[-1] in ("SP", "PR", "MG") else "ne"
+    soma = lambda vs: {"cid": len(vs), "n": sum(v["n"] for v in vs), "r": sum(v["r"] for v in vs), "t": sum(v["t"] for v in vs)}
+    fora_reg = {g: soma([v for k, v in cid.items() if k not in mapa and (v["n"] or v["r"] or v["t"]) and reg(k) == g]) for g in ("ne", "ss")}
     tot = lambda tipo: int(eq.loc[eq["T"] == tipo, "q"].sum())
     saida = {
         "meta": {
@@ -105,6 +108,7 @@ def main(arquivos):
             "fonte": f"SINAPSE · Materiais Aplicados/Retirados ({periodos[0].split(':', 1)[-1].strip()}) · {len(arquivos)} relatório(s)",
             "tot": {"n": tot("NOVO"), "r": tot("REAP"), "t": tot("RET")},
             "fora": {"cid": len(fora), "n": sum(v["n"] for v in fora), "r": sum(v["r"] for v in fora), "t": sum(v["t"] for v in fora)},
+            "foraReg": fora_reg,
         },
         "c": no_mapa,
     }
