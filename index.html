@@ -545,7 +545,24 @@ body{background:var(--bg)}
 .tri-rh{display:flex;align-items:center;gap:10px;padding:0 2px;flex-wrap:wrap}
 .tri-rh b{font:700 15px/1.2 var(--f-display);color:var(--ink)}
 .tri-rh span{font-size:12px;color:var(--ink-3)}
-.tri-rh .tri-f{margin-left:auto}
+.tri-dd{margin-left:auto;position:relative}
+.tri-dd summary{list-style:none;display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 10px 0 12px;border:1px solid var(--line-2);border-radius:8px;background:var(--surface);font:600 12px var(--f-body);color:var(--ink);cursor:pointer;user-select:none}
+.tri-dd summary::-webkit-details-marker{display:none}
+.tri-dd summary .dot{width:8px;height:8px;border-radius:2px;background:var(--c-reap)}
+.tri-dd summary em{font-style:normal;font-weight:600;color:var(--navy);background:color-mix(in srgb,var(--navy) 10%,transparent);padding:2px 6px;border-radius:99px;font-size:11px}
+.tri-dd summary svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;transition:transform .15s}
+.tri-dd[open] summary{border-color:var(--navy)}
+.tri-dd[open] summary svg{transform:rotate(180deg)}
+.tri-pop{position:absolute;right:0;top:calc(100% + 6px);z-index:30;min-width:250px;padding:8px;background:var(--surface);border:1px solid var(--line-2);border-radius:10px;box-shadow:0 10px 30px rgba(15,23,42,.14);display:grid;gap:2px}
+.tri-pop label{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;font-size:12.5px;color:var(--ink);cursor:pointer}
+.tri-pop label:hover{background:var(--surface-2)}
+.tri-pop label.fix{cursor:default;font-weight:600;border-bottom:1px solid var(--line);border-radius:6px 6px 0 0;margin-bottom:2px}
+.tri-pop label small{margin-left:auto;font-weight:500;color:var(--ink-3);font-size:11px}
+.tri-pop label i{width:9px;height:9px;border-radius:2px;background:var(--c);flex:none}
+.tri-pop input{accent-color:var(--navy);margin:0}
+.tri-pop-a{display:flex;justify-content:space-between;gap:8px;padding:6px 4px 2px;border-top:1px solid var(--line);margin-top:2px}
+.tri-pop-a button{border:0;background:transparent;color:var(--navy);font:600 11.5px var(--f-body);cursor:pointer;padding:4px}
+@media (max-width:640px){.tri-pop{right:auto;left:0}}
 .tri-row.rest .nm{font-weight:500;color:var(--ink-3);font-size:12px}
 .tri-row.rest .q{color:var(--ink-3)}
 .tri.tri3{grid-template-columns:1.15fr 1fr 1fr}
@@ -767,8 +784,14 @@ const ConvPanel = {
   template: `<section class="dst" aria-label="Triagem dos retirados por região">
       <div v-for="g in blocos" :key="g.reg" class="tri-reg">
         <div class="tri-rh"><b>{{ g.titulo }}</b><span>triagem dos retirados · {{ periodo }}{{ escopo }}</span>
-          <div class="dst-seg tri-f" role="group" aria-label="Filtro da triagem">
-            <button v-for="o in filtros" :key="o.k" type="button" :class="{on: modo(g.reg) === o.k}" :aria-pressed="modo(g.reg) === o.k" @click="setModo(g.reg, o.k)">{{ o.t }}</button></div></div>
+          <details class="tri-dd" :open="aberto === g.reg" @toggle="onToggle(g.reg, $event)">
+            <summary><span class="dot"></span>Reaproveitado<em v-if="nSel(g.reg)">+{{ nSel(g.reg) }} status</em><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+            <div class="tri-pop" role="group" aria-label="Status exibidos">
+              <label class="fix"><input type="checkbox" checked disabled><i style="--c:var(--c-reap)"></i>Reaproveitado <small>sempre visível</small></label>
+              <label v-for="o in opcoes" :key="o.k"><input type="checkbox" :checked="tem(g.reg, o.k)" @change="alterna(g.reg, o.k)"><i :style="{'--c': o.c}"></i>{{ o.t }}</label>
+              <div class="tri-pop-a"><button type="button" @click="todos(g.reg, true)">Marcar todos</button><button type="button" @click="todos(g.reg, false)">Limpar</button></div>
+            </div>
+          </details></div>
         <div class="tri tri3">
           <div class="tri-col">
             <div class="tri-h"><b>Retirados do mês: situação</b><span>{{ nf0.format(g.ret.n) }} séries retiradas em {{ periodo.toLowerCase() }}</span></div>
@@ -814,18 +837,22 @@ const ConvPanel = {
       });
     });
     const escopo = computed(() => (store.f.hub ? ` · ${HUB0.get(store.f.hub)?.nome || ""}` : ""));
-    // filtro por região: "Reaproveitado" (padrão) mostra o principal + demais somados; "Todos" abre tudo
-    const filtros = [{k: "reap", t: "Reaproveitado"}, {k: "todos", t: "Todos"}];
-    const modos = reactive({});
-    const modo = reg => modos[reg] || "reap";
-    const setModo = (reg, k) => { modos[reg] = k; };
+    // filtro suspenso por região: Reaproveitado sempre visível; os demais status entram quando marcados
+    const opcoes = ["SUC", "DET", "DEF", "estorno", "aguardando", "naodev"].map(k => ({k, ...RET_DEF[k]}));
+    const sel = reactive({ne: [], ss: []}), aberto = ref("");
+    const tem = (reg, k) => sel[reg].includes(k);
+    const nSel = reg => sel[reg].length;
+    const alterna = (reg, k) => { sel[reg] = tem(reg, k) ? sel[reg].filter(x => x !== k) : [...sel[reg], k]; };
+    const todos = (reg, on) => { sel[reg] = on ? opcoes.map(o => o.k) : []; };
+    const onToggle = (reg, e) => { if (e.target.open) aberto.value = reg; else if (aberto.value === reg) aberto.value = ""; };
+    const fora = e => { if (aberto.value && !e.target.closest(".tri-dd")) aberto.value = ""; };
+    onMounted(() => document.addEventListener("click", fora));
+    onBeforeUnmount(() => document.removeEventListener("click", fora));
     const ver = (reg, items) => {
-      if (modo(reg) === "todos") return items;
-      const main = items.filter(x => x.k === "REAP"), rest = items.filter(x => x.k !== "REAP");
-      const q = sum(rest.map(x => x.q));
-      return [...main, {k: "_", t: "Demais situações", c: "#cbd5e1", q}];
+      const vis = items.filter(x => x.k === "REAP" || tem(reg, x.k)), rest = items.filter(x => !vis.includes(x));
+      return rest.length ? [...vis, {k: "_", t: "Demais situações", c: "#cbd5e1", q: sum(rest.map(x => x.q))}] : vis;
     };
-    return {blocos, escopo, periodo, meta: M, nf0, pct, filtros, modo, setModo, ver};
+    return {blocos, escopo, periodo, meta: M, nf0, pct, opcoes, aberto, tem, nSel, alterna, todos, onToggle, ver};
   },
 };
 
@@ -1428,15 +1455,10 @@ createApp({
       <filter-bar></filter-bar>
       <kpi-strip></kpi-strip>
       <conv-panel v-if="hasConv && showConv"></conv-panel>
-      <div class="kg-h sec3"><span>Cobertura: almoxarifados, cidades e distâncias</span><em>mapa e tabelas de apoio</em></div>
+      <div class="kg-h sec3"><span>Cobertura: almoxarifados, cidades e distâncias</span><em>mapa</em></div>
       <sim-bar></sim-bar>
       <section class="main"><map-panel></map-panel><side-panel></side-panel></section>
       <intel></intel>
-      <data-tabs></data-tabs>
-      <p class="foot">Km e tempo por estrada calculados com OSRM sobre a malha viária do OpenStreetMap (sem trânsito). Coordenadas oficiais e população (Censo 2022) do IBGE;
-        distritos e bairros geolocalizados pelo OpenStreetMap estão marcados para confirmação. Sedes “inferidas” (por prefixo ou sigla) devem ser confirmadas.
-        Na simulação, as rotas das sedes movidas são estimadas pela sinuosidade e velocidade médias reais de cada almoxarifado.
-        Realocação sugerida quando outra sede fica ao menos 20 km e 15% mais perto por estrada.</p>
     </main>
     <div v-if="toast" class="toast" role="status">{{ toast }}</div>`,
   setup: () => ({toast: computed(() => store.toast), hasConv: !!CONV, showConv: computed(() => !store.metric || ["ret", "test"].includes(store.metric))}),
