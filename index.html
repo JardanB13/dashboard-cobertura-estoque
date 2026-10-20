@@ -408,7 +408,7 @@ tbody tr:hover{background:var(--accent-soft)}
 .dst-note b{color:var(--ink-2);font-weight:600}
 .dst-note .ic{flex:none;width:15px;height:15px;margin-top:1px;border-radius:50%;border:1px solid var(--line-2);display:grid;place-items:center;font:700 9px/1 var(--f-mono);color:var(--ink-3)}
 @media (max-width:640px){.dst-note{justify-self:stretch;text-align:left}}
-/* Status dos REAP convertidos */
+/* Status dos reaproveitados */
 .st-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:20px 24px;display:grid;gap:14px}
 .st-h{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
 .st-h b{font:700 15px/1.2 var(--f-display)}
@@ -542,9 +542,12 @@ body{background:var(--bg)}
 .regseg button.on{background:var(--navy);color:#fff}
 .field.reg-f{flex:0 0 auto}
 .tri-reg{display:grid;gap:8px}
-.tri-rh{display:flex;align-items:baseline;gap:10px;padding:0 2px}
+.tri-rh{display:flex;align-items:center;gap:10px;padding:0 2px;flex-wrap:wrap}
 .tri-rh b{font:700 15px/1.2 var(--f-display);color:var(--ink)}
 .tri-rh span{font-size:12px;color:var(--ink-3)}
+.tri-rh .tri-f{margin-left:auto}
+.tri-row.rest .nm{font-weight:500;color:var(--ink-3);font-size:12px}
+.tri-row.rest .q{color:var(--ink-3)}
 .tri.tri3{grid-template-columns:1.15fr 1fr 1fr}
 .tri3 .tri-row{grid-template-columns:minmax(120px,1.2fr) minmax(40px,1fr) 60px 46px;gap:10px}
 .tri3 .tri-col{padding:18px 20px}
@@ -741,7 +744,7 @@ const CONV_DEF = {
 /* Card selecionado: métrica que passa a guiar mapa, ranking e painéis */
 const METRICS = {
   total: {t: "Aplicados em cliente", f: e => e.n + e.r}, novo: {t: "Equipamentos novos", f: e => e.n},
-  reap: {t: "Reaproveitados (REAP)", f: e => e.r}, ret: {t: "Retirados de clientes", f: e => e.t},
+  reap: {t: "Reaproveitados", f: e => e.r}, ret: {t: "Retirados de clientes", f: e => e.t},
   test: {t: "Equipamentos testados"},
 };
 const hubTest = h => (CONV && CONV.hubs[h] ? sum(CONV.hubs[h]) : 0);
@@ -756,31 +759,33 @@ const ST_DEF = {
   almox: {t: "No almoxarifado", c: "#94a3b8", d: "parado no estoque"},
 };
 const RET_DEF = {
-  REAP: {t: "Virou REAP", c: "var(--c-reap)"}, SUC: {t: "Sucata", c: "#475569"}, DET: {t: "DET", c: "#94a3b8"}, DEF: {t: "DEF", c: "#cbd5e1"},
+  REAP: {t: "Reaproveitado", c: "var(--c-reap)"}, SUC: {t: "Sucata", c: "#475569"}, DET: {t: "DET", c: "#94a3b8"}, DEF: {t: "DEF", c: "#cbd5e1"},
   estorno: {t: "Conversão estornada", c: "#cbd5e1"}, aguardando: {t: "Devolvido · aguardando triagem", c: "#7b93b3"},
   naodev: {t: "Não devolvido · com o técnico", c: "var(--c-att)"},
 };
 const ConvPanel = {
   template: `<section class="dst" aria-label="Triagem dos retirados por região">
       <div v-for="g in blocos" :key="g.reg" class="tri-reg">
-        <div class="tri-rh"><b>{{ g.titulo }}</b><span>triagem dos retirados · {{ periodo }}{{ escopo }}</span></div>
+        <div class="tri-rh"><b>{{ g.titulo }}</b><span>triagem dos retirados · {{ periodo }}{{ escopo }}</span>
+          <div class="dst-seg tri-f" role="group" aria-label="Filtro da triagem">
+            <button v-for="o in filtros" :key="o.k" type="button" :class="{on: modo(g.reg) === o.k}" :aria-pressed="modo(g.reg) === o.k" @click="setModo(g.reg, o.k)">{{ o.t }}</button></div></div>
         <div class="tri tri3">
           <div class="tri-col">
             <div class="tri-h"><b>Retirados do mês: situação</b><span>{{ nf0.format(g.ret.n) }} séries retiradas em {{ periodo.toLowerCase() }}</span></div>
-            <div v-for="x in g.ret.items" :key="x.k" class="tri-row" :class="{main: x.k === 'REAP'}" :style="{'--c': x.c}">
+            <div v-for="x in ver(g.reg, g.ret.items)" :key="x.k" class="tri-row" :class="{main: x.k === 'REAP', rest: x.k === '_'}" :style="{'--c': x.c}">
               <span class="nm"><i></i>{{ x.t }}</span>
               <span class="tr"><i :style="{width: g.ret.n ? (x.q / g.ret.n * 100) + '%' : 0}"></i></span>
               <span class="q">{{ nf0.format(x.q) }}</span><span class="p">{{ g.ret.n ? pct.format(x.q / g.ret.n) : "–" }}</span></div>
           </div>
           <div class="tri-col">
             <div class="tri-h"><b>Resultado da triagem</b><span>{{ nf0.format(g.cv.n) }} equipamentos testados no mês</span></div>
-            <div v-for="x in g.cv.items" :key="x.k" class="tri-row" :class="{main: x.k === 'REAP'}" :style="{'--c': x.c}">
-              <span class="nm"><i></i>{{ x.t }}<code v-if="x.t !== x.k">{{ x.k }}</code></span>
+            <div v-for="x in ver(g.reg, g.cv.items)" :key="x.k" class="tri-row" :class="{main: x.k === 'REAP', rest: x.k === '_'}" :style="{'--c': x.c}">
+              <span class="nm"><i></i>{{ x.t }}</span>
               <span class="tr"><i :style="{width: g.cv.n ? (x.q / g.cv.n * 100) + '%' : 0}"></i></span>
               <span class="q">{{ nf0.format(x.q) }}</span><span class="p">{{ g.cv.n ? pct.format(x.q / g.cv.n) : "–" }}</span></div>
           </div>
           <div class="tri-col">
-            <div class="tri-h"><b>Onde estão os {{ nf0.format(g.st.n) }} REAP</b><span>situação em {{ meta.ate.slice(0, 5) }}, por N° de série</span></div>
+            <div class="tri-h"><b>Onde estão os {{ nf0.format(g.st.n) }} reaproveitados</b><span>situação em {{ meta.ate.slice(0, 5) }}, por N° de série</span></div>
             <div class="st-bar" role="img" :aria-label="g.st.aria">
               <i v-for="x in g.st.items" :key="x.k" v-show="x.q" :style="{flexGrow: x.q, background: x.c}" :title="x.t + ': ' + nf0.format(x.q)"></i></div>
             <div v-for="x in g.st.items" :key="x.k" class="tri-row" :style="{'--c': x.c}">
@@ -809,7 +814,18 @@ const ConvPanel = {
       });
     });
     const escopo = computed(() => (store.f.hub ? ` · ${HUB0.get(store.f.hub)?.nome || ""}` : ""));
-    return {blocos, escopo, periodo, meta: M, nf0, pct};
+    // filtro por região: "Reaproveitado" (padrão) mostra o principal + demais somados; "Todos" abre tudo
+    const filtros = [{k: "reap", t: "Reaproveitado"}, {k: "todos", t: "Todos"}];
+    const modos = reactive({});
+    const modo = reg => modos[reg] || "reap";
+    const setModo = (reg, k) => { modos[reg] = k; };
+    const ver = (reg, items) => {
+      if (modo(reg) === "todos") return items;
+      const main = items.filter(x => x.k === "REAP"), rest = items.filter(x => x.k !== "REAP");
+      const q = sum(rest.map(x => x.q));
+      return [...main, {k: "_", t: "Demais situações", c: "#cbd5e1", q}];
+    };
+    return {blocos, escopo, periodo, meta: M, nf0, pct, filtros, modo, setModo, ver};
   },
 };
 
@@ -852,9 +868,9 @@ const KpiStrip = {
         {t: "Campo: aplicação e retirada", x: `Equipamentos com N° de série · ${EQ.meta.periodo}`, cls: "eq", items: [
           {k: "total", l: "Aplicados em cliente", v: nf0.format(apl), s: "novos + reaproveitados", c: "var(--navy)", i: KPI_ICO.total, w: "big"},
           {k: "novo", l: "Equipamentos novos", v: nf0.format(e.n), p: pn, s: `${pn != null ? pct.format(pn) : "–"} do total aplicado`, c: "var(--c-novo)", i: KPI_ICO.novo},
-          {k: "reap", l: "Reaproveitados (REAP)", v: nf0.format(e.r), p: pr, s: `${pr != null ? pct.format(pr) : "–"} do total aplicado`, c: "var(--c-reap)", i: KPI_ICO.reap},
+          {k: "reap", l: "Reaproveitados", v: nf0.format(e.r), p: pr, s: `${pr != null ? pct.format(pr) : "–"} do total aplicado`, c: "var(--c-reap)", i: KPI_ICO.reap},
           {k: "ret", l: "Retirados de clientes", v: nf0.format(e.t), s: `${nf0.format(e.cid)} cidades${geral && fo.cid ? ` (${nf0.format(fo.cid)} sem almox.)` : " com dados"}`, c: "var(--c-ret)", i: KPI_ICO.ret, w: "half"},
-          {k: "test", l: "Equipamentos testados", v: nf0.format(ts.n), p: ts.n ? ts.r / ts.n : null, s: `${ts.n ? pct.format(ts.r / ts.n) : "–"} aprovados como REAP`, c: "var(--c-reap)", i: KPI_ICO.test, w: "half"},
+          {k: "test", l: "Equipamentos testados", v: nf0.format(ts.n), p: ts.n ? ts.r / ts.n : null, s: `${ts.n ? pct.format(ts.r / ts.n) : "–"} aprovados como reaproveitados`, c: "var(--c-reap)", i: KPI_ICO.test, w: "half"},
         ]},
       ];
     });
