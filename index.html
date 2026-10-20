@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Controle de Equipamentos Aplicados</title>
+<title>Controle de Equipamentos Aplicados/Retirados</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap">
@@ -547,7 +547,7 @@ body{background:var(--bg)}
 /* abas de região */
 .filters{align-items:end}
 .regtabs{display:flex;gap:4px;padding:4px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
-.regtabs button{display:grid;gap:2px;justify-items:start;min-width:150px;padding:8px 16px;border:0;border-radius:8px;background:transparent;cursor:pointer;text-align:left;transition:background .15s}
+.regtabs button{display:grid;gap:2px;justify-items:center;min-width:130px;padding:10px 18px;border:0;border-radius:8px;background:transparent;cursor:pointer;text-align:left;transition:background .15s}
 .regtabs button b{font:700 13.5px/1.2 var(--f-display);color:var(--ink)}
 .regtabs button small{font-size:11px;color:var(--ink-3);letter-spacing:.02em}
 .regtabs button:hover{background:var(--surface-2)}
@@ -737,16 +737,16 @@ const MES_EXT = {jan: "Janeiro", fev: "Fevereiro", mar: "Março", abr: "Abril", 
   jul: "Julho", ago: "Agosto", set: "Setembro", out: "Outubro", nov: "Novembro", dez: "Dezembro"};
 const AppBar = {
   template: `<header class="appbar"><div class="in">
-      <div><h1>Controle de Equipamentos Aplicados <span class="mes">{{ mes }}</span></h1></div>
+      <div><h1>Controle de Equipamentos Aplicados/Retirados <span class="mes">- {{ mes }}</span></h1></div>
     </div></header>`,
-  setup: () => ({mes: String(EQ.meta.periodo || "").slice(0, 3).toUpperCase(), nHubs: HUBS0.length, nCid: nf0.format(new Set(BASE_ROWS.map(r => r.key)).size)}),
+  setup: () => ({mes: MES_EXT[String(EQ.meta.periodo || "").slice(0, 3)] || String(EQ.meta.periodo || ""), nHubs: HUBS0.length, nCid: nf0.format(new Set(BASE_ROWS.map(r => r.key)).size)}),
 };
 
 const FilterBar = {
   template: `<section class="filters" aria-label="Filtros">
       <nav class="regtabs" role="tablist" aria-label="Região">
         <button v-for="o in regs" :key="o.k" type="button" role="tab" :class="{on: f.reg === o.k}" :aria-selected="f.reg === o.k" @click="setReg(o.k)">
-          <b>{{ o.t }}</b><small>{{ o.s }}</small></button></nav>
+          <b>{{ o.t }}</b></button></nav>
       <div class="field hub-f"><label for="fHub">Almoxarifado</label>
         <select id="fHub" :value="f.hub" @change="set('hub', $event.target.value)"><option value="">Todos</option>
           <option v-for="h in hubsSorted" :key="h.id" :value="h.id">{{ h.nome }} · {{ h.uf }}</option></select></div>
