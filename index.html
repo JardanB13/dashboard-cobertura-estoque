@@ -703,7 +703,6 @@ const CONV_DEF = {
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>';
 const ConvPanel = {
   template: `<section class="dst" aria-label="Triagem dos retirados">
-      <div class="kg-h"><span>Triagem: destino dos retirados</span><em>conversões no almoxarifado · {{ periodo }}</em></div>
       <div class="tri">
         <div class="tri-col">
           <div class="tri-h"><b>Resultado da triagem</b><span>{{ nf0.format(n) }} equipamentos testados{{ escopo }}</span></div>
@@ -765,7 +764,6 @@ const KPI_ICO = {
 const KpiStrip = {
   template: `<section class="kpis" aria-live="polite">
       <div v-for="g in groups" :key="g.t" class="kg" :class="g.cls">
-        <div class="kg-h"><span>{{ g.t }}</span><em v-if="g.x">{{ g.x }}</em></div>
         <div class="kg-c">
           <div v-for="k in g.items" :key="k.l" class="kpi" :class="k.w" :style="{'--c': k.c}">
             <div class="v">{{ k.v }}</div><div class="l">{{ k.l }}</div>
