@@ -1093,8 +1093,8 @@ const ConvPanel = {
     });
     const escopo = computed(() => (store.f.hub ? ` · ${HUB0.get(store.f.hub)?.nome || ""}` : ""));
     // filtro suspenso por região: Reaproveitado sempre visível; os demais status entram quando marcados
-    const opcoes = ["SUC", "DET", "DEF", "estorno", "aguardando", "naodev"].map(k => ({k, ...RET_DEF[k], cod: ["SUC", "DET", "DEF"].includes(k) && RET_DEF[k].t !== k ? k : ""}));
-    const grupos = [{t: "Resultado da triagem", itens: opcoes.slice(0, 3)}, {t: "Situação do retirado", itens: opcoes.slice(3)}];
+    const opcoes = ["SUC", "DET", "DEF"].map(k => ({k, ...RET_DEF[k], cod: ["SUC", "DET", "DEF"].includes(k) && RET_DEF[k].t !== k ? k : ""}));
+    const grupos = [{t: "Resultado da triagem", itens: opcoes}];
     const sel = reactive({all: [], ne: [], ss: []}), aberto = ref("");
     const tem = (reg, k) => sel[reg].includes(k);
     const nSel = reg => sel[reg].length;
@@ -1129,7 +1129,6 @@ const ConvPanel = {
       const it = (items, ks) => ks.filter(k => tem(g.reg, k)).map(k => ({k, ...RET_DEF[k], q: q(items, k)}));
       return [
         {t: "Resultado dos testes", n: g.cv.n, itens: it(g.cv.items, ["SUC", "DET", "DEF"])},
-        {t: "Situação dos retirados no mês", n: g.ret.n, itens: it(g.ret.items, ["estorno", "aguardando", "naodev"])},
       ].filter(d => d.itens.length);
     };
     return {blocos, escopo, periodo, meta: M, nf0, pct, opcoes, grupos, aberto, tem, nSel, alterna, todos, onToggle, ver, resumo, detalhes, verCat, porCat};
