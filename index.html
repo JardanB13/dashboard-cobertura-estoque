@@ -770,6 +770,7 @@ body{background:var(--bg)}
 .t2-crow .tr{height:5px;border-radius:99px;background:#e6eaf0;overflow:hidden}.t2-crow .tr i{display:block;height:100%;background:var(--c-reap);border-radius:99px}
 .t2-crow .q{font:600 13px var(--f-mono);text-align:right;color:var(--ink)}.t2-crow .p{font:500 11.5px var(--f-mono);text-align:right;color:var(--ink-3)}
 @media (max-width:900px){.tri2.com-cat .t2-top{grid-template-columns:1fr}.t2-cat{border-left:0;border-top:1px solid var(--line)}}
+.t2-tot{margin-top:4px;padding-top:9px;border-top:1px solid var(--line-2)}.t2-tot .nm,.t2-tot .q{font-weight:700;color:var(--ink)}
 </style>
 </head>
 <body>
@@ -1004,6 +1005,8 @@ const ConvPanel = {
             <div v-for="x in porCat(g)" :key="x.k" class="t2-crow">
               <span class="nm">{{ x.l }}</span><span class="tr"><i :style="{width: x.p * 100 + '%'}"></i></span>
               <span class="q">{{ nf0.format(x.q) }}</span><span class="p">{{ pct.format(x.p) }}</span></div>
+            <div class="t2-crow t2-tot"><span class="nm">Total</span><span></span>
+              <span class="q">{{ nf0.format(porCat(g).reduce((s, x) => s + x.q, 0)) }}</span><span class="p">100%</span></div>
           </aside></div>
           <div v-if="detalhes(g).length" class="t2-det">
             <div v-for="d in detalhes(g)" :key="d.t" class="t2-grp">
