@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -442,6 +442,57 @@ tbody tr:hover{background:var(--accent-soft)}
   .kg.eq .kpi.big{grid-column:1/-1}.kg.eq .kpi:last-child{grid-column:auto}
   .kpi.big .v{font-size:32px}
 }
+/* ===== Tema claro limpo v5 ===== */
+:root[data-theme="light"]{--bg:#f4f6f9;--surface:#fff;--surface-2:#f1f3f7;--line:#e3e7ee;--line-2:#d3d9e3;--ink:#111827;--ink-2:#4b5563;--ink-3:#8a94a6;
+  --bar:#ffffff;--bar-ink:#111827;--bar-ink-2:#8a94a6;--accent:#2563eb;--ok:#16a34a;--warn:#d97706;--crit:#dc2626;--sim:#4f46e5;
+  --shadow:0 1px 2px rgba(17,24,39,.04);--r:12px}
+body{background:var(--bg)}
+.appbar{background:#fff;border-bottom:1px solid var(--line);padding-block:18px}
+.appbar::after{display:none}
+.appbar h1{font-weight:700;font-size:clamp(20px,2.2vw,26px);color:var(--ink)}
+.appbar h1 .mes{color:var(--accent);font-weight:700}
+.appbar .hsub{margin:4px 0 0;font-size:13px;color:var(--ink-3)}
+.wrap{gap:22px}
+.filters{background:transparent;border:0;box-shadow:none;padding:0}
+.field label{letter-spacing:.02em;text-transform:none;font-size:12px;color:var(--ink-3)}
+.field select{background:#fff}
+.kg-h span{font-size:12px;font-weight:600;letter-spacing:.02em;text-transform:none;color:var(--ink-2)}
+.kpis{grid-template-columns:1fr}
+.kg.eq .kg-c{grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+.kpi,.kpi.big{background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);padding:18px 20px}
+.kpi::before{display:none}
+.kpi:hover{transform:none}
+.kpi .v{font-size:30px;font-weight:600;letter-spacing:-.02em;padding-right:0;color:var(--ink)}
+.kpi .l{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:13px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--ink-2)}
+.kpi .l::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c);flex:none}
+.kpi .s{font-size:12px;color:var(--ink-3)}
+.kpi .bar{height:5px;background:var(--surface-2)}
+.kpi.big{border-top:3px solid var(--c)}
+.kpi.big .v{font-size:42px;font-weight:700}
+.kpi.big .l{color:var(--ink);font-size:14px;font-weight:600}
+.dst{display:grid;gap:10px}
+.tri{display:grid;grid-template-columns:1fr 1fr;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.tri-col{padding:20px 24px;display:grid;gap:10px;align-content:start}
+.tri-col + .tri-col{border-left:1px solid var(--line)}
+.tri-h{display:grid;gap:2px;margin-bottom:4px}
+.tri-h b{font:600 15px/1.3 var(--f-display);color:var(--ink)}
+.tri-h span{font-size:12px;color:var(--ink-3)}
+.tri-row{display:grid;grid-template-columns:minmax(150px,190px) minmax(0,1fr) 62px 52px;gap:12px;align-items:center;font-size:13px}
+.tri-row .nm{display:flex;align-items:center;gap:8px;color:var(--ink-2);font-weight:500}
+.tri-row .nm i{width:8px;height:8px;border-radius:50%;background:var(--c);flex:none}
+.tri-row .nm code{font:500 10px var(--f-mono);color:var(--ink-3)}
+.tri-row .tr{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.tri-row .tr i{display:block;height:100%;border-radius:inherit;background:var(--c)}
+.tri-row .dsc{font-size:12px;color:var(--ink-3)}
+.tri-row .q{font:600 14px var(--f-mono);text-align:right;color:var(--ink)}
+.tri-row .p{font:500 12px var(--f-mono);text-align:right;color:var(--ink-3)}
+.tri-row.main .nm{color:var(--ink);font-weight:600}.tri-row.main .tr{height:10px}
+.st-bar{display:flex;gap:2px;height:10px;border-radius:99px;overflow:hidden;background:var(--surface-2);margin-bottom:4px}
+.st-bar i{display:block;min-width:3px;flex-basis:0}
+.dst-note{justify-self:start;max-width:none;margin:0;display:block;font-size:12px;color:var(--ink-3);text-align:left}
+@media (max-width:900px){.tri{grid-template-columns:1fr}.tri-col + .tri-col{border-left:0;border-top:1px solid var(--line)}}
+@media (max-width:640px){.kg.eq .kg-c{grid-template-columns:1fr 1fr;gap:10px}.kpi .v{font-size:24px}.kpi.big .v{font-size:32px}
+  .tri-col{padding:16px}.tri-row{grid-template-columns:minmax(0,1fr) 52px 46px;gap:8px}.tri-row .tr,.tri-row .dsc{grid-column:1/-1;grid-row:2}.tri-row .dsc{display:none}}
 </style>
 </head>
 <body>
@@ -529,7 +580,7 @@ const TABS = ["cob", "alm", "uf", "realoc", "corr"];
 const store = reactive({
   f: {hub: "", uf: "", band: "", q: ""},
   layers: {heat: true, cities: true, hubs: true, links: false, realoc: false, cluster: false},
-  weight: "cidades", base: "escuro", radiusKm: 30,
+  weight: "cidades", base: "claro", radiusKm: 30,
   tab: TABS.includes(safeLS.get("cob.tab")) ? safeLS.get("cob.tab") : "cob",
   sort: {}, focus: null, toast: "",
   sim: {on: false, pos: {}},
@@ -589,9 +640,10 @@ const MES_EXT = {jan: "Janeiro", fev: "Fevereiro", mar: "Março", abr: "Abril", 
   jul: "Julho", ago: "Agosto", set: "Setembro", out: "Outubro", nov: "Novembro", dez: "Dezembro"};
 const AppBar = {
   template: `<header class="appbar"><div class="in">
-      <h1>Controle de Equipamentos Aplicados <span class="mes">{{ mes }}</span></h1>
+      <div><h1>Controle de Equipamentos Aplicados <span class="mes">{{ mes }}</span></h1>
+      <p class="hsub">{{ nHubs }} almoxarifados · {{ nCid }} cidades atendidas · fonte SINAPSE</p></div>
     </div></header>`,
-  setup: () => ({mes: String(EQ.meta.periodo || "").slice(0, 3).toUpperCase()}),
+  setup: () => ({mes: String(EQ.meta.periodo || "").slice(0, 3).toUpperCase(), nHubs: HUBS0.length, nCid: nf0.format(new Set(BASE_ROWS.map(r => r.key)).size)}),
 };
 
 const FilterBar = {
@@ -615,54 +667,30 @@ const FilterBar = {
 const CONV = window.DADOS_CONVERSAO || null;
 const CONV_DEF = {
   REAP: {t: "Reaproveitado", c: "var(--ok)"}, SUC: {t: "Sucata", c: "var(--crit)"},
-  DET: {t: "DET", c: "var(--warn)"}, DEF: {t: "DEF", c: "var(--h2)"},
+  DET: {t: "DET", c: "#9aa4b5"}, DEF: {t: "DEF", c: "#c3cad6"},
 };
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>';
 const ConvPanel = {
-  template: `<section class="dst" aria-label="Destino dos equipamentos retirados">
-      <div class="kg-h"><span>Destino dos retirados · {{ periodo }}</span>
-        <div class="dst-seg" role="group" aria-label="Exibir">
-          <button type="button" :class="{on: !open}" :aria-pressed="!open" @click="open = false">Reaproveitamento</button>
-          <button type="button" :class="{on: open}" :aria-pressed="open" @click="open = true">Todos os destinos</button></div></div>
-      <div class="dst-card">
-        <div class="dst-hero">
-          <div class="ring" role="img" :aria-label="pct.format(p) + ' reaproveitado'">
-            <svg viewBox="0 0 120 120"><circle class="bg" cx="60" cy="60" r="52"/>
-              <circle class="fg" cx="60" cy="60" r="52" :stroke-dasharray="C" :stroke-dashoffset="C * (1 - p)"/></svg>
-            <div class="c"><b>{{ pct.format(p) }}</b><span>reaproveitado</span></div></div>
-          <div class="k"><span class="tag">RET → REAP</span>
-            <div class="n">{{ nf0.format(reap.q) }}</div>
-            <div class="t">aprovados como REAP na triagem, de <b>{{ nf0.format(n) }}</b> equipamentos testados{{ escopo }}</div></div>
+  template: `<section class="dst" aria-label="Triagem dos retirados">
+      <div class="kg-h"><span>Triagem dos retirados · {{ periodo }}</span></div>
+      <div class="tri">
+        <div class="tri-col">
+          <div class="tri-h"><b>Resultado da triagem</b><span>{{ nf0.format(n) }} equipamentos testados{{ escopo }}</span></div>
+          <div v-for="d in vals" :key="d.k" class="tri-row" :class="{main: d.k === 'REAP'}" :style="{'--c': d.c}">
+            <span class="nm"><i></i>{{ d.t }}<code v-if="d.t !== d.k">{{ d.k }}</code></span>
+            <span class="tr"><i :style="{width: w(d.q)}"></i></span>
+            <span class="q">{{ nf0.format(d.q) }}</span><span class="p">{{ pf(d.q) }}</span></div>
         </div>
-        <div class="dst-flow">
-          <div class="fl root" :style="{'--c': 'var(--ink-3)'}"><span class="nm">Equipamentos testados</span>
-            <span class="tr"><i style="width:100%"></i></span><span class="q">{{ nf0.format(n) }}</span><span class="p">100%</span></div>
-          <div class="fl main" :style="{'--c': reap.c}"><span class="nm"><i></i>{{ reap.t }} <code>REAP</code></span>
-            <span class="tr"><i :style="{width: w(reap.q)}"></i></span><span class="q">{{ nf0.format(reap.q) }}</span><span class="p">{{ pf(reap.q) }}</span></div>
-          <div class="fl grp" :class="{open}" :style="{'--c': 'var(--ink-3)'}" role="button" tabindex="0" :aria-expanded="open"
-            @click="open = !open" @keydown.enter.prevent="open = !open" @keydown.space.prevent="open = !open">
-            <span class="nm"><span v-html="chev"></span>Não reaproveitados</span>
-            <span class="tr"><i :style="{width: w(outros)}"></i></span><span class="q">{{ nf0.format(outros) }}</span><span class="p">{{ pf(outros) }}</span></div>
-          <div v-if="open" class="sub">
-            <div v-for="d in resto" :key="d.k" class="fl" :style="{'--c': d.c}"><span class="nm"><i></i>{{ d.t }}<code v-if="d.t !== d.k">{{ d.k }}</code></span>
-              <span class="tr"><i :style="{width: w(d.q)}"></i></span><span class="q">{{ nf0.format(d.q) }}</span><span class="p">{{ pf(d.q) }}</span></div>
-          </div>
+        <div v-if="st" class="tri-col">
+          <div class="tri-h"><b>Onde estão os {{ nf0.format(st.n) }} REAP</b><span>situação em {{ meta.ate.slice(0, 5) }}, rastreado por N° de série</span></div>
+          <div class="st-bar" role="img" :aria-label="st.aria">
+            <i v-for="x in st.items" :key="x.k" v-show="x.q" :style="{flexGrow: x.q, background: x.c}" :title="x.t + ': ' + nf0.format(x.q)"></i></div>
+          <div v-for="x in st.items" :key="x.k" class="tri-row" :style="{'--c': x.c}">
+            <span class="nm"><i></i>{{ x.t }}</span><span class="dsc">{{ x.d }}</span>
+            <span class="q">{{ nf0.format(x.q) }}</span><span class="p">{{ st.n ? pct.format(x.q / st.n) : "–" }}</span></div>
         </div>
       </div>
-      <div v-if="st" class="st-card">
-        <div class="st-h"><div><b>Onde estão os REAP convertidos</b>
-          <span>status em {{ meta.ate.slice(0, 5) }} de cada série que voltou do cliente e virou REAP{{ escopo }}</span></div>
-          <div class="st-tot"><b class="mono">{{ nf0.format(st.n) }}</b><span>séries rastreadas</span></div></div>
-        <div class="st-bar" role="img" :aria-label="st.aria">
-          <i v-for="x in st.items" :key="x.k" v-show="x.q" :style="{flexGrow: x.q, background: x.c}" :title="x.t + ': ' + nf0.format(x.q)"></i></div>
-        <div class="st-grid">
-          <div v-for="x in st.items" :key="x.k" class="st-it" :style="{'--c': x.c}">
-            <div class="st-top"><i></i><span>{{ x.t }}</span></div>
-            <div class="st-v"><b class="mono">{{ nf0.format(x.q) }}</b><em class="mono">{{ st.n ? pct.format(x.q / st.n) : "–" }}</em></div>
-            <p>{{ x.d }}</p></div>
-        </div>
-      </div>
-      <p class="dst-note"><span class="ic" aria-hidden="true">i</span><span>Os cards de cima mostram o <b>campo</b> (instalado e retirado no cliente) e este painel mostra o <b>almoxarifado</b> (triagem do que voltou, feita dias depois), por isso os totais de retirados não batem exatamente.</span></p>
+      <p class="dst-note">Cards de cima: <b>campo</b> (instalado e retirado no cliente). Este painel: <b>almoxarifado</b> (triagem feita dias depois) — por isso retirados e testados não são iguais.</p>
     </section>`,
   setup() {
     const D = CONV.meta.destinos, open = ref(false), C = 2 * Math.PI * 52;
@@ -681,9 +709,9 @@ const ConvPanel = {
     const escopo = computed(() => store.f.hub ? ` em ${HUB0.get(store.f.hub)?.nome || ""}` : "");
     const periodo = MES_EXT[String(CONV.meta.periodo).slice(0, 3)] || CONV.meta.periodo;
     const ST_DEF = {
-      instalado: {t: "Instalado no cliente", c: "var(--ok)", d: "voltou ao campo e já está em um cliente"},
-      tecnico: {t: "Com o técnico", c: "var(--warn)", d: "entregue ao técnico, ainda não instalado"},
-      almox: {t: "No almoxarifado", c: "var(--accent)", d: "convertido e parado no estoque"},
+      instalado: {t: "Instalado no cliente", c: "var(--ok)", d: "voltou ao campo"},
+      tecnico: {t: "Com o técnico", c: "var(--warn)", d: "entregue, não instalado"},
+      almox: {t: "No almoxarifado", c: "var(--accent)", d: "parado no estoque"},
     };
     const st = computed(() => {
       if (!CONV.status) return null;
@@ -691,7 +719,7 @@ const ConvPanel = {
       const items = K.map((k, i) => ({k, ...ST_DEF[k], q: sum(ids.map(h => (CONV.status[h] || [])[i] || 0))}));
       return {items, n: sum(items.map(x => x.q)), aria: items.map(x => `${x.t} ${x.q}`).join(", ")};
     });
-    return {open, C, n: n, reap, resto, outros, p, w, pf, escopo, periodo, chev: CHEV, nf0, pct, st, meta: CONV.meta};
+    return {open, C, n: n, vals, reap, resto, outros, p, w, pf, escopo, periodo, chev: CHEV, nf0, pct, st, meta: CONV.meta};
   },
 };
 const KPI_ICO = {
@@ -709,7 +737,6 @@ const KpiStrip = {
         <div class="kg-h"><span>{{ g.t }}</span><em v-if="g.x">{{ g.x }}</em></div>
         <div class="kg-c">
           <div v-for="k in g.items" :key="k.l" class="kpi" :class="k.w" :style="{'--c': k.c}">
-            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" v-html="k.i"></svg></span>
             <div class="v">{{ k.v }}</div><div class="l">{{ k.l }}</div>
             <div v-if="k.p != null" class="bar" role="img" :aria-label="k.s"><i :style="{width: (k.p * 100) + '%'}"></i></div>
             <div class="s">{{ k.s }}</div></div>
@@ -729,10 +756,6 @@ const KpiStrip = {
       if (typeof CONV !== "undefined" && CONV) (store.f.hub ? [store.f.hub] : Object.keys(CONV.hubs)).forEach(h => {
         const v = CONV.hubs[h] || []; ts.n += sum(v); ts.r += v[0] || 0; });
       return [
-        {t: "Cobertura", cls: "cov", items: [
-          {l: "Almoxarifados", v: nf0.format(new Set(rows.map(r => r.h)).size), s: `de ${HUBS0.length} na malha`, c: "var(--accent)", i: KPI_ICO.hub},
-          {l: "Cidades atendidas", v: nf0.format(new Set(rows.map(r => r.key)).size), s: `${nf0.format(rows.length)} vínculos almoxarifado → cidade`, c: "var(--h2)", i: KPI_ICO.city},
-        ]},
         {t: `Equipamentos · ${EQ.meta.periodo}`, cls: "eq", items: [
           {l: "Aplicados em cliente", v: nf0.format(apl), s: "novos + reaproveitados", c: "var(--sim)", i: KPI_ICO.total, w: "big"},
           {l: "Equip. novos", v: nf0.format(e.n), p: pn, s: `${pn != null ? pct.format(pn) : "–"} do aplicado`, c: "var(--accent)", i: KPI_ICO.novo},
