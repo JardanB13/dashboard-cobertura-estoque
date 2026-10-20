@@ -710,7 +710,7 @@ body{background:var(--bg)}
   .t1-head .nm{display:none}.t1-row .cell{grid-template-columns:1fr auto}.t1-row .cell .p{display:none}.t1-row .cell .tr{grid-column:1/-1;grid-row:2}}
 /* Triagem simplificada */
 .tri.tri2{display:block;padding:0}
-.t2-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.t2-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
 .t2-k{padding:24px 28px}
 .t2-k + .t2-k{border-left:1px solid var(--line)}
 .t2-v{font:600 30px/1 var(--f-mono);letter-spacing:-.03em;color:var(--ink)}
@@ -1003,11 +1003,10 @@ const ConvPanel = {
     // resumo simples: 3 números + detalhes dos status marcados no filtro
     const q = (items, k) => (items.find(x => x.k === k) || {}).q || 0;
     const resumo = g => {
-      const ap = q(g.cv.items, "REAP"), rr = q(g.ret.items, "REAP");
+      const ap = q(g.cv.items, "REAP");
       return [
         {k: "t", v: nf0.format(g.cv.n), l: "Equipamentos testados", s: "no almoxarifado, em " + periodo.toLowerCase(), p: null},
         {k: "a", v: nf0.format(ap), l: "Aprovados como reaproveitado", s: (g.cv.n ? pct.format(ap / g.cv.n) : "–") + " dos testados", p: g.cv.n ? ap / g.cv.n : 0, cls: "t2-main"},
-        {k: "r", v: nf0.format(rr), l: "Retirados no mês já reaproveitados", s: (g.ret.n ? pct.format(rr / g.ret.n) : "–") + " de " + nf0.format(g.ret.n) + " retirados em " + periodo.toLowerCase(), p: g.ret.n ? rr / g.ret.n : 0},
       ];
     };
     const detalhes = g => {
