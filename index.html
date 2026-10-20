@@ -557,7 +557,7 @@ body{background:var(--bg)}
 .tri-rh.sec-h{margin:6px 0 -6px}
 @media (max-width:760px){.regtabs{width:100%}.regtabs button{flex:1;min-width:0;padding:8px 10px}.regtabs button small{display:none}.field.hub-f{margin-left:0;flex:1 1 100%}}
 .tri-rh span{font-size:12px;color:var(--ink-3)}
-.tri-dd{margin-left:auto;position:relative}
+.tri-dd{position:relative}
 .tri-dd summary{list-style:none;display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 10px 0 12px;border:1px solid var(--line-2);border-radius:8px;background:var(--surface);font:600 12px var(--f-body);color:var(--ink);cursor:pointer;user-select:none}
 .tri-dd summary::-webkit-details-marker{display:none}
 .tri-dd summary .dot{width:8px;height:8px;border-radius:2px;background:var(--c-reap)}
@@ -565,7 +565,7 @@ body{background:var(--bg)}
 .tri-dd summary svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;transition:transform .15s}
 .tri-dd[open] summary{border-color:var(--navy)}
 .tri-dd[open] summary svg{transform:rotate(180deg)}
-.tri-pop{position:absolute;right:0;top:calc(100% + 6px);z-index:30;min-width:250px;padding:8px;background:var(--surface);border:1px solid var(--line-2);border-radius:10px;box-shadow:0 10px 30px rgba(15,23,42,.14);display:grid;gap:2px}
+.tri-pop{position:absolute;left:0;top:calc(100% + 6px);z-index:30;min-width:250px;padding:8px;background:var(--surface);border:1px solid var(--line-2);border-radius:10px;box-shadow:0 10px 30px rgba(15,23,42,.14);display:grid;gap:2px}
 .tri-pop label{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;font-size:12.5px;color:var(--ink);cursor:pointer}
 .tri-pop label:hover{background:var(--surface-2)}
 .tri-pop label.fix{cursor:default;font-weight:600;border-bottom:1px solid var(--line);border-radius:6px 6px 0 0;margin-bottom:2px}
@@ -576,7 +576,7 @@ body{background:var(--bg)}
 .tri-pop label code{margin-left:auto;font:600 10px var(--f-mono);color:var(--ink-3)}
 .tri-pop-a{display:flex;justify-content:space-between;gap:8px;padding:6px 4px 2px;border-top:1px solid var(--line);margin-top:2px}
 .tri-pop-a button{border:0;background:transparent;color:var(--navy);font:600 11.5px var(--f-body);cursor:pointer;padding:4px}
-@media (max-width:640px){.tri-pop{right:auto;left:0}}
+
 .tri-row.rest .nm{font-weight:500;color:var(--ink-3);font-size:12px}
 .tri-row.rest .q{color:var(--ink-3)}
 .tri.tri3{grid-template-columns:1fr 1fr}
@@ -797,7 +797,7 @@ const RET_DEF = {
 const ConvPanel = {
   template: `<section class="dst" aria-label="Triagem dos retirados por região">
       <div v-for="g in blocos" :key="g.reg" class="tri-reg">
-        <div class="tri-rh"><b>{{ g.titulo }}{{ escopo }}</b>
+        <div class="tri-rh">
           <details class="tri-dd" :open="aberto === g.reg" @toggle="onToggle(g.reg, $event)">
             <summary><span class="dot"></span>Reaproveitado<em v-if="nSel(g.reg)">+{{ nSel(g.reg) }} status</em><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
             <div class="tri-pop" role="group" aria-label="Status exibidos">
