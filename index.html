@@ -560,12 +560,14 @@ body{background:var(--bg)}
 .tri-pop label small{margin-left:auto;font-weight:500;color:var(--ink-3);font-size:11px}
 .tri-pop label i{width:9px;height:9px;border-radius:2px;background:var(--c);flex:none}
 .tri-pop input{accent-color:var(--navy);margin:0}
+.tri-pop-g{padding:8px 8px 3px;font:700 10px/1 var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.tri-pop label code{margin-left:auto;font:600 10px var(--f-mono);color:var(--ink-3)}
 .tri-pop-a{display:flex;justify-content:space-between;gap:8px;padding:6px 4px 2px;border-top:1px solid var(--line);margin-top:2px}
 .tri-pop-a button{border:0;background:transparent;color:var(--navy);font:600 11.5px var(--f-body);cursor:pointer;padding:4px}
 @media (max-width:640px){.tri-pop{right:auto;left:0}}
 .tri-row.rest .nm{font-weight:500;color:var(--ink-3);font-size:12px}
 .tri-row.rest .q{color:var(--ink-3)}
-.tri.tri3{grid-template-columns:1.15fr 1fr 1fr}
+.tri.tri3{grid-template-columns:1fr 1fr}
 .tri3 .tri-row{grid-template-columns:minmax(120px,1.2fr) minmax(40px,1fr) 60px 46px;gap:10px}
 .tri3 .tri-col{padding:18px 20px}
 .tri3 .tri-col + .tri-col{border-left:1px solid var(--line)}
@@ -788,7 +790,8 @@ const ConvPanel = {
             <summary><span class="dot"></span>Reaproveitado<em v-if="nSel(g.reg)">+{{ nSel(g.reg) }} status</em><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
             <div class="tri-pop" role="group" aria-label="Status exibidos">
               <label class="fix"><input type="checkbox" checked disabled><i style="--c:var(--c-reap)"></i>Reaproveitado <small>sempre visível</small></label>
-              <label v-for="o in opcoes" :key="o.k"><input type="checkbox" :checked="tem(g.reg, o.k)" @change="alterna(g.reg, o.k)"><i :style="{'--c': o.c}"></i>{{ o.t }}</label>
+              <template v-for="gr in grupos" :key="gr.t"><div class="tri-pop-g">{{ gr.t }}</div>
+              <label v-for="o in gr.itens" :key="o.k"><input type="checkbox" :checked="tem(g.reg, o.k)" @change="alterna(g.reg, o.k)"><i :style="{'--c': o.c}"></i>{{ o.t }}<code v-if="o.cod">{{ o.cod }}</code></label></template>
               <div class="tri-pop-a"><button type="button" @click="todos(g.reg, true)">Marcar todos</button><button type="button" @click="todos(g.reg, false)">Limpar</button></div>
             </div>
           </details></div>
@@ -806,15 +809,6 @@ const ConvPanel = {
               <span class="nm"><i></i>{{ x.t }}</span>
               <span class="tr"><i :style="{width: g.cv.n ? (x.q / g.cv.n * 100) + '%' : 0}"></i></span>
               <span class="q">{{ nf0.format(x.q) }}</span><span class="p">{{ g.cv.n ? pct.format(x.q / g.cv.n) : "–" }}</span></div>
-          </div>
-          <div class="tri-col">
-            <div class="tri-h"><b>Onde estão os {{ nf0.format(g.st.n) }} reaproveitados</b><span>situação em {{ meta.ate.slice(0, 5) }}, por N° de série</span></div>
-            <div class="st-bar" role="img" :aria-label="g.st.aria">
-              <i v-for="x in g.st.items" :key="x.k" v-show="x.q" :style="{flexGrow: x.q, background: x.c}" :title="x.t + ': ' + nf0.format(x.q)"></i></div>
-            <div v-for="x in g.st.items" :key="x.k" class="tri-row" :style="{'--c': x.c}">
-              <span class="nm"><i></i>{{ x.t }}</span>
-              <span class="tr"><i :style="{width: g.st.n ? (x.q / g.st.n * 100) + '%' : 0}"></i></span>
-              <span class="q">{{ x.na ? "s/ dado" : nf0.format(x.q) }}</span><span class="p">{{ x.na ? "" : g.st.n ? pct.format(x.q / g.st.n) : "–" }}</span></div>
           </div>
         </div>
       </div>
@@ -838,7 +832,8 @@ const ConvPanel = {
     });
     const escopo = computed(() => (store.f.hub ? ` · ${HUB0.get(store.f.hub)?.nome || ""}` : ""));
     // filtro suspenso por região: Reaproveitado sempre visível; os demais status entram quando marcados
-    const opcoes = ["SUC", "DET", "DEF", "estorno", "aguardando", "naodev"].map(k => ({k, ...RET_DEF[k]}));
+    const opcoes = ["SUC", "DET", "DEF", "estorno", "aguardando", "naodev"].map(k => ({k, ...RET_DEF[k], cod: ["SUC", "DET", "DEF"].includes(k) && RET_DEF[k].t !== k ? k : ""}));
+    const grupos = [{t: "Resultado da triagem", itens: opcoes.slice(0, 3)}, {t: "Situação do retirado", itens: opcoes.slice(3)}];
     const sel = reactive({ne: [], ss: []}), aberto = ref("");
     const tem = (reg, k) => sel[reg].includes(k);
     const nSel = reg => sel[reg].length;
@@ -852,7 +847,7 @@ const ConvPanel = {
       const vis = items.filter(x => x.k === "REAP" || tem(reg, x.k)), rest = items.filter(x => !vis.includes(x));
       return rest.length ? [...vis, {k: "_", t: "Demais situações", c: "#cbd5e1", q: sum(rest.map(x => x.q))}] : vis;
     };
-    return {blocos, escopo, periodo, meta: M, nf0, pct, opcoes, aberto, tem, nSel, alterna, todos, onToggle, ver};
+    return {blocos, escopo, periodo, meta: M, nf0, pct, opcoes, grupos, aberto, tem, nSel, alterna, todos, onToggle, ver};
   },
 };
 
