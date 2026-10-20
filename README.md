@@ -20,7 +20,7 @@ atualizar_conversao.py
 
 ```bash
 pip install -r requirements.txt
-python atualizar_equipamentos.py "C:\caminho\Relatorio_Aplicados_Retirados.xlsx"
+python atualizar_equipamentos.py "C:\caminho\Aplicados_Retirados_Nordeste.xlsx" "C:\caminho\Retirados_Sul_Sudeste.xlsx"
 python atualizar_conversao.py "C:\caminho\Movimentacao_Materiais.xlsx" "C:\caminho\Relatorio_Aplicados_Retirados.xlsx"
 ```
 
@@ -32,7 +32,8 @@ Depois suba `equipamentos.js` e `conversao.js` (Add file → Upload files → Co
 
 - Só itens com N° de Série (equipamentos); materiais de consumo ficam fora.
 - `REAP-` = reaproveitado · `RET-` = retirado do cliente · sem prefixo = novo.
-- Região pelo contrato: final 1 = PB, 2 = RN, 3 = PE, 4 = BA.
+- Estado da cidade pelo almoxarifado da coluna Projeto (ex.: OP-OSASCO → Osasco/SP); sem almoxarifado, pelo contrato (final 1 = PB, 2 = RN, 3 = PE, 4 = BA).
+- `atualizar_equipamentos.py` aceita várias planilhas do mesmo mês (ex.: Nordeste completo + Sul/Sudeste só retirados) e soma tudo.
 - Visão geral ("Todos") soma também as cidades sem almoxarifado vinculado; ao filtrar um almoxarifado, só as cidades dele.
 - Conversão (movimentação CM): saída `RET-` e entrada do destino (`REAP-`, `SUC-`, `DET-`, `DEF-`) para a mesma série.
 - Status de cada RET convertido em REAP no fim do período: **instalado** (aplicado no cliente depois da conversão),
