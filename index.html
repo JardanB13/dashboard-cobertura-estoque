@@ -827,6 +827,15 @@ body{background:var(--bg)}
 .card2{display:flex;flex-direction:column}
 .tri2.card2 .t2-top,.tri2.card2.com-cat .t2-top{flex:1;display:flex;flex-direction:column}
 .tri2.card2 .t2-kpis{flex:1}
+/* Aprovados por categoria (card testados) */
+.tc{animation:t2in .25s ease}
+.tc-tot{display:grid;justify-items:end;gap:2px}.tc-tot b{font:700 22px/1 var(--f-mono);color:var(--c-reap)}.tc-tot span{font-size:11.5px;color:var(--ink-3)}
+.tc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 40px;padding:14px 20px 18px}
+.tc-row{display:grid;grid-template-columns:minmax(120px,1fr) minmax(60px,1.2fr) 60px 48px;gap:12px;align-items:center;padding:7px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.tc-row .nm{font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tc-row .tr{height:6px;border-radius:99px;background:#edf0f5;overflow:hidden}.tc-row .tr i{display:block;height:100%;border-radius:99px;background:var(--c-reap)}
+.tc-row .q{font:600 14px var(--f-mono);text-align:right}.tc-row .p{font:500 12px var(--f-mono);text-align:right;color:var(--ink-3)}
+@media (max-width:760px){.tc-grid{grid-template-columns:1fr;padding:10px 16px 14px}.tc-row{grid-template-columns:minmax(0,1fr) 56px 46px}.tc-row .tr{display:none}}
 </style>
 </head>
 <body>
@@ -1185,6 +1194,31 @@ const CatPanel = {
     onMounted(() => document.addEventListener("click", fora));
     onBeforeUnmount(() => document.removeEventListener("click", fora));
     return {cats, nf0, pct, atual, aberto, escolher};
+  },
+};
+
+/* Ao clicar em "Equipamentos testados": aprovados como reaproveitado por categoria */
+const TestCat = {
+  template: `<section v-if="linhas.length" class="tc card2" aria-label="Aprovados como reaproveitado por categoria">
+      <header class="c2-h"><div class="c2-t"><span class="c2-k">Equipamentos testados · {{ periodo }}</span><b>Aprovados como reaproveitado, por categoria</b></div>
+        <div class="tc-tot"><b>{{ nf0.format(total) }}</b><span>aprovados</span></div></header>
+      <div class="tc-grid">
+        <div v-for="x in linhas" :key="x.k" class="tc-row">
+          <span class="nm">{{ x.l }}</span><span class="tr"><i :style="{width: x.p * 100 + '%'}"></i></span>
+          <span class="q">{{ nf0.format(x.q) }}</span><span class="p">{{ pct.format(x.p) }}</span></div>
+      </div>
+    </section>`,
+  setup() {
+    const periodo = MES_EXT[String(CONV.meta.periodo).slice(0, 3)] || CONV.meta.periodo;
+    const linhas = computed(() => {
+      const rc = CONV.reapCat || {}, acc = {};
+      const hs = store.f.hub ? [store.f.hub] : Object.keys(rc).filter(h => !store.f.reg || REG(h) === store.f.reg);
+      hs.forEach(h => Object.entries(rc[h] || {}).forEach(([k, n]) => { acc[k] = (acc[k] || 0) + n; }));
+      const tot = sum(Object.values(acc));
+      return Object.entries(acc).map(([k, q]) => ({k, l: CAT_T[k] || k, q, p: tot ? q / tot : 0})).sort((a, b) => b.q - a.q);
+    });
+    const total = computed(() => sum(linhas.value.map(x => x.q)));
+    return {linhas, total, periodo, nf0, pct};
   },
 };
 
@@ -1776,19 +1810,20 @@ const DataTabs = {
 
 /* --------------------------------- app -------------------------------- */
 createApp({
-  components: {AppBar, FilterBar, KpiStrip, CatPanel, ConvPanel, SimBar, MapPanel, SidePanel, Intel, DataTabs},
+  components: {AppBar, FilterBar, KpiStrip, TestCat, CatPanel, ConvPanel, SimBar, MapPanel, SidePanel, Intel, DataTabs},
   template: `<app-bar></app-bar>
     <main class="wrap">
       <filter-bar></filter-bar>
       <div class="tri-rh sec-h sec-top"><b><i>01</i>Equipamentos em campo</b></div>
       <kpi-strip class="over"></kpi-strip>
+      <test-cat v-if="verTest"></test-cat>
       <div class="tri-rh sec-h"><b><i>02</i>Cobertura por Cidades</b></div>
       <sim-bar></sim-bar>
       <section class="main"><map-panel></map-panel><side-panel></side-panel></section>
       <intel></intel>
     </main>
     <div v-if="toast" class="toast" role="status">{{ toast }}</div>`,
-  setup: () => ({toast: computed(() => store.toast), regiaoTxt: computed(() => (store.f.hub ? HUB0.get(store.f.hub)?.nome : REG_T[store.f.reg] || "Todas as regiões")), hasConv: !!CONV, hasCat: !!(EQ.meta.categorias || []).length, showConv: computed(() => !store.metric || ["ret", "test"].includes(store.metric))}),
+  setup: () => ({toast: computed(() => store.toast), verTest: computed(() => store.metric === "test" && !!CONV && !!CONV.reapCat), regiaoTxt: computed(() => (store.f.hub ? HUB0.get(store.f.hub)?.nome : REG_T[store.f.reg] || "Todas as regiões")), hasConv: !!CONV, hasCat: !!(EQ.meta.categorias || []).length, showConv: computed(() => !store.metric || ["ret", "test"].includes(store.metric))}),
 }).mount("#app");
 document.getElementById("boot").remove();
 </script>
