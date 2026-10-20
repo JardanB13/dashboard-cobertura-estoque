@@ -493,6 +493,37 @@ body{background:var(--bg)}
 @media (max-width:900px){.tri{grid-template-columns:1fr}.tri-col + .tri-col{border-left:0;border-top:1px solid var(--line)}}
 @media (max-width:640px){.kg.eq .kg-c{grid-template-columns:1fr 1fr;gap:10px}.kpi .v{font-size:24px}.kpi.big .v{font-size:32px}
   .tri-col{padding:16px}.tri-row{grid-template-columns:minmax(0,1fr) 52px 46px;gap:8px}.tri-row .tr,.tri-row .dsc{grid-column:1/-1;grid-row:2}.tri-row .dsc{display:none}}
+/* ===== Sistema visual v6: técnico e sóbrio ===== */
+:root[data-theme="light"]{--bg:#e6eaf0;--surface:#fff;--surface-2:#eef1f5;--line:#d9dee6;--line-2:#c5ccd7;
+  --ink:#0f1c2e;--ink-2:#3d4a5c;--ink-3:#6b778a;--accent:#1f4f8f;--accent-soft:#e3ebf6;--accent-ink:#173d70;
+  --navy:#16365f;--c-novo:#4a7fc1;--c-reap:#0f766e;--c-ret:#64748b;--c-att:#b45309;
+  --h1:#16365f;--h2:#2a5ea6;--h3:#4a7fc1;--h4:#7ba3d4;--h5:#bcd2ec;--sim:#1f4f8f;
+  --shadow:0 1px 2px rgba(15,28,46,.06),0 1px 1px rgba(15,28,46,.03);--r:8px}
+.appbar{border-bottom:1px solid var(--line)}
+.appbar h1 .mes{color:var(--accent)}
+.wrap{gap:18px;padding-block:22px 40px}
+.kg-h{display:flex;align-items:baseline;gap:12px;padding:0 0 8px;border-bottom:1px solid var(--line-2);margin-bottom:4px}
+.kg-h span{font:700 14px/1.2 var(--f-display);letter-spacing:0;text-transform:none;color:var(--ink)}
+.kg-h em{font:400 12px var(--f-body);font-style:normal;color:var(--ink-3)}
+.kg-h.sec3{margin-top:6px}
+.dst .kg-h{justify-content:flex-start}
+.kpi,.kpi.big,.tri,.mapcard,.side,.card,.panel{border-color:var(--line);box-shadow:var(--shadow);border-radius:var(--r)}
+.kpi .l::before{border-radius:2px}
+.kpi .v{font-weight:600}
+.kpi.big{background:var(--navy);border-color:var(--navy);border-top:0}
+.kpi.big .v{color:#fff}.kpi.big .l{color:#fff}.kpi.big .l::before{background:#9fb9dc}.kpi.big .s{color:#b9c8dd}
+.kpi .bar{height:4px;border-radius:2px}.kpi .bar i{border-radius:2px}
+.tri-row .nm i{border-radius:2px}
+.tri-row .tr,.tri-row .tr i,.st-bar{border-radius:2px}
+.st-bar{gap:1px}
+.ramp{background:linear-gradient(90deg,#bcd2ec,#4a7fc1,#16365f)}
+.gbar i,.hbar{background:var(--accent)}
+.hubmk .sq,.hubmk.sel .sq{background:var(--navy)}
+.hubmk.sel .sq::after{border-color:var(--navy)}
+.side .hd h2::before{background:var(--navy)}
+.seg button.on,.seg .on{background:var(--accent);border-color:var(--accent)}
+.chip{background:var(--accent-soft);color:var(--accent-ink)}
+@media (max-width:640px){.kg-h{flex-direction:column;gap:2px}}
 </style>
 </head>
 <body>
@@ -666,13 +697,13 @@ const FilterBar = {
 /* Conversão de materiais (SINAPSE): destino dos equipamentos retirados (RET-) */
 const CONV = window.DADOS_CONVERSAO || null;
 const CONV_DEF = {
-  REAP: {t: "Reaproveitado", c: "var(--ok)"}, SUC: {t: "Sucata", c: "var(--crit)"},
-  DET: {t: "DET", c: "#9aa4b5"}, DEF: {t: "DEF", c: "#c3cad6"},
+  REAP: {t: "Reaproveitado", c: "var(--c-reap)"}, SUC: {t: "Sucata", c: "#475569"},
+  DET: {t: "DET", c: "#94a3b8"}, DEF: {t: "DEF", c: "#cbd5e1"},
 };
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>';
 const ConvPanel = {
   template: `<section class="dst" aria-label="Triagem dos retirados">
-      <div class="kg-h"><span>Triagem dos retirados · {{ periodo }}</span></div>
+      <div class="kg-h"><span>2 · Triagem: destino dos retirados</span><em>conversões no almoxarifado · {{ periodo }}</em></div>
       <div class="tri">
         <div class="tri-col">
           <div class="tri-h"><b>Resultado da triagem</b><span>{{ nf0.format(n) }} equipamentos testados{{ escopo }}</span></div>
@@ -709,9 +740,9 @@ const ConvPanel = {
     const escopo = computed(() => store.f.hub ? ` em ${HUB0.get(store.f.hub)?.nome || ""}` : "");
     const periodo = MES_EXT[String(CONV.meta.periodo).slice(0, 3)] || CONV.meta.periodo;
     const ST_DEF = {
-      instalado: {t: "Instalado no cliente", c: "var(--ok)", d: "voltou ao campo"},
-      tecnico: {t: "Com o técnico", c: "var(--warn)", d: "entregue, não instalado"},
-      almox: {t: "No almoxarifado", c: "var(--accent)", d: "parado no estoque"},
+      instalado: {t: "Instalado no cliente", c: "var(--c-reap)", d: "voltou ao campo"},
+      tecnico: {t: "Com o técnico", c: "var(--c-att)", d: "entregue, não instalado"},
+      almox: {t: "No almoxarifado", c: "#94a3b8", d: "parado no estoque"},
     };
     const st = computed(() => {
       if (!CONV.status) return null;
@@ -756,12 +787,12 @@ const KpiStrip = {
       if (typeof CONV !== "undefined" && CONV) (store.f.hub ? [store.f.hub] : Object.keys(CONV.hubs)).forEach(h => {
         const v = CONV.hubs[h] || []; ts.n += sum(v); ts.r += v[0] || 0; });
       return [
-        {t: `Equipamentos · ${EQ.meta.periodo}`, cls: "eq", items: [
-          {l: "Aplicados em cliente", v: nf0.format(apl), s: "novos + reaproveitados", c: "var(--sim)", i: KPI_ICO.total, w: "big"},
-          {l: "Equip. novos", v: nf0.format(e.n), p: pn, s: `${pn != null ? pct.format(pn) : "–"} do aplicado`, c: "var(--accent)", i: KPI_ICO.novo},
-          {l: "Aplicados REAP", v: nf0.format(e.r), p: pr, s: `${pr != null ? pct.format(pr) : "–"} do aplicado`, c: "var(--ok)", i: KPI_ICO.reap},
-          {l: "Retirados de clientes", v: nf0.format(e.t), s: `${nf0.format(e.cid)} cidades${geral && fo.cid ? ` (${nf0.format(fo.cid)} sem almox.)` : " com dados"}`, c: "var(--warn)", i: KPI_ICO.ret, w: "half"},
-          {l: "Equipamentos testados", v: nf0.format(ts.n), p: ts.n ? ts.r / ts.n : null, s: `${ts.n ? pct.format(ts.r / ts.n) : "–"} aprovados como REAP na triagem`, c: "var(--h2)", i: KPI_ICO.test, w: "half"},
+        {t: "1 · Campo: aplicação e retirada", x: `Equipamentos com N° de série · ${EQ.meta.periodo}`, cls: "eq", items: [
+          {l: "Aplicados em cliente", v: nf0.format(apl), s: "novos + reaproveitados", c: "var(--navy)", i: KPI_ICO.total, w: "big"},
+          {l: "Equipamentos novos", v: nf0.format(e.n), p: pn, s: `${pn != null ? pct.format(pn) : "–"} do total aplicado`, c: "var(--c-novo)", i: KPI_ICO.novo},
+          {l: "Reaproveitados (REAP)", v: nf0.format(e.r), p: pr, s: `${pr != null ? pct.format(pr) : "–"} do total aplicado`, c: "var(--c-reap)", i: KPI_ICO.reap},
+          {l: "Retirados de clientes", v: nf0.format(e.t), s: `${nf0.format(e.cid)} cidades${geral && fo.cid ? ` (${nf0.format(fo.cid)} sem almox.)` : " com dados"}`, c: "var(--c-ret)", i: KPI_ICO.ret, w: "half"},
+          {l: "Equipamentos testados", v: nf0.format(ts.n), p: ts.n ? ts.r / ts.n : null, s: `${ts.n ? pct.format(ts.r / ts.n) : "–"} aprovados como REAP`, c: "var(--c-reap)", i: KPI_ICO.test, w: "half"},
         ]},
       ];
     });
@@ -896,8 +927,8 @@ const LBL = {
   claro: {"text-color": "#0e1a2e", "text-halo-color": "#ffffff", "text-halo-width": 1.6},
 };
 const tile = p => `${ESRI}${p}/MapServer/tile/{z}/{y}/{x}`;
-const PLASMA = ["interpolate", ["linear"], ["heatmap-density"], 0, "rgba(42,10,107,0)", 0.12, "rgba(91,15,179,.55)", 0.3, "#8a1bb0",
-  0.5, "#d0307c", 0.68, "#f25a4a", 0.85, "#fb9a2b", 1, "#fde047"];
+const PLASMA = ["interpolate", ["linear"], ["heatmap-density"], 0, "rgba(30,64,120,0)", 0.15, "rgba(147,183,226,.45)", 0.35, "#7ba3d4",
+  0.55, "#4a7fc1", 0.75, "#2a5ea6", 1, "#16365f"];
 
 const MapPanel = {
   template: `<div class="mapcard">
@@ -968,11 +999,11 @@ const MapPanel = {
       map.addLayer({id: "realoc", type: "line", source: "realoc", layout: {"line-cap": "round"}, paint: {"line-color": "#7c3aed", "line-width": 2.2, "line-dasharray": [1.5, 1.5]}});
       map.addLayer({id: "pts", type: "circle", source: "cities", paint: {
         "circle-radius": ["interpolate", ["linear"], ["zoom"], 4, 3, 8, 4.5, 12, 6.5], "circle-color": "#ffffff",
-        "circle-stroke-color": ["case", ["==", ["get", "a"], 1], "#f98d2b", "#0f2240"], "circle-stroke-width": ["case", ["==", ["get", "a"], 1], 2, 1.5]}});
+        "circle-stroke-color": ["case", ["==", ["get", "a"], 1], "#b07a2a", "#16365f"], "circle-stroke-width": ["case", ["==", ["get", "a"], 1], 2, 1.5]}});
       map.addLayer({id: "pts-lbl", type: "symbol", source: "cities", minzoom: 7, layout: {"text-field": ["get", "n"], "text-font": ["Noto Sans Regular"],
         "text-size": 11, "text-offset": [0.8, 0], "text-anchor": "left", "text-optional": true}, paint: LBL[store.base] || LBL.escuro});
       map.addLayer({id: "cl", type: "circle", source: "cities-cl", filter: ["has", "point_count"], paint: {
-        "circle-color": ["step", ["get", "point_count"], "#5b0fb3", 8, "#b0209e", 20, "#e8445a"], "circle-radius": ["step", ["get", "point_count"], 14, 8, 18, 20, 24],
+        "circle-color": ["step", ["get", "point_count"], "#4a7fc1", 8, "#2a5ea6", 20, "#16365f"], "circle-radius": ["step", ["get", "point_count"], 14, 8, 18, 20, 24],
         "circle-stroke-color": "#fff", "circle-stroke-width": 2}});
       map.addLayer({id: "cl-n", type: "symbol", source: "cities-cl", filter: ["has", "point_count"], layout: {"text-field": ["get", "point_count_abbreviated"],
         "text-font": ["Noto Sans Regular"], "text-size": 12}, paint: {"text-color": "#fff"}});
@@ -1314,6 +1345,7 @@ createApp({
       <filter-bar></filter-bar>
       <kpi-strip></kpi-strip>
       <conv-panel v-if="hasConv"></conv-panel>
+      <div class="kg-h sec3"><span>3 · Cobertura: almoxarifados, cidades e distâncias</span><em>mapa e tabelas de apoio</em></div>
       <sim-bar></sim-bar>
       <section class="main"><map-panel></map-panel><side-panel></side-panel></section>
       <intel></intel>
