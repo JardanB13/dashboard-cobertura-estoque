@@ -760,6 +760,16 @@ body{background:var(--bg)}
 .cat1-k .cat-s{margin-top:8px;font-size:12.5px;color:var(--ink-2);font-weight:500}
 @media (max-width:760px){.tri.cat1{grid-template-columns:1fr 1fr}.cat1-k.cat1-main{grid-column:1/-1}.cat1-k{padding:16px 18px}
   .cat1-k + .cat1-k{border-left:0;border-top:1px solid var(--line)}.cat1-k:nth-child(3){border-left:1px solid var(--line)}.cat-dd summary{min-width:0}}
+/* Aprovados por categoria (card testados selecionado) */
+.t2-top{display:grid;grid-template-columns:1fr}
+.tri2.com-cat .t2-top{grid-template-columns:minmax(0,2fr) minmax(260px,1fr)}
+.t2-cat{border-left:1px solid var(--line);padding:20px 24px;background:#fafbfd;animation:t2in .25s ease}
+@keyframes t2in{from{opacity:0;transform:translateX(6px)}to{opacity:1;transform:none}}
+.t2-crow{display:grid;grid-template-columns:minmax(110px,1fr) 56px 52px 42px;gap:10px;align-items:center;padding:5px 0;font-size:12.5px}
+.t2-crow .nm{color:var(--ink);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.t2-crow .tr{height:5px;border-radius:99px;background:#e6eaf0;overflow:hidden}.t2-crow .tr i{display:block;height:100%;background:var(--c-reap);border-radius:99px}
+.t2-crow .q{font:600 13px var(--f-mono);text-align:right;color:var(--ink)}.t2-crow .p{font:500 11.5px var(--f-mono);text-align:right;color:var(--ink-3)}
+@media (max-width:900px){.tri2.com-cat .t2-top{grid-template-columns:1fr}.t2-cat{border-left:0;border-top:1px solid var(--line)}}
 </style>
 </head>
 <body>
@@ -981,14 +991,20 @@ const ConvPanel = {
               <div class="tri-pop-a"><button type="button" @click="todos(g.reg, true)">Marcar todos</button><button type="button" @click="todos(g.reg, false)">Limpar</button></div>
             </div>
           </details></div>
-        <div class="tri tri2">
-          <div class="t2-kpis">
+        <div class="tri tri2" :class="{'com-cat': verCat}">
+          <div class="t2-top"><div class="t2-kpis">
             <div v-for="t in resumo(g)" :key="t.k" class="t2-k" :class="t.cls">
               <div class="t2-v">{{ t.v }}</div>
               <div class="t2-l">{{ t.l }}</div>
               <div class="t2-s">{{ t.s }}</div>
               <div v-if="t.p != null" class="t2-bar"><i :style="{width: (t.p * 100) + '%'}"></i></div></div>
           </div>
+          <aside v-if="verCat" class="t2-cat" aria-label="Aprovados como reaproveitado por categoria">
+            <div class="t2-gt">Aprovados por categoria</div>
+            <div v-for="x in porCat(g)" :key="x.k" class="t2-crow">
+              <span class="nm">{{ x.l }}</span><span class="tr"><i :style="{width: x.p * 100 + '%'}"></i></span>
+              <span class="q">{{ nf0.format(x.q) }}</span><span class="p">{{ pct.format(x.p) }}</span></div>
+          </aside></div>
           <div v-if="detalhes(g).length" class="t2-det">
             <div v-for="d in detalhes(g)" :key="d.t" class="t2-grp">
               <div class="t2-gt">{{ d.t }}</div>
@@ -1042,6 +1058,14 @@ const ConvPanel = {
         {k: "a", v: nf0.format(ap), l: "Aprovados como reaproveitado", s: (g.cv.n ? pct.format(ap / g.cv.n) : "–") + " dos testados", p: g.cv.n ? ap / g.cv.n : 0, cls: "t2-main"},
       ];
     };
+    // aprovados como reaproveitado por categoria (aparece ao clicar no card "Equipamentos testados")
+    const verCat = computed(() => store.metric === "test" && !!CONV.reapCat);
+    const porCat = g => {
+      const acc = {};
+      ids(CONV.reapCat, g.reg).forEach(h => Object.entries(CONV.reapCat[h] || {}).forEach(([k, n]) => { acc[k] = (acc[k] || 0) + n; }));
+      const tot = sum(Object.values(acc));
+      return Object.entries(acc).map(([k, q]) => ({k, l: CAT_T[k] || k, q, p: tot ? q / tot : 0})).sort((a, b) => b.q - a.q);
+    };
     const detalhes = g => {
       const it = (items, ks) => ks.filter(k => tem(g.reg, k)).map(k => ({k, ...RET_DEF[k], q: q(items, k)}));
       return [
@@ -1049,7 +1073,7 @@ const ConvPanel = {
         {t: "Situação dos retirados no mês", n: g.ret.n, itens: it(g.ret.items, ["estorno", "aguardando", "naodev"])},
       ].filter(d => d.itens.length);
     };
-    return {blocos, escopo, periodo, meta: M, nf0, pct, opcoes, grupos, aberto, tem, nSel, alterna, todos, onToggle, ver, resumo, detalhes};
+    return {blocos, escopo, periodo, meta: M, nf0, pct, opcoes, grupos, aberto, tem, nSel, alterna, todos, onToggle, ver, resumo, detalhes, verCat, porCat};
   },
 };
 

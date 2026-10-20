@@ -21,7 +21,7 @@ atualizar_conversao.py
 ```bash
 pip install -r requirements.txt
 python atualizar_equipamentos.py "C:\caminho\Aplicados_Nordeste.xlsx" "C:\caminho\Aplicados_Sul_Sudeste.xlsx" --categorias "C:\caminho\CATEGORIA_TECNOLOGICA_DOS_EQUIPAMENTOS.xlsx"
-python atualizar_conversao.py "C:\caminho\Movimentacao_Nordeste.xlsx" "C:\caminho\Aplicados_Nordeste.xlsx" "C:\caminho\Movimentacao_Sul.xlsx" "C:\caminho\Aplicados_Sul_Sudeste.xlsx"
+python atualizar_conversao.py "C:\caminho\Movimentacao_Nordeste.xlsx" "C:\caminho\Aplicados_Nordeste.xlsx" "C:\caminho\Movimentacao_Sul.xlsx" "C:\caminho\Aplicados_Sul_Sudeste.xlsx" --categorias "C:\caminho\CATEGORIA_TECNOLOGICA_DOS_EQUIPAMENTOS.xlsx"
 ```
 
 Depois suba `equipamentos.js` e `conversao.js` (Add file → Upload files → Commit changes). O site atualiza sozinho em ~1 minuto.
