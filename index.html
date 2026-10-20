@@ -743,6 +743,23 @@ body{background:var(--bg)}
 .cat-ret{margin-top:auto;padding-top:12px;border-top:1px dashed var(--line);margin-block-start:12px;font-size:12px;color:var(--ink-3)}
 .cat-ret b{font:600 13px var(--f-mono);color:var(--ink-2);margin-left:4px}
 @media (max-width:640px){.cats{grid-template-columns:1fr 1fr;gap:10px}.cat-t{padding:16px}.cat-v{font-size:22px}}
+/* Categoria: filtro suspenso + faixa única */
+.cats1{display:grid;gap:12px}
+.cat-dd summary{min-width:220px}
+.cat-dd summary svg{margin-left:auto}
+.cat-dd .tri-pop{min-width:280px}
+.cat-opt{display:flex;justify-content:space-between;align-items:center;gap:16px;width:100%;padding:9px 10px;border:0;border-radius:8px;background:transparent;font:500 13px var(--f-body);color:var(--ink);cursor:pointer;text-align:left}
+.cat-opt b{font:600 12.5px var(--f-mono);color:var(--ink-3)}
+.cat-opt:hover{background:var(--surface-2)}
+.cat-opt.on{background:color-mix(in srgb,var(--navy) 8%,#fff);font-weight:700}.cat-opt.on b{color:var(--navy)}
+.tri.cat1{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;padding:0}
+.cat1-k{padding:22px 26px}
+.cat1-k + .cat1-k{border-left:1px solid var(--line)}
+.cat1-k .cat-v{margin-top:0;font-size:32px}
+.cat1-k .cat-v.sm{font-size:26px}
+.cat1-k .cat-s{margin-top:8px;font-size:12.5px;color:var(--ink-2);font-weight:500}
+@media (max-width:760px){.tri.cat1{grid-template-columns:1fr 1fr}.cat1-k.main{grid-column:1/-1}.cat1-k{padding:16px 18px}
+  .cat1-k + .cat1-k{border-left:0;border-top:1px solid var(--line)}.cat1-k:nth-child(3){border-left:1px solid var(--line)}.cat-dd summary{min-width:0}}
 </style>
 </head>
 <body>
@@ -1049,15 +1066,20 @@ const KPI_ICO = {
 const CAT_T = {"ONT WIFI 6": "ONT Wi-Fi 6", "ONT 5G": "ONT 5G", "ONU": "ONU", "ROTEADOR WIFI 6": "Roteador Wi-Fi 6", "ROTEADOR 5G": "Roteador 5G",
   "ROTEADOR 5G MESH": "Roteador 5G Mesh", "RADIO": "Rádio", "OUTROS": "Outros"};
 const CatPanel = {
-  template: `<section class="cats" aria-label="Equipamentos por categoria">
-      <div v-for="c in cats" :key="c.k" class="cat-t" :class="{dimc: !c.ap && !c.t}">
-        <div class="cat-n">{{ c.l }}</div>
-        <div class="cat-v">{{ nf0.format(c.ap) }}</div>
-        <div class="cat-s">aplicados em cliente</div>
-        <div class="cat-bar" role="img" :aria-label="'Novos ' + c.n + ', reaproveitados ' + c.r">
-          <i :style="{flexGrow: c.n, background: 'var(--c-novo)'}"></i><i :style="{flexGrow: c.r, background: 'var(--c-reap)'}"></i></div>
-        <div class="cat-d"><span><em style="--lc:var(--c-novo)"></em>Novos <b>{{ nf0.format(c.n) }}</b></span><span><em style="--lc:var(--c-reap)"></em>Reaprov. <b>{{ nf0.format(c.r) }}</b></span></div>
-        <div class="cat-ret">Retirados <b>{{ nf0.format(c.t) }}</b></div>
+  template: `<section class="cats1" aria-label="Equipamentos por categoria">
+      <details class="tri-dd cat-dd" :open="aberto" @toggle="aberto = $event.target.open">
+        <summary><span class="dot" style="background:var(--navy)"></span>{{ atual ? atual.l : "Categoria" }}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+        <div class="tri-pop" role="listbox" aria-label="Categoria">
+          <button v-for="c in cats" :key="c.k" type="button" role="option" class="cat-opt" :class="{on: atual && c.k === atual.k}" :aria-selected="atual && c.k === atual.k" @click="escolher(c.k)">
+            <span>{{ c.l }}</span><b>{{ nf0.format(c.ap) }}</b></button>
+        </div>
+      </details>
+      <div v-if="atual" class="tri cat1">
+        <div class="cat1-k main"><div class="cat-v">{{ nf0.format(atual.ap) }}</div><div class="cat-s">Aplicados em cliente</div>
+          <div class="cat-bar"><i :style="{flexGrow: atual.n, background: 'var(--c-novo)'}"></i><i :style="{flexGrow: atual.r, background: 'var(--c-reap)'}"></i></div></div>
+        <div class="cat1-k"><div class="cat-v sm" style="color:var(--c-novo)">{{ nf0.format(atual.n) }}</div><div class="cat-s">Novos · {{ atual.ap ? pct.format(atual.n / atual.ap) : "–" }}</div></div>
+        <div class="cat1-k"><div class="cat-v sm" style="color:var(--c-reap)">{{ nf0.format(atual.r) }}</div><div class="cat-s">Reaproveitados · {{ atual.ap ? pct.format(atual.r / atual.ap) : "–" }}</div></div>
+        <div class="cat1-k"><div class="cat-v sm" style="color:var(--ink-2)">{{ nf0.format(atual.t) }}</div><div class="cat-s">Retirados de clientes</div></div>
       </div>
     </section>`,
   setup() {
@@ -1073,7 +1095,13 @@ const CatPanel = {
         return {k, l: CAT_T[k] || k, n: v[0], r: v[1], t: v[2], ap: v[0] + v[1]}; })
         .filter(c => c.ap || c.t).sort((a, b) => (a.k === "OUTROS") - (b.k === "OUTROS") || (b.ap - a.ap) || (b.t - a.t));
     });
-    return {cats, nf0};
+    const escolhida = ref(""), aberto = ref(false);
+    const atual = computed(() => cats.value.find(c => c.k === escolhida.value) || cats.value[0] || null);
+    const escolher = k => { escolhida.value = k; aberto.value = false; };
+    const fora = e => { if (aberto.value && !e.target.closest(".cat-dd")) aberto.value = false; };
+    onMounted(() => document.addEventListener("click", fora));
+    onBeforeUnmount(() => document.removeEventListener("click", fora));
+    return {cats, nf0, pct, atual, aberto, escolher};
   },
 };
 
