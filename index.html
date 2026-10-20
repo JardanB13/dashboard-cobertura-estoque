@@ -797,7 +797,7 @@ const RET_DEF = {
 const ConvPanel = {
   template: `<section class="dst" aria-label="Triagem dos retirados por região">
       <div v-for="g in blocos" :key="g.reg" class="tri-reg">
-        <div class="tri-rh"><b>Triagem dos retirados</b><span>{{ g.titulo }}{{ escopo }} · {{ periodo }} · no almoxarifado, por N° de série</span>
+        <div class="tri-rh"><b>{{ g.titulo }}{{ escopo }}</b>
           <details class="tri-dd" :open="aberto === g.reg" @toggle="onToggle(g.reg, $event)">
             <summary><span class="dot"></span>Reaproveitado<em v-if="nSel(g.reg)">+{{ nSel(g.reg) }} status</em><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
             <div class="tri-pop" role="group" aria-label="Status exibidos">
@@ -1459,10 +1459,10 @@ createApp({
   template: `<app-bar></app-bar>
     <main class="wrap">
       <filter-bar></filter-bar>
-      <div class="tri-rh sec-h"><b>Equipamentos em campo</b><span>{{ regiaoTxt }} · instalados e retirados no cliente</span></div>
+      <div class="tri-rh sec-h"><b>Equipamentos em campo</b></div>
       <kpi-strip></kpi-strip>
       <conv-panel v-if="hasConv && showConv"></conv-panel>
-      <div class="tri-rh sec-h"><b>Cobertura dos almoxarifados</b><span>{{ regiaoTxt }} · cidades atendidas e distâncias por estrada</span></div>
+      <div class="tri-rh sec-h"><b>Cobertura por Cidades</b></div>
       <sim-bar></sim-bar>
       <section class="main"><map-panel></map-panel><side-panel></side-panel></section>
       <intel></intel>
