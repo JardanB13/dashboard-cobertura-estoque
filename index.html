@@ -686,6 +686,28 @@ body{background:var(--bg)}
 .filters ~ .kpis{position:relative}
 .side header span{display:none}
 
+/* Triagem em um card só */
+.tri.tri1{display:block;padding:8px 28px 14px}
+.t1-row{display:grid;grid-template-columns:minmax(170px,1fr) minmax(0,1.6fr) minmax(0,1.6fr);gap:28px;align-items:center;padding:12px 0}
+.t1-row + .t1-row{border-top:1px dashed var(--line)}
+.t1-head{padding:16px 0 12px;border-bottom:1px solid var(--line)!important}
+.t1-head .nm{align-self:end;font:600 11px var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.t1-head .cell,.t1-row.t1-head .cell{display:grid;grid-template-columns:1fr;gap:3px}
+.t1-head .cell b{font:700 14.5px/1.2 var(--f-display);color:var(--ink)}
+.t1-head .cell small{font-size:12px;color:var(--ink-3)}
+.t1-row .nm{display:flex;align-items:center;gap:9px;font:600 13.5px var(--f-body);color:var(--ink)}
+.t1-row .nm i{width:9px;height:9px;border-radius:3px;background:var(--c);flex:none}
+.t1-row .cell{display:grid;grid-template-columns:minmax(40px,1fr) 64px 50px;gap:12px;align-items:center}
+.t1-row .cell.na{grid-template-columns:1fr}
+.t1-row .tr{height:8px;border-radius:99px;background:#edf0f5;overflow:hidden}
+.t1-row .tr i{display:block;height:100%;border-radius:99px;background:var(--c)}
+.t1-row .q{font:600 15px var(--f-mono);text-align:right;color:var(--ink)}
+.t1-row .cell.na .q{text-align:left;color:var(--line-2);font-weight:500}
+.t1-row .p{font:500 12px var(--f-mono);text-align:right;color:var(--ink-3)}
+.t1-row.main .q{font-size:18px;color:var(--c-reap)}
+.t1-row.rest .nm,.t1-row.rest .q{color:var(--ink-3);font-weight:500}
+@media (max-width:900px){.tri.tri1{padding:6px 18px 12px}.t1-row{grid-template-columns:1fr 1fr;gap:8px 16px}.t1-row .nm{grid-column:1/-1}
+  .t1-head .nm{display:none}.t1-row .cell{grid-template-columns:1fr auto}.t1-row .cell .p{display:none}.t1-row .cell .tr{grid-column:1/-1;grid-row:2}}
 </style>
 </head>
 <body>
@@ -906,21 +928,17 @@ const ConvPanel = {
               <div class="tri-pop-a"><button type="button" @click="todos(g.reg, true)">Marcar todos</button><button type="button" @click="todos(g.reg, false)">Limpar</button></div>
             </div>
           </details></div>
-        <div class="tri tri3">
-          <div class="tri-col">
-            <div class="tri-h"><b>Retirados do mês: situação</b><span>{{ nf0.format(g.ret.n) }} séries retiradas em {{ periodo.toLowerCase() }}</span></div>
-            <div v-for="x in ver(g.reg, g.ret.items)" :key="x.k" class="tri-row" :class="{main: x.k === 'REAP', rest: x.k === '_'}" :style="{'--c': x.c}">
-              <span class="nm"><i></i>{{ x.t }}</span>
-              <span class="tr"><i :style="{width: g.ret.n ? (x.q / g.ret.n * 100) + '%' : 0}"></i></span>
-              <span class="q">{{ nf0.format(x.q) }}</span><span class="p">{{ g.ret.n ? pct.format(x.q / g.ret.n) : "–" }}</span></div>
-          </div>
-          <div class="tri-col">
-            <div class="tri-h"><b>Resultado da triagem</b><span>{{ nf0.format(g.cv.n) }} equipamentos testados no mês</span></div>
-            <div v-for="x in ver(g.reg, g.cv.items)" :key="x.k" class="tri-row" :class="{main: x.k === 'REAP', rest: x.k === '_'}" :style="{'--c': x.c}">
-              <span class="nm"><i></i>{{ x.t }}</span>
-              <span class="tr"><i :style="{width: g.cv.n ? (x.q / g.cv.n * 100) + '%' : 0}"></i></span>
-              <span class="q">{{ nf0.format(x.q) }}</span><span class="p">{{ g.cv.n ? pct.format(x.q / g.cv.n) : "–" }}</span></div>
-          </div>
+        <div class="tri tri1">
+          <div class="t1-row t1-head">
+            <span class="nm">Situação</span>
+            <span class="cell"><b>Retirados em {{ periodo.toLowerCase() }}</b><small>{{ nf0.format(g.ret.n) }} séries · situação em {{ meta.ate.slice(0, 5) }}</small></span>
+            <span class="cell"><b>Testados no almoxarifado</b><small>{{ nf0.format(g.cv.n) }} equipamentos testados no mês</small></span></div>
+          <div v-for="x in linhas(g)" :key="x.k" class="t1-row" :class="{main: x.k === 'REAP', rest: x.k === '_'}" :style="{'--c': x.c}">
+            <span class="nm"><i></i>{{ x.t }}</span>
+            <span v-for="(c, j) in x.v" :key="j" class="cell" :class="{na: c == null}">
+              <template v-if="c != null"><span class="tr"><i :style="{width: c.n ? (c.q / c.n * 100) + '%' : 0}"></i></span>
+                <span class="q">{{ nf0.format(c.q) }}</span><span class="p">{{ c.n ? pct.format(c.q / c.n) : "–" }}</span></template>
+              <span v-else class="q">—</span></span></div>
         </div>
       </div>
     </section>`,
@@ -957,7 +975,18 @@ const ConvPanel = {
       const vis = items.filter(x => x.k === "REAP" || tem(reg, x.k)), rest = items.filter(x => !vis.includes(x));
       return rest.length ? [...vis, {k: "_", t: "Demais situações", c: "#cbd5e1", q: sum(rest.map(x => x.q))}] : vis;
     };
-    return {blocos, escopo, periodo, meta: M, nf0, pct, opcoes, grupos, aberto, tem, nSel, alterna, todos, onToggle, ver};
+    // um card só: cada status com duas colunas (retirados do mês x testados no mês); "—" quando não se aplica
+    const linhas = g => {
+      const R = Object.fromEntries(g.ret.items.map(x => [x.k, x])), C = Object.fromEntries(g.cv.items.map(x => [x.k, x]));
+      const kR = new Set(M.retK || []), kC = new Set(M.destinos || []);
+      const vis = ["REAP", ...opcoes.map(o => o.k).filter(k => tem(g.reg, k))];
+      const cel = (src, ks, n, k) => (ks.has(k) ? {q: (src[k] || {}).q || 0, n} : null);
+      const out = vis.map(k => ({k, t: RET_DEF[k].t, c: RET_DEF[k].c, v: [cel(R, kR, g.ret.n, k), cel(C, kC, g.cv.n, k)]}));
+      const resto = (src, n) => n - sum(vis.map(k => (src[k] || {}).q || 0));
+      if (vis.length < opcoes.length + 1) out.push({k: "_", t: "Demais situações", c: "#cbd5e1", v: [{q: resto(R, g.ret.n), n: g.ret.n}, {q: resto(C, g.cv.n), n: g.cv.n}]});
+      return out;
+    };
+    return {blocos, escopo, periodo, meta: M, nf0, pct, opcoes, grupos, aberto, tem, nSel, alterna, todos, onToggle, ver, linhas};
   },
 };
 
