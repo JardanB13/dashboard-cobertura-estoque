@@ -787,7 +787,6 @@ const ConvPanel = {
               <span class="nm"><i></i>{{ x.t }}</span>
               <span class="tr"><i :style="{width: g.st.n ? (x.q / g.st.n * 100) + '%' : 0}"></i></span>
               <span class="q">{{ x.na ? "s/ dado" : nf0.format(x.q) }}</span><span class="p">{{ x.na ? "" : g.st.n ? pct.format(x.q / g.st.n) : "–" }}</span></div>
-            <p v-if="g.reg === 'ss'" class="tri-obs">Instalação no cliente ainda não informada para o Sul/Sudeste (falta o relatório de aplicados completo).</p>
           </div>
         </div>
       </div>
@@ -803,7 +802,7 @@ const ConvPanel = {
         const sem = !store.f.hub ? (CONV.retSem || {})[reg] || [] : [];
         const rit = (M.retK || []).map((k, i) => ({k, ...RET_DEF[k], q: soma(CONV.ret, reg, i) + (sem[i] || 0)})).filter(x => x.q || ["REAP", "aguardando", "naodev"].includes(x.k));
         const cit = M.destinos.map((k, i) => ({k, ...(CONV_DEF[k] || {t: k, c: "var(--ink-3)"}), q: soma(CONV.hubs, reg, i)}));
-        const sit = (M.status || []).map((k, i) => ({k, ...ST_DEF[k], q: soma(CONV.status, reg, i), na: reg === "ss" && k === "instalado"}));
+        const sit = (M.status || []).map((k, i) => ({k, ...ST_DEF[k], q: soma(CONV.status, reg, i)}));
         return {reg, titulo: REG_T[reg],
           ret: {items: rit, n: sum(rit.map(x => x.q))}, cv: {items: cit, n: sum(cit.map(x => x.q))},
           st: {items: sit, n: sum(sit.map(x => x.q)), aria: sit.map(x => `${x.t} ${x.q}`).join(", ")}};

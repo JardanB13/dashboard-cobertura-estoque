@@ -7,7 +7,7 @@ Uso (pares movimentação + aplicados/retirados do mesmo mês, uma ou mais opera
 Entradas (SINAPSE):
   1. Conferência / movimentação de materiais: "Cod.Compl." (N° de Série), "Tipo Movimento"
      (RM = entrega ao técnico, DM = devolução, CM = conversão), "Entrada", "Saída".
-  2. Materiais Aplicados/Retirados (completo ou só família de retirados).
+  2. Materiais Aplicados/Retirados (completo), só projetos de operação ("OP-").
 
 Saída por almoxarifado (coluna "Projeto"):
   hubs   = todas as conversões de RET no mês: [REAP, SUC, DET, DEF]
@@ -55,6 +55,7 @@ def processar(mov_xlsx, apl_xlsx, hub_de, hub_cid):
     m["dt"] = pd.to_datetime(m["Data Movimento"], format="%d/%m/%Y", errors="coerce")
 
     a = ler(apl_xlsx)
+    a = a[a["Projeto"].astype(str).str.upper().str.startswith("OP-")].copy()   # só operações
     a["ser"] = serie(a["N° Serie"]); a = a[~a["ser"].isin(VAZIO)].copy()
     a["dt"] = pd.to_datetime(a["Data Aplicação"], format="%d/%m/%Y", errors="coerce")
     inst = a[pd.to_numeric(a["Qtde. Aplic."], errors="coerce").fillna(0) > 0].groupby("ser")["dt"].max()

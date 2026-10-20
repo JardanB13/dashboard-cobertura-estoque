@@ -5,10 +5,11 @@ Atualiza equipamentos.js a partir de um ou mais relatórios SINAPSE
 Uso:
     python atualizar_equipamentos.py planilha1.xlsx [planilha2.xlsx ...]
 
-Exemplo (Nordeste completo + Sul/Sudeste só retirados):
-    python atualizar_equipamentos.py aplicados_nordeste.xlsx retirados_sul.xlsx
+Exemplo (Nordeste + Sul/Sudeste):
+    python atualizar_equipamentos.py aplicados_nordeste.xlsx aplicados_sul.xlsx
 
 Regras:
+  - Só projetos de operação (coluna Projeto começando com "OP-"); ESTRUT, MANUT REDES etc. ficam fora.
   - Só linhas com N° de Série (equipamentos serializados); conectores, cabos etc. ficam fora.
   - Prefixo do material: "REAP-" = Reaproveitado, "RET-" = Retirado, sem prefixo = Novo.
   - Estado (UF) da cidade:
@@ -70,6 +71,7 @@ def main(arquivos):
     partes, periodos = [], []
     for xlsx in arquivos:
         df, ptxt = ler(xlsx)
+        df = df[df["Projeto"].astype(str).str.upper().str.startswith("OP-")].copy()   # só operações
         periodos.append(ptxt)
         df["UF"] = df.apply(uf_de, axis=1)
         df["Natureza"] = df["Natureza"].fillna("SEM NATUREZA")
