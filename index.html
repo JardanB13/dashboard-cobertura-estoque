@@ -1291,7 +1291,7 @@ const KpiStrip = {
             <div v-if="k.p != null" class="bar" role="img" :aria-label="k.s"><i :style="{width: (k.p * 100) + '%'}"></i></div>
             <template v-if="k.sp"><div class="split" role="img" :aria-label="k.s"><i v-for="x in k.sp" :key="x.t" :style="{flexGrow: x.q, background: x.c}"></i></div>
               <div class="leg"><span v-for="x in k.sp" :key="x.t" :style="{'--lc': x.c}">{{ x.t }} <b>{{ x.p }}</b></span></div></template>
-            <div v-else class="s">{{ k.s }}</div></div>
+            <div v-else-if="k.s" class="s">{{ k.s }}</div></div>
         </div>
       </div>
     </section>`,
@@ -1315,7 +1315,7 @@ const KpiStrip = {
               ...(e.o ? [{t: "Obsoletos (fora da conta)", q: 0, c: "#94a3b8", p: nf0.format(e.o)}] : [])] : null},
           {k: "novo", l: "Equipamentos novos", v: nf0.format(e.n), p: pn, s: `${pn != null ? pct.format(pn) : "–"} do total aplicado`, c: "var(--c-novo)", i: KPI_ICO.novo},
           {k: "reap", l: "Reaproveitados", v: nf0.format(e.r), p: pr, s: `${pr != null ? pct.format(pr) : "–"} do total aplicado`, c: "var(--c-reap)", i: KPI_ICO.reap},
-          {k: "ret", l: "Retirados de clientes", v: nf0.format(e.t), s: `${nf0.format(e.cid)} cidades${geral && fo.cid ? ` (${nf0.format(fo.cid)} sem almox.)` : " com dados"}`, c: "var(--c-ret)", i: KPI_ICO.ret, w: "half"},
+          {k: "ret", l: "Retirados de clientes", v: nf0.format(e.t), s: "", c: "var(--c-ret)", i: KPI_ICO.ret, w: "half"},
           {k: "test", l: "Equipamentos testados", v: nf0.format(ts.n), p: ts.n ? ts.r / ts.n : null, s: `${ts.n ? pct.format(ts.r / ts.n) : "–"} aprovados como reaproveitados`, c: "var(--c-reap)", i: KPI_ICO.test, w: "half"},
         ]},
       ];
