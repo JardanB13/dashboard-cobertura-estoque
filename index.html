@@ -1237,6 +1237,7 @@ const TestCat = {
       const rc = CONV.reapCat || {}, acc = {};
       const hs = store.f.hub ? [store.f.hub] : Object.keys(rc).filter(h => !store.f.reg || REG(h) === store.f.reg);
       hs.forEach(h => Object.entries(rc[h] || {}).forEach(([k, n]) => { acc[k] = (acc[k] || 0) + n; }));
+      delete acc["SEM INFORMACAO"];
       if (obs.value) acc.OBSOLETO = obs.value;
       const tot = sum(Object.values(acc));
       return Object.entries(acc).map(([k, q]) => ({k, l: CAT_T[k] || k, q, p: tot ? q / tot : 0})).sort((a, b) => b.q - a.q);
