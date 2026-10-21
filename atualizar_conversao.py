@@ -133,6 +133,12 @@ def main(args):
         cvs.append(cv); reaps.append(reap); rts.append(rt); d0s.append(d0); d1s.append(d1)
         print(f"   {Path(args[i]).name}: {len(cv)} RET convertidos · {len(rt)} retirados rastreados ({rt['hub'].isna().sum()} sem almoxarifado)")
     cv, reap, rt = pd.concat(cvs), pd.concat(reaps), pd.concat(rts)
+    destinos = DESTINOS
+    if cat_ref:   # categoria de cada conversão; obsoleto não é reaproveitado (destino próprio "OBS")
+        cv["cat"] = [categoria(m, c) for m, c in zip(cv["mat"], cv["cmat"])]
+        cv.loc[(cv["para"] == "REAP") & (cv["cat"] == "OBSOLETO"), "para"] = "OBS"
+        reap = reap[~reap.set_index(["Nº. Doc", "ser"]).index.isin(cv.loc[cv["para"] == "OBS"].set_index(["Nº. Doc", "ser"]).index)]
+        destinos = DESTINOS + ["OBS"]
     sem = sorted(set(cv.loc[cv["hub"].isna(), "proj"].dropna()))
 
     vec = lambda g, col, keys: [int((g[col] == k).sum()) for k in keys]
@@ -142,22 +148,21 @@ def main(args):
             "de": min(d0s).strftime("%d/%m/%Y"), "ate": max(d1s).strftime("%d/%m/%Y"),
             "fonte": "SINAPSE · Movimentação de materiais (CM/RM/DM) + Aplicados/Retirados, por N° de Série",
             "geradoEm": datetime.now().strftime("%d/%m/%Y %H:%M"),
-            "destinos": DESTINOS, "status": STATUS, "retK": RET_K, "semAlmox": sem,
+            "destinos": destinos, "status": STATUS, "retK": RET_K, "semAlmox": sem,
         },
-        "hubs": {h: vec(g, "para", DESTINOS) for h, g in cv.dropna(subset=["hub"]).groupby("hub")},
+        "hubs": {h: vec(g, "para", destinos) for h, g in cv.dropna(subset=["hub"]).groupby("hub")},
         "status": {h: vec(g, "st", STATUS) for h, g in reap.dropna(subset=["hub"]).groupby("hub")},
         "ret": {h: vec(g, "k", RET_K) for h, g in rt.dropna(subset=["hub"]).groupby("hub")},
         "retSem": {g: vec(x[x["hub"].isna()], "k", RET_K) for g, x in rt.groupby("reg")},
     }
     if cat_ref:   # aprovados como REAP na triagem, por categoria tecnológica do aparelho
         ap = cv[(cv["para"] == "REAP") & cv["hub"].notna()].copy()
-        ap["cat"] = [categoria(m, c) for m, c in zip(ap["mat"], ap["cmat"])]
         saida["reapCat"] = {h: {c: int(n) for c, n in g["cat"].value_counts().items()} for h, g in ap.groupby("hub")}
         print("   reaproveitados por categoria:", ap["cat"].value_counts().to_dict())
     (RAIZ / "conversao.js").write_text("/* gerado automaticamente — não editar à mão */\nwindow.DADOS_CONVERSAO = "
                                        + json.dumps(saida, ensure_ascii=False, separators=(",", ":")) + ";\n", encoding="utf-8")
     tot = lambda d, n: [sum(v[i] for v in d.values()) for i in range(n)]
-    print("OK · conversões RET:", dict(zip(DESTINOS, tot(saida["hubs"], 4))))
+    print("OK · conversões RET:", dict(zip(destinos, tot(saida["hubs"], len(destinos)))))
     print("   status REAP:", dict(zip(STATUS, tot(saida["status"], 3))))
     print("   retirados do mês:", dict(zip(RET_K, tot(saida["ret"], 7))), "· sem almoxarifado:", saida["retSem"])
     if sem: print("   ATENÇÃO, projetos sem almoxarifado no mapa:", ", ".join(sem))

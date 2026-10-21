@@ -18,6 +18,7 @@ Regras:
       2. senão, pelo contrato: final 1 = PB, 2 = RN, 3 = PE, 4 = BA (operação Nordeste).
   - O cabeçalho da planilha é localizado automaticamente (linha que começa com "Contrato").
   - Só entram dados agregados por cidade (nenhum dado de cliente vai para o site).
+  - Aparelho de categoria OBSOLETO aplicado não conta como novo nem reaproveitado (campo "o").
   - Categoria tecnológica (opcional, --categorias): pelo nome do aparelho na planilha de referência
     (coluna "Equipamentos" -> "Categoria Tecnologia"); modelos que não estão nela são classificados
     por palavras-chave do nome (ver categoria_por_nome).
@@ -131,23 +132,29 @@ def main(arquivos, cat_xlsx=None):
     eq["q"] = eq["Qtde. Aplic."].where(eq["T"] != "RET", eq["Qtde. Remov."])
     if ref_cat is not None:
         eq["Cat"] = [categoria_por_nome(m, ref_cat, c) for m, c in zip(eq["Material"], eq["Cód. Material"])]
+        # obsoleto aplicado não conta como novo nem reaproveitado: vira status próprio "OBS"
+        eq.loc[(eq["Cat"] == "OBSOLETO") & eq["T"].isin(["NOVO", "REAP"]), "T"] = "OBS"
 
-    cid = {k: {"n": 0, "r": 0, "t": 0, "os": int(g["OS"].nunique()), "nat": {}} for k, g in df.groupby("k")}
+    cid = {k: {"n": 0, "r": 0, "t": 0, "o": 0, "os": int(g["OS"].nunique()), "nat": {}} for k, g in df.groupby("k")}
     idx = {"NOVO": 0, "REAP": 1, "RET": 2}
     for (k, nat, t), q in eq.groupby(["k", "Natureza", "T"])["q"].sum().items():
-        c = cid[k]; i = idx[t]
+        c = cid[k]
+        if t == "OBS": c["o"] += int(q); continue
+        i = idx[t]
         c["nrt"[i]] += int(q)
         c["nat"].setdefault(nat, [0, 0, 0])[i] += int(q)
     if ref_cat is not None:
-        for (k, ct, t), q in eq.groupby(["k", "Cat", "T"])["q"].sum().items():
+        for (k, ct, t), q in eq[eq["T"] != "OBS"].groupby(["k", "Cat", "T"])["q"].sum().items():
             cid[k].setdefault("cat", {}).setdefault(ct, [0, 0, 0])[idx[t]] += int(q)
 
     mapa = {f"{fold(r['c'])}|{r['uf']}" for r in cob["rows"]}
+    for v in cid.values():
+        if not v["o"]: v.pop("o")      # só grava "o" (obsoletos aplicados) onde houver
     no_mapa = {k: v for k, v in cid.items() if k in mapa}
-    fora = [v for k, v in cid.items() if k not in mapa and (v["n"] or v["r"] or v["t"])]
+    fora = [v for k, v in cid.items() if k not in mapa and (v["n"] or v["r"] or v["t"] or v.get("o"))]
     reg = lambda k: "ss" if k.split("|")[-1] in ("SP", "PR", "MG") else "ne"
-    soma = lambda vs: {"cid": len(vs), "n": sum(v["n"] for v in vs), "r": sum(v["r"] for v in vs), "t": sum(v["t"] for v in vs)}
-    fora_reg = {g: soma([v for k, v in cid.items() if k not in mapa and (v["n"] or v["r"] or v["t"]) and reg(k) == g]) for g in ("ne", "ss")}
+    soma = lambda vs: {"cid": len(vs), "n": sum(v["n"] for v in vs), "r": sum(v["r"] for v in vs), "t": sum(v["t"] for v in vs), "o": sum(v.get("o", 0) for v in vs)}
+    fora_reg = {g: soma([v for k, v in cid.items() if k not in mapa and (v["n"] or v["r"] or v["t"] or v.get("o")) and reg(k) == g]) for g in ("ne", "ss")}
     def soma_cat(vs):
         out = {}
         for v in vs:
@@ -159,8 +166,8 @@ def main(arquivos, cat_xlsx=None):
         "meta": {
             "periodo": periodo,
             "fonte": f"SINAPSE · Materiais Aplicados/Retirados ({periodos[0].split(':', 1)[-1].strip()}) · {len(arquivos)} relatório(s)",
-            "tot": {"n": tot("NOVO"), "r": tot("REAP"), "t": tot("RET")},
-            "fora": {"cid": len(fora), "n": sum(v["n"] for v in fora), "r": sum(v["r"] for v in fora), "t": sum(v["t"] for v in fora)},
+            "tot": {"n": tot("NOVO"), "r": tot("REAP"), "t": tot("RET"), "o": tot("OBS")},
+            "fora": soma(fora),
             "foraReg": fora_reg,
             **({"foraCat": {g: soma_cat([v for k, v in cid.items() if k not in mapa and reg(k) == g]) for g in ("ne", "ss")},
                 "categorias": sorted(eq["Cat"].unique().tolist(), key=lambda c: (c in ("SEM INFORMACAO", "OBSOLETO"), c))} if ref_cat is not None else {}),
@@ -171,7 +178,7 @@ def main(arquivos, cat_xlsx=None):
     destino.write_text("/* gerado automaticamente — não editar à mão */\nwindow.DADOS_EQUIPAMENTOS = "
                        + json.dumps(saida, ensure_ascii=False, separators=(",", ":")) + ";\n", encoding="utf-8")
     m = saida["meta"]
-    print(f"OK · {periodo}: {m['tot']['n']} novos, {m['tot']['r']} reaproveitados, {m['tot']['t']} retirados")
+    print(f"OK · {periodo}: {m['tot']['n']} novos, {m['tot']['r']} reaproveitados, {m['tot']['t']} retirados, {m['tot']['o']} obsoletos aplicados")
     print(f"   {len(no_mapa)} cidades no mapa · {m['fora']['cid']} cidades sem vínculo com almoxarifado (fora do mapa)")
     if ref_cat is not None:
         print("   por categoria (novos, reaprov., retirados):")

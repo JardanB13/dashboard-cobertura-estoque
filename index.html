@@ -913,7 +913,7 @@ const EQ = window.DADOS_EQUIPAMENTOS;
 const eqOf = r => EQ.c[`${fold(r.c).trim()}|${r.uf}`] || null;
 const eqSum = rows => { const s = {n: 0, r: 0, t: 0, os: 0, nat: {}, cid: 0}, seen = new Set();
   rows.forEach(x => { if (seen.has(x.key)) return; seen.add(x.key); const e = eqOf(x); if (!e) return; s.cid++;
-    s.n += e.n; s.r += e.r; s.t += e.t; s.os += e.os;
+    s.n += e.n; s.r += e.r; s.t += e.t; s.o = (s.o || 0) + (e.o || 0); s.os += e.os;
     Object.entries(e.nat).forEach(([k, v]) => { const a = s.nat[k] || (s.nat[k] = [0, 0, 0]); v.forEach((q, j) => { a[j] += q; }); });
     Object.entries(e.cat || {}).forEach(([k, v]) => { const a = (s.cat || (s.cat = {}))[k] || (s.cat[k] = [0, 0, 0]); v.forEach((q, j) => { a[j] += q; }); }); });
   return s; };
@@ -1218,7 +1218,7 @@ const CatPanel = {
 const TestCat = {
   template: `<section v-if="linhas.length" class="tc card2" aria-label="Aprovados como reaproveitado por categoria">
       <header class="c2-h"><div class="c2-t"><span class="c2-k">Equipamentos testados · {{ periodo }}</span><b>Aprovados como reaproveitado, por categoria</b></div>
-        <div class="tc-tot"><b>{{ nf0.format(total) }}</b><span>aprovados</span></div></header>
+        <div class="tc-tot"><b>{{ nf0.format(total) }}</b><span>aprovados<template v-if="obs"> · {{ nf0.format(obs) }} obsoletos à parte</template></span></div></header>
       <div class="tc-grid">
         <div v-for="x in linhas" :key="x.k" class="tc-row">
           <span class="nm">{{ x.l }}</span><span class="tr"><i :style="{width: x.p * 100 + '%'}"></i></span>
@@ -1235,7 +1235,13 @@ const TestCat = {
       return Object.entries(acc).map(([k, q]) => ({k, l: CAT_T[k] || k, q, p: tot ? q / tot : 0})).sort((a, b) => b.q - a.q);
     });
     const total = computed(() => sum(linhas.value.map(x => x.q)));
-    return {linhas, total, periodo, nf0, pct};
+    const iObs = (CONV.meta.destinos || []).indexOf("OBS");
+    const obs = computed(() => {
+      if (iObs < 0) return 0;
+      const hs = store.f.hub ? [store.f.hub] : Object.keys(CONV.hubs).filter(h => !store.f.reg || REG(h) === store.f.reg);
+      return sum(hs.map(h => (CONV.hubs[h] || [])[iObs] || 0));
+    });
+    return {linhas, total, obs, periodo, nf0, pct};
   },
 };
 
@@ -1294,7 +1300,7 @@ const KpiStrip = {
       /* Visão geral (sem filtro): soma também as cidades sem almoxarifado vinculado */
       const semFiltro = !store.f.hub && !store.f.uf && store.f.band === "" && !store.f.q;
       const fo = semFiltro ? (store.f.reg ? (EQ.meta.foraReg || {})[store.f.reg] || {} : EQ.meta.fora || {}) : {}, geral = semFiltro;
-      if (geral) { e.n += fo.n || 0; e.r += fo.r || 0; e.t += fo.t || 0; e.cid += fo.cid || 0; }
+      if (geral) { e.n += fo.n || 0; e.r += fo.r || 0; e.t += fo.t || 0; e.o = (e.o || 0) + (fo.o || 0); e.cid += fo.cid || 0; }
       const apl = e.n + e.r;
       const pn = apl ? e.n / apl : null, pr = apl ? e.r / apl : null;
       /* Testados = retirados que passaram pela triagem (conversão RET) */
@@ -1304,7 +1310,8 @@ const KpiStrip = {
       return [
         {t: "Campo: aplicação e retirada", x: `Equipamentos com N° de série · ${EQ.meta.periodo}`, cls: "eq", items: [
           {k: "total", l: "Aplicados em cliente", v: nf0.format(apl), s: "novos + reaproveitados", c: "var(--navy)", i: KPI_ICO.total, w: "big",
-            sp: apl ? [{t: "Novos", q: e.n, c: "var(--c-novo)", p: pct.format(pn)}, {t: "Reaproveitados", q: e.r, c: "var(--c-reap)", p: pct.format(pr)}] : null},
+            sp: apl ? [{t: "Novos", q: e.n, c: "var(--c-novo)", p: pct.format(pn)}, {t: "Reaproveitados", q: e.r, c: "var(--c-reap)", p: pct.format(pr)},
+              ...(e.o ? [{t: "Obsoletos (fora da conta)", q: 0, c: "#94a3b8", p: nf0.format(e.o)}] : [])] : null},
           {k: "novo", l: "Equipamentos novos", v: nf0.format(e.n), p: pn, s: `${pn != null ? pct.format(pn) : "–"} do total aplicado`, c: "var(--c-novo)", i: KPI_ICO.novo},
           {k: "reap", l: "Reaproveitados", v: nf0.format(e.r), p: pr, s: `${pr != null ? pct.format(pr) : "–"} do total aplicado`, c: "var(--c-reap)", i: KPI_ICO.reap},
           {k: "ret", l: "Retirados de clientes", v: nf0.format(e.t), s: `${nf0.format(e.cid)} cidades${geral && fo.cid ? ` (${nf0.format(fo.cid)} sem almox.)` : " com dados"}`, c: "var(--c-ret)", i: KPI_ICO.ret, w: "half"},
@@ -1867,7 +1874,6 @@ createApp({
       <div class="tri-rh sec-h sec-top"><b><i>01</i>Equipamentos em campo</b></div>
       <kpi-strip class="over"></kpi-strip>
       <test-cat v-if="verTest"></test-cat>
-      <cat-tabela v-if="verCatSS"></cat-tabela>
       <div class="tri-rh sec-h"><b><i>02</i>Cobertura por Cidades</b></div>
       <sim-bar></sim-bar>
       <section class="main"><map-panel></map-panel><side-panel></side-panel></section>
