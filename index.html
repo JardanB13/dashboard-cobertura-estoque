@@ -851,6 +851,8 @@ body{background:var(--bg)}
 .ctb-row.fraco .nm,.ctb-row.fraco .q{color:var(--ink-3)}
 @media (max-width:760px){.ctb-head,.ctb-row{grid-template-columns:minmax(0,1fr) 70px 70px;padding:0 16px}.ctb-row{padding-top:9px;padding-bottom:9px}
   .ctb-head span:nth-child(2),.ctb-head span:nth-child(4),.ctb-head span:nth-child(5),.ctb-row .bar,.ctb-row .v:not(.ret){display:none}}
+.ctb-row.obs .obs-t{grid-column:2/-1;font-size:12.5px;color:var(--ink-3)}
+.ctb-row.obs .obs-t b{font:700 14px var(--f-mono);color:var(--ink-2);margin-right:4px}
 </style>
 </head>
 <body>
@@ -1241,12 +1243,14 @@ const TestCat = {
 const CatTabela = {
   template: `<section class="ctb card2" aria-label="Aparelhos por categoria tecnológica">
       <header class="c2-h"><div class="c2-t"><span class="c2-k">{{ titulo }} · categoria tecnológica</span><b>Aparelhos por categoria</b></div>
-        <div class="tc-tot"><b>{{ nf0.format(tot.ap) }}</b><span>aplicados · {{ nf0.format(tot.t) }} retirados</span></div></header>
+        <div class="tc-tot"><b>{{ nf0.format(tot.ap) }}</b><span>aplicados · {{ nf0.format(tot.t) }} retirados<template v-if="tot.obs"> · {{ nf0.format(tot.obs) }} obsoletos</template></span></div></header>
       <div class="ctb-head"><span>Categoria</span><span></span><span>Aplicados</span><span>Novos</span><span>Reaprov.</span><span>Retirados</span></div>
-      <div v-for="c in cats" :key="c.k" class="ctb-row" :class="{fraco: c.k === 'OBSOLETO' || c.k === 'SEM INFORMACAO'}">
+      <div v-for="c in cats" :key="c.k" class="ctb-row" :class="{fraco: c.k === 'OBSOLETO' || c.k === 'SEM INFORMACAO', obs: c.k === 'OBSOLETO'}">
         <span class="nm">{{ c.l }}</span>
+        <template v-if="c.k === 'OBSOLETO'"><span class="obs-t"><b>{{ nf0.format(c.ap + c.t) }}</b> aparelhos · fora de uso, não contam como novos nem reaproveitados</span></template>
+        <template v-else>
         <span class="bar"><i :style="{flexGrow: c.n, background: 'var(--c-novo)'}"></i><i :style="{flexGrow: c.r, background: 'var(--c-reap)'}"></i><i :style="{flexGrow: Math.max(maxAp - c.ap, 0), background: 'transparent'}"></i></span>
-        <span class="q">{{ nf0.format(c.ap) }}</span><span class="v">{{ nf0.format(c.n) }}</span><span class="v">{{ nf0.format(c.r) }}</span><span class="v ret">{{ nf0.format(c.t) }}</span></div>
+        <span class="q">{{ nf0.format(c.ap) }}</span><span class="v">{{ nf0.format(c.n) }}</span><span class="v">{{ nf0.format(c.r) }}</span><span class="v ret">{{ nf0.format(c.t) }}</span></template></div>
     </section>`,
   setup() {
     const cats = computed(() => {
@@ -1260,8 +1264,9 @@ const CatTabela = {
       return Object.entries(cat).map(([k, v]) => ({k, l: CAT_T[k] || k, n: v[0], r: v[1], t: v[2], ap: v[0] + v[1]}))
         .filter(c => c.ap || c.t).sort((a, b) => fim(a.k) - fim(b.k) || b.ap - a.ap || b.t - a.t);
     });
-    const maxAp = computed(() => Math.max(1, ...cats.value.map(c => c.ap)));
-    const tot = computed(() => ({ap: sum(cats.value.map(c => c.ap)), t: sum(cats.value.map(c => c.t))}));
+    const maxAp = computed(() => Math.max(1, ...cats.value.filter(c => c.k !== "OBSOLETO").map(c => c.ap)));
+    const uso = computed(() => cats.value.filter(c => c.k !== "OBSOLETO")), obs = computed(() => cats.value.find(c => c.k === "OBSOLETO"));
+    const tot = computed(() => ({ap: sum(uso.value.map(c => c.ap)), t: sum(uso.value.map(c => c.t)), obs: obs.value ? obs.value.ap + obs.value.t : 0}));
     const titulo = computed(() => (store.f.hub ? HUB0.get(store.f.hub)?.nome : REG_T.ss));
     return {cats, maxAp, tot, titulo, nf0};
   },
