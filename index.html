@@ -927,6 +927,7 @@ body{background:#eef2f7}
 .main-col .wrap{width:100%;padding-top:26px;gap:20px}
 .sh{display:flex;align-items:center;gap:12px;margin:10px 0 -4px;scroll-margin-top:calc(var(--tb-h) + 16px)}
 .sh:first-child{margin-top:0}
+.main-col .wrap{position:relative}.sh-anc{position:absolute;top:0;left:0;height:1px;width:1px;scroll-margin-top:var(--tb-h)}
 .sh i{font:600 11px/1 var(--f-mono);font-style:normal;letter-spacing:.06em;color:var(--navy);background:#fff;border:1px solid var(--line-2);padding:6px 8px;border-radius:7px;box-shadow:0 1px 2px rgba(15,28,46,.05)}
 .sh h2{margin:0;font:700 17px/1.2 var(--f-display);letter-spacing:-.01em;color:var(--ink)}
 .sh::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line-2),transparent)}
@@ -2043,7 +2044,7 @@ createApp({
       <div class="main-col">
         <top-bar></top-bar>
         <main class="wrap">
-          <header class="sh" id="sec-eq"><i>01</i><h2>Equipamentos em campo</h2></header>
+          <div id="sec-eq" class="sh-anc" aria-hidden="true"></div>
           <kpi-strip></kpi-strip>
           <test-cat v-if="verTest"></test-cat>
           <header class="sh" id="sec-cob"><i>02</i><h2>Cobertura por cidades</h2></header>
