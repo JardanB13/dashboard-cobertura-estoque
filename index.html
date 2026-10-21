@@ -853,6 +853,7 @@ body{background:var(--bg)}
   .ctb-head span:nth-child(2),.ctb-head span:nth-child(4),.ctb-head span:nth-child(5),.ctb-row .bar,.ctb-row .v:not(.ret){display:none}}
 .ctb-row.obs .obs-t{grid-column:2/-1;font-size:12.5px;color:var(--ink-3)}
 .ctb-row.obs .obs-t b{font:700 14px var(--f-mono);color:var(--ink-2);margin-right:4px}
+.tc-obs .nm,.tc-obs .q{color:#64748b}.tc-obs-t{background:none!important;height:auto!important;font-size:11.5px;color:#94a3b8;align-self:center}
 </style>
 </head>
 <body>
@@ -1218,11 +1219,14 @@ const CatPanel = {
 const TestCat = {
   template: `<section v-if="linhas.length" class="tc card2" aria-label="Aprovados como reaproveitado por categoria">
       <header class="c2-h"><div class="c2-t"><span class="c2-k">Equipamentos testados · {{ periodo }}</span><b>Aprovados como reaproveitado, por categoria</b></div>
-        <div class="tc-tot"><b>{{ nf0.format(total) }}</b><span>aprovados<template v-if="obs"> · {{ nf0.format(obs) }} obsoletos à parte</template></span></div></header>
+        <div class="tc-tot"><b>{{ nf0.format(total) }}</b><span>aprovados para reaproveitamento</span></div></header>
       <div class="tc-grid">
         <div v-for="x in linhas" :key="x.k" class="tc-row">
           <span class="nm">{{ x.l }}</span><span class="tr"><i :style="{width: x.p * 100 + '%'}"></i></span>
           <span class="q">{{ nf0.format(x.q) }}</span><span class="p">{{ pct.format(x.p) }}</span></div>
+        <div v-if="obs" class="tc-row tc-obs">
+          <span class="nm">Obsoleto</span><span class="tr tc-obs-t">fora de uso · não entra nos aprovados</span>
+          <span class="q">{{ nf0.format(obs) }}</span><span class="p">—</span></div>
       </div>
     </section>`,
   setup() {
