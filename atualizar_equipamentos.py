@@ -39,30 +39,38 @@ chave = lambda x: re.sub(r"[^a-z0-9]+", " ", fold(x)).strip()
 PREFIXO = r"^((REAP|RET|REA|DEF|DET|SUC|PO)\s*-\s*)+"
 base_nome = lambda x: re.sub(PREFIXO, "", re.sub(r"\s+", " ", str(x).strip().upper())).strip()
 
+ANTIGAS = {"ONT 5G": "ONT WIFI 5", "ROTEADOR 5G": "ROTEADOR WIFI 5", "ROTEADOR 5G MESH": "ROTEADOR WIFI 5", "MISCELÂNEA": "MISCELANEA"}
+
 def ler_categorias(xlsx):
+    """Planilha DE PARA: codigo_material | descricao_material | categoria_tecnologia [| base_empresa].
+    Procura primeiro pelo código do material e depois pelo nome (sem prefixo REAP-/RET-/DEF-...)."""
     ref = pd.read_excel(xlsx, dtype=str)
-    ref.columns = ["cod", "nome", "cat"][:len(ref.columns)]
-    return {base_nome(n): str(c).strip().upper() for n, c in zip(ref["nome"], ref["cat"]) if str(c).strip() not in ("", "nan")}
+    ref = ref.iloc[:, :3]; ref.columns = ["cod", "nome", "cat"]
+    ref = ref[~ref["cat"].astype(str).str.strip().isin(["", "nan"])]
+    norm = lambda c: ANTIGAS.get(str(c).strip().upper(), str(c).strip().upper())
+    out = {"cod:" + str(k).strip().upper(): norm(c) for k, c in zip(ref["cod"], ref["cat"])}
+    out.update({base_nome(n): norm(c) for n, c in zip(ref["nome"], ref["cat"])})
+    return out
 
 WIFI6 = r"WIFI ?6|WI-FI ?6|\bW6\b|\bAX ?\d{3,4}|AX3000|AX1800|X6\b|X6-|F6600|G1426|G-2426|VANTIVA|HG6145F|HG6145 - AX|XC220|EX 141"
 AC = r"\bAC\b|\bAC ?\d{3,4}|AC\d{3,4}|1200|DUAL BAND|8145|8245|HS8546|G ?-? ?140 ?W|G-240W-G|G-?1425|G-0425|F67\d|HG6245|HG6143|HG6145D|121 ?AC|GW24|V2801SGA|DM985-424|DM986-416|WS5200"
 PON = r"\bONU\b|\bONT\b|ONU-|GPON|XPON|EPON|ECHOLIFE|FIBERHOME|NOKIA|HG[68]\d|EG8\d|HS85|AN5506|G-140|G-240|G-1425|G-0425|VANTIVA|XZ000|F6\d\d"
 RADIO = r"^RADIO|^ANTENA|\bLHG\b|LITEBEAM|\bSXT\b|AIRGRID|POWER ?BEAM|NANO ?STATION|WOM AC|5GHZ.*DBI"
 
-def categoria_por_nome(nome, ref):
+def categoria_por_nome(nome, ref, cod=None):
+    if cod is not None and "cod:" + str(cod).strip().upper() in ref: return ref["cod:" + str(cod).strip().upper()]
     b = base_nome(nome)
     if b in ref: return ref[b]
     if re.search(RADIO, b) and not re.search(r"\bONU\b", b): return "RADIO"
     if re.search(PON, b):
         if re.search(WIFI6, b): return "ONT WIFI 6"
-        if re.search(AC, b): return "ONT 5G"
+        if re.search(AC, b): return "ONT WIFI 5"
         return "ONU"
     if re.search(r"ROTEADOR|^ROT |WS7\d|WS5\d|DIR-|ARCHER|MERCUSYS|GREATEK|AC12G|MW301|EX 141", b):
-        if re.search(r"WS7\d", b): return "ROTEADOR 5G"        # mesma regra da planilha de referência (WS7001)
-        if re.search(r"MESH", b): return "ROTEADOR WIFI 6" if re.search(WIFI6, b) else "ROTEADOR 5G MESH"
+        if re.search(r"WS7\d", b): return "ROTEADOR WIFI 6"    # mesma regra da planilha DE PARA (WS7001-AX2)
         if re.search(WIFI6, b): return "ROTEADOR WIFI 6"
-        if re.search(AC + r"|\bC[2-8]0?\b|H19\dA|ZT199|EMG3524|HUAWEI$", b): return "ROTEADOR 5G"
-    return "OUTROS"
+        if re.search(AC + r"|MESH|\bC[2-8]0?\b|H19\dA|ZT199|EMG3524|HUAWEI$", b): return "ROTEADOR WIFI 5"
+    return "SEM INFORMACAO"
 
 def carregar_js(nome):
     txt = (RAIZ / nome).read_text(encoding="utf-8")
@@ -122,7 +130,7 @@ def main(arquivos, cat_xlsx=None):
     eq["T"] = eq["Material"].astype(str).str.extract(r"^(REAP|RET)-")[0].fillna("NOVO")
     eq["q"] = eq["Qtde. Aplic."].where(eq["T"] != "RET", eq["Qtde. Remov."])
     if ref_cat is not None:
-        eq["Cat"] = eq["Material"].map(lambda m: categoria_por_nome(m, ref_cat))
+        eq["Cat"] = [categoria_por_nome(m, ref_cat, c) for m, c in zip(eq["Material"], eq["Cód. Material"])]
 
     cid = {k: {"n": 0, "r": 0, "t": 0, "os": int(g["OS"].nunique()), "nat": {}} for k, g in df.groupby("k")}
     idx = {"NOVO": 0, "REAP": 1, "RET": 2}
@@ -155,7 +163,7 @@ def main(arquivos, cat_xlsx=None):
             "fora": {"cid": len(fora), "n": sum(v["n"] for v in fora), "r": sum(v["r"] for v in fora), "t": sum(v["t"] for v in fora)},
             "foraReg": fora_reg,
             **({"foraCat": {g: soma_cat([v for k, v in cid.items() if k not in mapa and reg(k) == g]) for g in ("ne", "ss")},
-                "categorias": sorted(eq["Cat"].unique().tolist(), key=lambda c: (c == "OUTROS", c))} if ref_cat is not None else {}),
+                "categorias": sorted(eq["Cat"].unique().tolist(), key=lambda c: (c in ("SEM INFORMACAO", "OBSOLETO"), c))} if ref_cat is not None else {}),
         },
         "c": no_mapa,
     }
@@ -169,8 +177,8 @@ def main(arquivos, cat_xlsx=None):
         print("   por categoria (novos, reaprov., retirados):")
         tab = eq.groupby(["Cat", "T"])["q"].sum().unstack(fill_value=0)
         for ct, r in tab.iterrows(): print(f"     {ct:<18} {int(r.get('NOVO', 0)):>6} {int(r.get('REAP', 0)):>6} {int(r.get('RET', 0)):>6}")
-        outros = eq.loc[eq["Cat"] == "OUTROS", "Material"].map(base_nome).value_counts()
-        if len(outros): print("   OUTROS (sem categoria):", ", ".join(f"{n} ({q})" for n, q in outros.items()))
+        outros = eq.loc[eq["Cat"] == "SEM INFORMACAO", "Material"].map(base_nome).value_counts()
+        if len(outros): print("   SEM INFORMACAO (assim na planilha, ou sem regra):", ", ".join(f"{n} ({q})" for n, q in outros.items()))
     print(f"   gravado em {destino.name}")
 
 if __name__ == "__main__":

@@ -64,7 +64,8 @@ def processar(mov_xlsx, apl_xlsx, hub_de, hub_cid):
     # eventos de conversão (um por documento CM e série): de -> para
     cm = m[m["tm"] == "CM"]
     sai = cm[cm["S"] > 0].groupby(["Nº. Doc", "ser"]).agg(de=("tp", "first"), dt=("dt", "min"), proj=("Projeto", "first"),
-                                                          hora=("Hora Criação", "min"), mat=("Descrição Material", "first"))
+                                                          hora=("Hora Criação", "min"), mat=("Descrição Material", "first"),
+                                                          cmat=("Cod.Mat.", "first"))
     ent = cm[cm["E"] > 0].groupby(["Nº. Doc", "ser"]).agg(para=("tp", "first"))
     ev = sai.join(ent, how="left").reset_index().sort_values(["dt", "hora", "Nº. Doc"])
     ev["para"] = ev["para"].fillna("OUTRO")
@@ -106,7 +107,7 @@ def main(args):
         spec = importlib.util.spec_from_file_location("ae", RAIZ / "atualizar_equipamentos.py")
         ae = importlib.util.module_from_spec(spec); spec.loader.exec_module(ae)
         ref = ae.ler_categorias(cat_ref)
-        categoria = lambda m: ae.categoria_por_nome(m, ref)
+        categoria = lambda m, c=None: ae.categoria_por_nome(m, ref, c)
     if len(args) < 2 or len(args) % 2:
         sys.exit("Uso: python atualizar_conversao.py MOV.xlsx APLIC.xlsx [MOV2.xlsx APLIC2.xlsx ...]")
     HUBS = carregar_js("cobertura.js")["hubs"]
@@ -150,7 +151,7 @@ def main(args):
     }
     if cat_ref:   # aprovados como REAP na triagem, por categoria tecnológica do aparelho
         ap = cv[(cv["para"] == "REAP") & cv["hub"].notna()].copy()
-        ap["cat"] = ap["mat"].map(categoria)
+        ap["cat"] = [categoria(m, c) for m, c in zip(ap["mat"], ap["cmat"])]
         saida["reapCat"] = {h: {c: int(n) for c, n in g["cat"].value_counts().items()} for h, g in ap.groupby("hub")}
         print("   reaproveitados por categoria:", ap["cat"].value_counts().to_dict())
     (RAIZ / "conversao.js").write_text("/* gerado automaticamente — não editar à mão */\nwindow.DADOS_CONVERSAO = "
