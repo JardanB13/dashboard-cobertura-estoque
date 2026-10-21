@@ -853,6 +853,91 @@ body{background:var(--bg)}
   .ctb-head span:nth-child(2),.ctb-head span:nth-child(4),.ctb-head span:nth-child(5),.ctb-row .bar,.ctb-row .v:not(.ret){display:none}}
 .ctb-row.obs .obs-t{grid-column:2/-1;font-size:12.5px;color:var(--ink-3)}
 .ctb-row.obs .obs-t b{font:700 14px var(--f-mono);color:var(--ink-2);margin-right:4px}
+
+/* ===== v9 · app shell: navegação lateral + barra superior fixa ===== */
+:root{--sn-w:264px;--tb-h:76px}
+body{background:#eef2f7}
+.shell{display:grid;grid-template-columns:var(--sn-w) minmax(0,1fr);min-height:100vh;transition:grid-template-columns .22s ease}
+.shell.mini{--sn-w:76px}
+.sn{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:22px;padding:20px 14px 16px;color:#dbe6f5;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;
+  background-color:var(--band);background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:32px 32px;
+  box-shadow:inset -1px 0 0 rgba(255,255,255,.06);z-index:20}
+.sn::-webkit-scrollbar{display:none}
+.sn-brand{display:flex;align-items:center;gap:12px;padding:2px 6px 0;min-height:44px}
+.sn-mark{flex:none;width:40px;height:40px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(140deg,#4a7fc1,#0f766e);box-shadow:0 6px 16px -6px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.25)}
+.sn-mark svg{width:21px;height:21px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sn-brand b{display:block;font:700 15px/1.15 var(--f-display);color:#fff;letter-spacing:-.01em}
+.sn-brand small{display:block;margin-top:3px;font-size:11.5px;color:#8fa9cc;white-space:nowrap}
+.sn-grp{display:grid;gap:4px}
+.sn-k{padding:0 10px 6px;font:600 10.5px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:#6f8bb3;white-space:nowrap}
+.sn-it{position:relative;display:flex;align-items:center;gap:12px;width:100%;min-height:44px;padding:8px 10px;border:0;border-radius:10px;background:transparent;color:#c8d6ea;text-align:left;cursor:pointer;text-decoration:none;transition:background .15s,color .15s}
+.sn-it:hover{background:rgba(255,255,255,.06);color:#fff}
+.sn-it.on{background:rgba(255,255,255,.1);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.sn-it.on::before{content:"";position:absolute;left:-14px;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:#8db5e6}
+.sn-ic{flex:none;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:rgba(255,255,255,.06);font:600 11px/1 var(--f-mono);color:#9fb6d6}
+.sn-ic svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.sn-it.on .sn-ic{background:#fff;color:var(--band)}
+.sn-tx{display:grid;gap:2px;min-width:0;flex:1}
+.sn-tx b{font:600 13.5px/1.2 var(--f-display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sn-tx small{font-size:11px;color:#7f98bb;white-space:nowrap}
+.sn-n{font:600 11.5px/1 var(--f-mono);color:#9fb6d6;padding:4px 7px;border-radius:6px;background:rgba(255,255,255,.06);font-variant-numeric:tabular-nums}
+.sn-it.on .sn-n{background:rgba(141,181,230,.2);color:#fff}
+.sn-foot{margin-top:auto;display:grid;gap:10px;padding:14px 10px 2px;border-top:1px solid rgba(255,255,255,.08)}
+.sn-meta{display:grid;gap:3px}
+.sn-meta span{font:600 10px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:#6f8bb3}
+.sn-meta b{font-size:12.5px;font-weight:500;color:#dbe6f5;white-space:nowrap}
+.sn-live{display:inline-flex;align-items:center;gap:7px}
+.sn-live::before{content:"";width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.18)}
+.sn-col{display:flex;align-items:center;gap:10px;height:34px;padding:0 10px;margin:4px 0 0;border:0;border-radius:8px;background:transparent;color:#8fa9cc;font-size:12px;cursor:pointer}
+.sn-col:hover{background:rgba(255,255,255,.06);color:#fff}
+.sn-col svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;transition:transform .2s}
+.shell.mini .sn-col svg{transform:rotate(180deg)}
+.shell.mini .sn-brand>div,.shell.mini .sn-tx,.shell.mini .sn-n,.shell.mini .sn-k,.shell.mini .sn-meta,.shell.mini .sn-col span{display:none}
+.shell.mini .sn-it,.shell.mini .sn-col{justify-content:center;padding:8px 0}
+.shell.mini .sn-brand{justify-content:center;padding:2px 0}
+.shell.mini .sn-foot{padding-inline:0}
+
+.main-col{min-width:0;display:flex;flex-direction:column}
+.tb{position:sticky;top:0;z-index:15;background:color-mix(in srgb,#fff 86%,transparent);backdrop-filter:saturate(1.4) blur(12px);-webkit-backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--line)}
+.tb-in{max-width:1480px;margin:0 auto;min-height:var(--tb-h);padding:12px var(--gut);display:flex;align-items:center;gap:16px 24px;flex-wrap:wrap}
+.tb-l{min-width:0;flex:1 1 420px}
+.crumb{display:flex;align-items:center;gap:6px;margin:0 0 5px;padding:0;list-style:none;font-size:12px;color:var(--ink-3);flex-wrap:wrap}
+.crumb li{display:inline-flex;align-items:center;gap:6px}
+.crumb li+li::before{content:"";width:5px;height:5px;border-top:1.5px solid #a3b1c6;border-right:1.5px solid #a3b1c6;transform:rotate(45deg);margin-right:2px}
+.crumb li:last-child{color:var(--ink);font-weight:600}
+.tb h1{margin:0;display:flex;align-items:center;gap:12px;flex-wrap:wrap;font:700 clamp(18px,1.7vw,22px)/1.2 var(--f-display);letter-spacing:-.02em;color:var(--ink)}
+.tb-per{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;background:color-mix(in srgb,var(--navy) 8%,#fff);border:1px solid color-mix(in srgb,var(--navy) 16%,#fff);font:600 12px/1 var(--f-body);color:var(--navy);letter-spacing:0}
+.tb-per svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2}
+.tb-r{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.tb-sel{position:relative;display:flex;align-items:center;height:42px;min-width:280px;border:1px solid var(--line-2);border-radius:10px;background:#fff;box-shadow:0 1px 2px rgba(15,28,46,.05);transition:border-color .15s,box-shadow .15s}
+.tb-sel:hover{border-color:#9fb3cf}
+.tb-sel:focus-within{border-color:var(--navy);box-shadow:0 0 0 4px color-mix(in srgb,var(--navy) 12%,transparent)}
+.tb-sel>svg{position:absolute;left:12px;width:17px;height:17px;fill:none;stroke:var(--ink-3);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.tb-sel .lb{position:absolute;left:38px;top:6px;font:600 9.5px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);pointer-events:none}
+.tb-sel select{appearance:none;-webkit-appearance:none;width:100%;height:100%;padding:14px 34px 0 38px;border:0;background:transparent;font:600 13.5px/1 var(--f-body);color:var(--ink);cursor:pointer;outline:0}
+.tb-sel::after{content:"";position:absolute;right:14px;top:50%;width:7px;height:7px;margin-top:-5px;border-right:1.8px solid var(--ink-3);border-bottom:1.8px solid var(--ink-3);transform:rotate(45deg);pointer-events:none}
+.tb .chip{height:32px;padding:0 12px;border-radius:999px;font-size:12.5px}
+.tb .chip-m{background:var(--navy);color:#fff}
+.tb-reg{display:none}
+.tb-reg{gap:3px;padding:3px;border-radius:10px;background:#eef2f7;border:1px solid var(--line)}
+.tb-reg button{flex:1;height:34px;padding:0 12px;border:0;border-radius:7px;background:transparent;font:600 13px var(--f-display);color:var(--ink-2);cursor:pointer;white-space:nowrap}
+.tb-reg button.on{background:#fff;color:var(--navy);box-shadow:0 1px 3px rgba(15,28,46,.12)}
+
+.main-col .wrap{width:100%;padding-top:26px;gap:20px}
+.sh{display:flex;align-items:center;gap:12px;margin:10px 0 -4px;scroll-margin-top:calc(var(--tb-h) + 16px)}
+.sh:first-child{margin-top:0}
+.sh i{font:600 11px/1 var(--f-mono);font-style:normal;letter-spacing:.06em;color:var(--navy);background:#fff;border:1px solid var(--line-2);padding:6px 8px;border-radius:7px;box-shadow:0 1px 2px rgba(15,28,46,.05)}
+.sh h2{margin:0;font:700 17px/1.2 var(--f-display);letter-spacing:-.01em;color:var(--ink)}
+.sh::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line-2),transparent)}
+.kpis{margin-top:0!important}
+@media (max-width:1080px){
+  .shell{grid-template-columns:minmax(0,1fr)}.sn{display:none}
+  .tb-reg{display:flex;width:100%;order:3}
+  .tb-sel{min-width:0;flex:1}
+  .tb-r{width:100%;justify-content:stretch}
+}
+@media (max-width:1080px){.tb{position:static}.tb-in{padding-block:14px;gap:12px}.tb-l{flex-basis:100%}.tb-reg{order:-1}.tb-sel{flex:1 1 100%}.tb .chip{order:2}}
+@media print{.sn,.tb-r{display:none}.shell{display:block}.tb{position:static}}
 </style>
 </head>
 <body>
@@ -960,7 +1045,7 @@ const actions = {
 // Filtros ↔ URL (#hub=A030&uf=CE): permite compartilhar uma visão já filtrada
 const readHash = () => { try {
   const p = new URLSearchParams(location.hash.slice(1));
-  ["hub", "uf", "band", "q"].forEach(k => { if (p.get(k)) store.f[k] = p.get(k); });
+  ["hub", "uf", "band", "q", "reg"].forEach(k => { if (p.get(k)) store.f[k] = p.get(k); });
   if (store.f.hub && !HUB0.has(store.f.hub)) store.f.hub = "";
 } catch { /* hash indisponível */ } };
 readHash();
@@ -1410,7 +1495,7 @@ const SidePanel = {
   setup() {
     const list = computed(() => {
       const c = groupBy(sel.rowsNoHub.value, r => r.h);
-      return hubs.value.map(h => { const rs = c.get(h.id) || [];
+      return hubs.value.filter(h => !store.f.reg || REG(h.id) === store.f.reg).map(h => { const rs = c.get(h.id) || [];
         return {h, n: store.metric ? metricHub(h.id, rs) : rs.length, b: BANDS.map((_, k) => rs.filter(r => r.fxI === k).length)}; })
         .sort((a, b) => b.n - a.n || a.h.nome.localeCompare(b.h.nome, "pt-BR"));
     });
@@ -1867,22 +1952,110 @@ const DataTabs = {
   },
 };
 
+
+/* Shell: navegação lateral (região + seções) e barra superior fixa */
+const SECOES = [{id: "sec-eq", n: "01", t: "Equipamentos em campo"}, {id: "sec-cob", n: "02", t: "Cobertura por cidades"}, {id: "sec-td", n: "03", t: "Distância e tempo"}];
+const MES_TXT = MES_EXT[String(EQ.meta.periodo || "").slice(0, 3)] || String(EQ.meta.periodo || "");
+const ANO_TXT = (String(EQ.meta.periodo || "").split("/")[1]) || "";
+const aplReg = k => { const e = eqSum(BASE_ROWS.filter(r => !k || REG(r.h) === k)), fo = k ? (EQ.meta.foraReg || {})[k] || {} : EQ.meta.fora || {};
+  return e.n + e.r + (fo.n || 0) + (fo.r || 0); };
+const REGIOES = [{k: "", t: "Visão geral", ic: "geral"}, {k: "ne", t: "Nordeste", ic: "ne"}, {k: "ss", t: "Sul/Sudeste", ic: "ss"}]
+  .map(o => ({...o, n: aplReg(o.k), h: HUBS0.filter(h => !o.k || REG(h.id) === o.k).length}));
+const setRegiao = k => { store.f.reg = k; if (store.f.hub && k && REG(store.f.hub) !== k) store.f.hub = ""; store.focus = null; };
+const irPara = id => document.getElementById(id)?.scrollIntoView({behavior: reducedMotion() ? "auto" : "smooth", block: "start"});
+const SN_ICO = {
+  geral: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+  ne: '<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+  ss: '<path d="M3 20h18M5 20V9l7-5 7 5v11"/><path d="M9 20v-6h6v6"/>',
+  "sec-eq": '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10"/>',
+  "sec-cob": '<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/>',
+  "sec-td": '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/>',
+};
+const SideNav = {
+  template: `<aside class="sn" aria-label="Navegação principal">
+      <div class="sn-brand"><span class="sn-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="m3 8 9 5 9-5M12 13v8"/></svg></span>
+        <div><b>Operações</b><small>Controle de equipamentos</small></div></div>
+      <div class="sn-grp" role="group" aria-label="Região"><span class="sn-k">Região</span>
+        <button v-for="o in regs" :key="o.k" type="button" class="sn-it" :class="{on: f.reg === o.k}" :aria-pressed="f.reg === o.k" :title="o.t" @click="setReg(o.k)">
+          <span class="sn-ic" aria-hidden="true"><svg viewBox="0 0 24 24" v-html="ico[o.ic]"></svg></span>
+          <span class="sn-tx"><b>{{ o.t }}</b><small>{{ o.h }} almoxarifados</small></span><span class="sn-n" :title="o.n + ' aplicados'">{{ fmt(o.n) }}</span></button></div>
+      <nav class="sn-grp" aria-label="Seções"><span class="sn-k">Seções</span>
+        <a v-for="x in secs" :key="x.id" class="sn-it" :class="{on: ativo === x.id}" :href="'#' + x.id" :title="x.t" @click.prevent="go(x.id)">
+          <span class="sn-ic" aria-hidden="true"><svg viewBox="0 0 24 24" v-html="ico[x.id]"></svg></span><span class="sn-tx"><b>{{ x.t }}</b></span></a></nav>
+      <div class="sn-foot">
+        <div class="sn-meta"><span>Período</span><b>{{ periodo }}</b></div>
+        <div class="sn-meta"><span>Escopo</span><b>Projetos OP · serializados</b></div>
+        <div class="sn-meta" v-if="atual"><span>Atualizado</span><b class="sn-live">{{ atual }}</b></div>
+        <button type="button" class="sn-col" @click="$emit('mini')" :aria-label="mini ? 'Expandir menu' : 'Recolher menu'">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg><span>Recolher menu</span></button>
+      </div>
+    </aside>`,
+  props: ["mini", "ativo"], emits: ["mini"],
+  setup() {
+    const c = typeof CONV !== "undefined" && CONV ? CONV.meta : {};
+    const periodo = c.de && c.ate ? `${c.de.slice(0, 5)} a ${c.ate}` : `${MES_TXT} ${ANO_TXT}`;
+    const fmt = n => (n >= 10000 ? nf1.format(n / 1000) + " mil" : nf0.format(n));
+    return {regs: REGIOES, f: store.f, setReg: setRegiao, secs: SECOES, go: irPara, ico: SN_ICO, periodo, atual: c.geradoEm || "", fmt};
+  },
+};
+const TopBar = {
+  template: `<header class="tb"><div class="tb-in">
+      <div class="tb-l">
+        <ol class="crumb" aria-label="Você está em"><li>Operações</li><li>{{ regiao }}</li><li>{{ hubNome }}</li></ol>
+        <h1>Controle de Equipamentos Aplicados/Retirados <span class="tb-per"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>{{ mes }}</span></h1>
+      </div>
+      <div class="tb-r">
+        <button v-for="c in chips" :key="c.k" class="chip" type="button" @click="set(c.k, '')" :title="'Remover filtro ' + c.t">{{ c.t }} <span>×</span></button>
+        <button v-if="metric" class="chip chip-m" type="button" @click="clearMetric" title="Voltar à visão geral">Analisando: {{ metric }} <span>×</span></button>
+        <label class="tb-sel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21V8l9-5 9 5v13"/><path d="M7 21v-8h10v8M7 17h10"/></svg><span class="lb">Almoxarifado</span>
+          <select :value="f.hub" @change="set('hub', $event.target.value)" aria-label="Almoxarifado"><option value="">Todos os almoxarifados</option>
+            <option v-for="h in hubsSorted" :key="h.id" :value="h.id">{{ h.nome }} · {{ h.uf }}</option></select></label>
+        <div class="tb-reg" role="tablist" aria-label="Região"><button v-for="o in regs" :key="o.k" type="button" role="tab" :aria-selected="f.reg === o.k" :class="{on: f.reg === o.k}" @click="setReg(o.k)">{{ o.t }}</button></div>
+      </div>
+    </div></header>`,
+  setup() {
+    const hubsSorted = computed(() => [...HUBS0].filter(h => !store.f.reg || REG(h.id) === store.f.reg).sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR")));
+    const chips = computed(() => [store.f.uf && {k: "uf", t: `UF ${store.f.uf}`},
+      store.f.band !== "" && {k: "band", t: BANDS[+store.f.band]?.k}, store.f.q && {k: "q", t: `“${store.f.q}”`}].filter(Boolean));
+    const metric = computed(() => (store.metric ? METRICS[store.metric].t : ""));
+    return {f: store.f, regs: REGIOES, setReg: setRegiao, hubsSorted, chips, metric, clearMetric: () => { store.metric = ""; }, set: actions.setFilter,
+      mes: `${MES_TXT} ${ANO_TXT}`.trim(), regiao: computed(() => REG_T[store.f.reg] || "Visão geral"),
+      hubNome: computed(() => (store.f.hub ? HUB0.get(store.f.hub)?.nome : "Todos os almoxarifados"))};
+  },
+};
+
 /* --------------------------------- app -------------------------------- */
 createApp({
-  components: {AppBar, FilterBar, KpiStrip, TestCat, CatTabela, CatPanel, ConvPanel, SimBar, MapPanel, SidePanel, Intel, DataTabs},
-  template: `<app-bar></app-bar>
-    <main class="wrap">
-      <filter-bar></filter-bar>
-      <div class="tri-rh sec-h sec-top"><b><i>01</i>Equipamentos em campo</b></div>
-      <kpi-strip class="over"></kpi-strip>
-      <test-cat v-if="verTest"></test-cat>
-      <div class="tri-rh sec-h"><b><i>02</i>Cobertura por Cidades</b></div>
-      <sim-bar></sim-bar>
-      <section class="main"><map-panel></map-panel><side-panel></side-panel></section>
-      <intel></intel>
-    </main>
+  components: {SideNav, TopBar, KpiStrip, TestCat, SimBar, MapPanel, SidePanel, Intel},
+  template: `<div class="shell" :class="{mini}">
+      <side-nav :mini="mini" :ativo="ativo" @mini="toggleMini"></side-nav>
+      <div class="main-col">
+        <top-bar></top-bar>
+        <main class="wrap">
+          <header class="sh" id="sec-eq"><i>01</i><h2>Equipamentos em campo</h2></header>
+          <kpi-strip></kpi-strip>
+          <test-cat v-if="verTest"></test-cat>
+          <header class="sh" id="sec-cob"><i>02</i><h2>Cobertura por cidades</h2></header>
+          <sim-bar></sim-bar>
+          <section class="main"><map-panel></map-panel><side-panel></side-panel></section>
+          <header class="sh" id="sec-td"><i>03</i><h2>Distância e tempo</h2></header>
+          <intel></intel>
+        </main>
+      </div>
+    </div>
     <div v-if="toast" class="toast" role="status">{{ toast }}</div>`,
-  setup: () => ({toast: computed(() => store.toast), verCatSS: computed(() => !!EQ.meta.foraCat && (store.f.hub ? REG(store.f.hub) === "ss" : store.f.reg === "ss")), verTest: computed(() => store.metric === "test" && !!CONV && !!CONV.reapCat), regiaoTxt: computed(() => (store.f.hub ? HUB0.get(store.f.hub)?.nome : REG_T[store.f.reg] || "Todas as regiões")), hasConv: !!CONV, hasCat: !!(EQ.meta.categorias || []).length, showConv: computed(() => !store.metric || ["ret", "test"].includes(store.metric))}),
+  setup() {
+    const mini = ref(safeLS.get("cob.mini") === "1"), ativo = ref("sec-eq");
+    const toggleMini = () => { mini.value = !mini.value; safeLS.set("cob.mini", mini.value ? "1" : "0");
+      setTimeout(() => window.dispatchEvent(new Event("resize")), 260); };
+    onMounted(() => {
+      window.addEventListener("scroll", () => { const y = window.scrollY + 140; let cur = SECOES[0].id;
+        SECOES.forEach(x => { const el = document.getElementById(x.id); if (el && el.getBoundingClientRect().top + window.scrollY <= y) cur = x.id; });
+        if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight - 4) cur = SECOES[SECOES.length - 1].id;
+        ativo.value = cur; }, {passive: true});
+    });
+    return {mini, ativo, toggleMini, toast: computed(() => store.toast), verTest: computed(() => store.metric === "test" && !!CONV && !!CONV.reapCat)};
+  },
 }).mount("#app");
 document.getElementById("boot").remove();
 </script>
