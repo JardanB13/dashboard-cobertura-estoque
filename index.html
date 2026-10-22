@@ -1355,6 +1355,40 @@ const TestCat = {
   },
 };
 
+/* Aplicados em cliente por categoria (aparece ao clicar no card "Aplicados em cliente") */
+const AplCat = {
+  template: `<section v-if="linhas.length" class="tc card2" aria-label="Aplicados em cliente por categoria">
+      <header class="c2-h"><div class="c2-t"><b>Aplicados em cliente, por categoria</b></div>
+        <div class="tc-tot"><b>{{ nf0.format(total) }}</b><span>aplicados em cliente (novos + reaproveitados)</span></div></header>
+      <div class="tc-grid">
+        <div v-for="x in linhas" :key="x.k" class="tc-row">
+          <span class="nm">{{ x.l }}</span><span class="tr"><i :style="{width: x.p * 100 + '%'}"></i></span>
+          <span class="q">{{ nf0.format(x.q) }}</span><span class="p">{{ pct.format(x.p) }}</span></div>
+      </div>
+    </section>`,
+  setup() {
+    const dados = computed(() => {
+      const s = eqSum(sel.rows.value), acc = {};
+      let total = s.n + s.r, obs = s.o || 0;
+      const add = cat => Object.entries(cat || {}).forEach(([k, v]) => { acc[k] = (acc[k] || 0) + v[0] + v[1]; });
+      add(s.cat);
+      /* Visão sem filtro: soma também as cidades sem almoxarifado vinculado (igual ao card) */
+      if (!store.f.hub && !store.f.uf && store.f.band === "" && !store.f.q) {
+        const fc = EQ.meta.foraCat || {}, fo = store.f.reg ? (EQ.meta.foraReg || {})[store.f.reg] || {} : EQ.meta.fora || {};
+        (store.f.reg ? [store.f.reg] : Object.keys(fc)).forEach(g => add(fc[g]));
+        total += (fo.n || 0) + (fo.r || 0); obs += fo.o || 0;
+      }
+      delete acc["SEM INFORMACAO"]; delete acc.OBSOLETO;
+      if (obs) acc.OBSOLETO = obs;
+      const base = sum(Object.values(acc));
+      const linhas = Object.entries(acc).filter(([, q]) => q).map(([k, q]) => ({k, l: CAT_T[k] || k, q, p: base ? q / base : 0}))
+        .sort((a, b) => b.q - a.q);
+      return {linhas, total};
+    });
+    return {linhas: computed(() => dados.value.linhas), total: computed(() => dados.value.total), nf0, pct};
+  },
+};
+
 /* Sul/Sudeste: aparelhos por categoria tecnológica (planilha DE PARA) */
 const CatTabela = {
   template: `<section class="ctb card2" aria-label="Aparelhos por categoria tecnológica">
@@ -2048,7 +2082,7 @@ const TopBar = {
 
 /* --------------------------------- app -------------------------------- */
 createApp({
-  components: {SideNav, TopBar, KpiStrip, TestCat, SimBar, MapPanel, SidePanel, Intel},
+  components: {SideNav, TopBar, KpiStrip, TestCat, AplCat, SimBar, MapPanel, SidePanel, Intel},
   template: `<div class="shell" :class="{mini}">
       <side-nav :mini="mini" :ativo="ativo" @mini="toggleMini"></side-nav>
       <button type="button" class="sn-open" @click="toggleMini" aria-label="Abrir menu" title="Abrir menu" :tabindex="mini ? 0 : -1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
@@ -2060,6 +2094,7 @@ createApp({
           <section class="main"><map-panel></map-panel><side-panel></side-panel></section>
           <div id="sec-eq" class="sh-anc" aria-hidden="true"></div>
           <kpi-strip></kpi-strip>
+          <apl-cat v-if="verApl"></apl-cat>
           <test-cat v-if="verTest"></test-cat>
         </main>
       </div>
@@ -2075,7 +2110,8 @@ createApp({
         if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight - 4) cur = SECOES[SECOES.length - 1].id;
         ativo.value = cur; }, {passive: true});
     });
-    return {mini, ativo, toggleMini, toast: computed(() => store.toast), verTest: computed(() => store.metric === "test" && !!CONV && !!CONV.reapCat)};
+    return {mini, ativo, toggleMini, toast: computed(() => store.toast), verTest: computed(() => store.metric === "test" && !!CONV && !!CONV.reapCat),
+      verApl: computed(() => store.metric === "total" && !!(EQ.meta.categorias || []).length)};
   },
 }).mount("#app");
 document.getElementById("boot").remove();
