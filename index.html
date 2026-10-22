@@ -960,12 +960,17 @@ body{background:#eef2f7}
 .kpi .leg{font-size:11.5px;margin-top:8px}
 .tc-tot b{font-size:22px}
 }
-.cobst{display:flex;align-items:center;gap:10px;flex-wrap:wrap;scroll-margin-top:calc(var(--tb-h) + 16px)}
-.cobst-i{display:flex;align-items:baseline;gap:8px;padding:8px 14px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 1px 2px rgba(15,28,46,.05)}
-.cobst-i b{font:700 18px/1 var(--f-mono);color:var(--navy);font-variant-numeric:tabular-nums}
-.cobst-i span{font:600 12px/1 var(--f-body);color:var(--ink-2);letter-spacing:.01em}
-.cobst-ctx{margin-left:4px;font-size:12px;color:var(--ink-3)}
-.cobst::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line-2),transparent);min-width:40px}
+.cobk{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;scroll-margin-top:calc(var(--tb-h) + 16px)}
+.cobk-c{position:relative;overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 22px 18px;box-shadow:0 1px 2px rgba(15,28,46,.04),0 10px 30px -14px rgba(15,28,46,.16);min-width:0}
+.cobk-c::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c)}
+.cobk-ico{position:absolute;top:18px;right:18px;width:38px;height:38px;border-radius:11px;display:grid;place-items:center;color:var(--c);background:color-mix(in srgb,var(--c) 11%,#fff)}
+.cobk-ico svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.cobk-v{font:700 34px/1 var(--f-mono);letter-spacing:-.03em;color:var(--navy);font-variant-numeric:tabular-nums;padding-right:48px}
+.cobk-l{margin-top:10px;font:700 11.5px/1.3 var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.cobk-s{margin-top:6px;font-size:12px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cobk-bar{margin-top:12px;height:5px;border-radius:99px;background:#edf0f5;overflow:hidden}.cobk-bar i{display:block;height:100%;border-radius:99px;background:var(--c)}
+@media (max-width:1100px){.cobk{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.cobk{grid-template-columns:minmax(0,1fr)}.cobk-v{font-size:28px}}
 </style>
 </head>
 <body>
@@ -2017,18 +2022,39 @@ const DataTabs = {
 };
 
 
-/* Resumo da cobertura no lugar do título da seção: almoxarifados e cidades atendidas */
+/* Resumo da cobertura: cartões principais acima do mapa (acompanham os filtros) */
+const COB_ICO = {
+  hub: '<path d="M3 21V8l9-5 9 5v13"/><path d="M7 21v-8h10v8M7 17h10"/>',
+  cid: '<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+  pop: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 4.6a3.2 3.2 0 0 1 0 6.2M18 14.4c1.8.8 3 2.6 3 4.6"/>',
+  tempo: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/>',
+};
 const CobStats = {
-  template: `<div class="cobst" aria-label="Resumo da cobertura">
-      <div class="cobst-i"><b>{{ nf0.format(nHubs) }}</b><span>{{ nHubs === 1 ? "almoxarifado" : "almoxarifados" }}</span></div>
-      <div class="cobst-i"><b>{{ nf0.format(nCid) }}</b><span>cidades atendidas</span></div>
-      <span class="cobst-ctx">{{ ctx }}</span>
-    </div>`,
+  template: `<section class="cobk" aria-label="Resumo da cobertura">
+      <article v-for="c in cards" :key="c.k" class="cobk-c" :style="{'--c': c.c}">
+        <span class="cobk-ico" aria-hidden="true"><svg viewBox="0 0 24 24" v-html="c.i"></svg></span>
+        <div class="cobk-v">{{ c.v }}</div>
+        <div class="cobk-l">{{ c.l }}</div>
+        <div v-if="c.p != null" class="cobk-bar" role="img" :aria-label="c.s"><i :style="{width: c.p * 100 + '%'}"></i></div>
+        <div class="cobk-s">{{ c.s }}</div>
+      </article>
+    </section>`,
   setup() {
-    const nHubs = computed(() => (store.f.hub ? 1 : HUBS0.filter(h => !store.f.reg || REG(h.id) === store.f.reg).length));
-    const nCid = computed(() => new Set(sel.rows.value.map(r => r.key)).size);
-    const ctx = computed(() => (store.f.hub ? HUB0.get(store.f.hub)?.nome : REG_T[store.f.reg] || "Todas as regiões"));
-    return {nHubs, nCid, ctx, nf0};
+    const cards = computed(() => {
+      const rows = sel.rows.value, st = stats(rows);
+      const nHubs = store.f.hub ? 1 : HUBS0.filter(h => !store.f.reg || REG(h.id) === store.f.reg).length;
+      const nUf = new Set(rows.map(r => r.uf)).size;
+      const ctx = store.f.hub ? HUB0.get(store.f.hub)?.nome : REG_T[store.f.reg] || "Todas as regiões";
+      const pop = st.pop >= 1e6 ? `${nf1.format(st.pop / 1e6)} mi` : st.pop >= 1e3 ? `${nf0.format(st.pop / 1e3)} mil` : nf0.format(st.pop);
+      return [
+        {k: "hub", l: nHubs === 1 ? "Almoxarifado" : "Almoxarifados", v: nf0.format(nHubs), s: ctx, c: "var(--navy)", i: COB_ICO.hub},
+        {k: "cid", l: "Cidades atendidas", v: nf0.format(st.n), s: `em ${nUf} ${nUf === 1 ? "estado" : "estados"}`, c: "#4a7fc1", i: COB_ICO.cid},
+        {k: "pop", l: "População atendida", v: pop, s: "habitantes nas cidades atendidas (IBGE)", c: "#0f766e", i: COB_ICO.pop},
+        {k: "tempo", l: "Tempo médio até o almoxarifado", v: st.n ? fmtMin(st.min) : "–", s: `${pct.format(st.ate2h)} das cidades a até 2h · ${nf1.format(st.km || 0)} km em média`,
+          p: st.ate2h, c: "#b45309", i: COB_ICO.tempo},
+      ];
+    });
+    return {cards};
   },
 };
 
