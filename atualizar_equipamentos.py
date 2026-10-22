@@ -152,9 +152,10 @@ def main(arquivos, cat_xlsx=None):
         if not v["o"]: v.pop("o")      # só grava "o" (obsoletos aplicados) onde houver
     no_mapa = {k: v for k, v in cid.items() if k in mapa}
     fora = [v for k, v in cid.items() if k not in mapa and (v["n"] or v["r"] or v["t"] or v.get("o"))]
-    reg = lambda k: "ss" if k.split("|")[-1] in ("SP", "PR", "MG") else "ne"
+    N_UF = ("AC", "AM", "AP", "PA", "RO", "RR", "TO")
+    reg = lambda k: "ss" if k.split("|")[-1] in ("SP", "PR", "MG") else "no" if k.split("|")[-1] in N_UF else "ne"
     soma = lambda vs: {"cid": len(vs), "n": sum(v["n"] for v in vs), "r": sum(v["r"] for v in vs), "t": sum(v["t"] for v in vs), "o": sum(v.get("o", 0) for v in vs)}
-    fora_reg = {g: soma([v for k, v in cid.items() if k not in mapa and (v["n"] or v["r"] or v["t"] or v.get("o")) and reg(k) == g]) for g in ("ne", "ss")}
+    fora_reg = {g: soma([v for k, v in cid.items() if k not in mapa and (v["n"] or v["r"] or v["t"] or v.get("o")) and reg(k) == g]) for g in ("no", "ne", "ss")}
     def soma_cat(vs):
         out = {}
         for v in vs:
@@ -169,7 +170,7 @@ def main(arquivos, cat_xlsx=None):
             "tot": {"n": tot("NOVO"), "r": tot("REAP"), "t": tot("RET"), "o": tot("OBS")},
             "fora": soma(fora),
             "foraReg": fora_reg,
-            **({"foraCat": {g: soma_cat([v for k, v in cid.items() if k not in mapa and reg(k) == g]) for g in ("ne", "ss")},
+            **({"foraCat": {g: soma_cat([v for k, v in cid.items() if k not in mapa and reg(k) == g]) for g in ("no", "ne", "ss")},
                 "categorias": sorted(eq["Cat"].unique().tolist(), key=lambda c: (c in ("SEM INFORMACAO", "OBSOLETO"), c))} if ref_cat is not None else {}),
         },
         "c": no_mapa,

@@ -923,6 +923,7 @@ body{background:#eef2f7}
 .tb .chip{height:32px;padding:0 12px;border-radius:999px;font-size:12.5px}
 .tb .chip-m{background:var(--navy);color:#fff}
 .tb-reg{display:none}
+.tb-sel.tb-sel-reg{min-width:200px}
 .tb-reg{gap:3px;padding:3px;border-radius:10px;background:#eef2f7;border:1px solid var(--line)}
 .tb-reg button{flex:1;height:34px;padding:0 12px;border:0;border-radius:7px;background:transparent;font:600 13px var(--f-display);color:var(--ink-2);cursor:pointer;white-space:nowrap}
 .tb-reg button.on{background:#fff;color:var(--navy);box-shadow:0 1px 3px rgba(15,28,46,.12)}
@@ -937,7 +938,7 @@ body{background:#eef2f7}
 .kpis{margin-top:0!important}
 @media (max-width:1080px){
   .shell{grid-template-columns:minmax(0,1fr)}.sn{display:none}
-  .tb-reg{display:flex;width:100%;order:3}
+  .tb-reg{display:flex;width:100%;order:3}.tb-sel.tb-sel-reg{display:none}
   .tb-sel{min-width:0;flex:1}
   .tb-r{width:100%;justify-content:stretch}
 }
@@ -1090,8 +1091,9 @@ const rowsEff = computed(() => {
   });
 });
 const SS_UF = new Set(["SP", "PR", "MG"]);
-const REG = id => (SS_UF.has(HUB0.get(id)?.uf) ? "ss" : "ne");
-const REG_T = {ne: "Nordeste", ss: "Sul/Sudeste"};
+const N_UF = new Set(["AC", "AM", "AP", "PA", "RO", "RR", "TO"]);
+const REG = id => { const uf = HUB0.get(id)?.uf; return SS_UF.has(uf) ? "ss" : N_UF.has(uf) ? "no" : "ne"; };
+const REG_T = {no: "Norte", ne: "Nordeste", ss: "Sul/Sudeste"};
 const match = (r, f, ignoreHub = false) => (ignoreHub || !f.hub || r.h === f.hub) && (!f.reg || REG(r.h) === f.reg) && (!f.uf || r.uf === f.uf)
   && (f.band === "" || r.fxI === +f.band) && (!f.q || r.q.includes(fold(f.q.trim())));
 const sel = {
@@ -1214,7 +1216,7 @@ const ConvPanel = {
     const blocos = computed(() => {
       const regs = [store.f.hub ? REG(store.f.hub) : store.f.reg || "all"];
       return regs.map(reg => {
-        const rs = CONV.retSem || {}, sem = store.f.hub ? [] : reg === "all" ? (M.retK || []).map((_, i) => ((rs.ne || [])[i] || 0) + ((rs.ss || [])[i] || 0)) : rs[reg] || [];
+        const rs = CONV.retSem || {}, sem = store.f.hub ? [] : reg === "all" ? (M.retK || []).map((_, i) => sum(Object.values(rs).map(v => v[i] || 0))) : rs[reg] || [];
         const rit = (M.retK || []).map((k, i) => ({k, ...RET_DEF[k], q: soma(CONV.ret, reg, i) + (sem[i] || 0)})).filter(x => x.q || ["REAP", "aguardando", "naodev"].includes(x.k));
         const cit = M.destinos.map((k, i) => ({k, ...(CONV_DEF[k] || {t: k, c: "var(--ink-3)"}), q: soma(CONV.hubs, reg, i)}));
         const sit = (M.status || []).map((k, i) => ({k, ...ST_DEF[k], q: soma(CONV.status, reg, i)}));
@@ -1227,7 +1229,7 @@ const ConvPanel = {
     // filtro suspenso por região: Reaproveitado sempre visível; os demais status entram quando marcados
     const opcoes = ["SUC", "DET", "DEF"].map(k => ({k, ...RET_DEF[k], cod: ["SUC", "DET", "DEF"].includes(k) && RET_DEF[k].t !== k ? k : ""}));
     const grupos = [{t: "Resultado da triagem", itens: opcoes}];
-    const sel = reactive({all: [], ne: [], ss: []}), aberto = ref("");
+    const sel = reactive({all: [], no: [], ne: [], ss: []}), aberto = ref("");
     const tem = (reg, k) => sel[reg].includes(k);
     const nSel = reg => sel[reg].length;
     const alterna = (reg, k) => { sel[reg] = tem(reg, k) ? sel[reg].filter(x => x !== k) : [...sel[reg], k]; };
@@ -1303,7 +1305,7 @@ const CatPanel = {
       Object.entries(s.cat || {}).forEach(([k, v]) => { cat[k] = [...v]; });
       const semFiltro = !store.f.hub && !store.f.uf && store.f.band === "" && !store.f.q;
       if (semFiltro) {
-        const fc = EQ.meta.foraCat || {}, regs = store.f.reg ? [store.f.reg] : ["ne", "ss"];
+        const fc = EQ.meta.foraCat || {}, regs = store.f.reg ? [store.f.reg] : ["no", "ne", "ss"];
         regs.forEach(g => Object.entries(fc[g] || {}).forEach(([k, v]) => { const a = cat[k] || (cat[k] = [0, 0, 0]); v.forEach((q, j) => { a[j] += q; }); }));
       }
       return (EQ.meta.categorias || Object.keys(cat)).map(k => { const v = cat[k] || [0, 0, 0];
@@ -1975,17 +1977,19 @@ const DataTabs = {
 
 
 /* Shell: navegação lateral (região + seções) e barra superior fixa */
-const SECOES = [{id: "sec-cob", n: "01", t: "Cobertura por cidades"}, {id: "sec-eq", n: "02", t: "Equipamentos em campo"}, {id: "sec-td", n: "03", t: "Distância e tempo"}];
+const SECOES = [{id: "sec-cob", n: "01", t: "Cobertura por cidades"}, {id: "sec-eq", n: "02", t: "Equipamentos em campo"}];
 const MES_TXT = MES_EXT[String(EQ.meta.periodo || "").slice(0, 3)] || String(EQ.meta.periodo || "");
 const ANO_TXT = (String(EQ.meta.periodo || "").split("/")[1]) || "";
 const aplReg = k => { const e = eqSum(BASE_ROWS.filter(r => !k || REG(r.h) === k)), fo = k ? (EQ.meta.foraReg || {})[k] || {} : EQ.meta.fora || {};
   return e.n + e.r + (fo.n || 0) + (fo.r || 0); };
-const REGIOES = [{k: "", t: "Visão geral", ic: "geral"}, {k: "ne", t: "Nordeste", ic: "ne"}, {k: "ss", t: "Sul/Sudeste", ic: "ss"}]
+const REGIOES = [{k: "", t: "Visão geral", ic: "geral"}, {k: "no", t: "Norte", ic: "no"}, {k: "ne", t: "Nordeste", ic: "ne"},
+  {k: "ss", t: "Sul/Sudeste", ic: "ss"}]
   .map(o => ({...o, n: aplReg(o.k), h: HUBS0.filter(h => !o.k || REG(h.id) === o.k).length}));
 const setRegiao = k => { store.f.reg = k; if (store.f.hub && k && REG(store.f.hub) !== k) store.f.hub = ""; store.focus = null; };
 const irPara = id => document.getElementById(id)?.scrollIntoView({behavior: reducedMotion() ? "auto" : "smooth", block: "start"});
 const SN_ICO = {
   geral: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+  no: '<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>',
   ne: '<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
   ss: '<path d="M3 20h18M5 20V9l7-5 7 5v11"/><path d="M9 20v-6h6v6"/>',
   "sec-eq": '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10"/>',
@@ -1999,7 +2003,7 @@ const SideNav = {
       <div class="sn-grp" role="group" aria-label="Região"><span class="sn-k">Região</span>
         <button v-for="o in regs" :key="o.k" type="button" class="sn-it" :class="{on: f.reg === o.k}" :aria-pressed="f.reg === o.k" :title="o.t" @click="setReg(o.k)">
           <span class="sn-ic" aria-hidden="true"><svg viewBox="0 0 24 24" v-html="ico[o.ic]"></svg></span>
-          <span class="sn-tx"><b>{{ o.t }}</b><small>{{ o.h }} almoxarifados</small></span><span class="sn-n" :title="o.n + ' aplicados'">{{ fmt(o.n) }}</span></button></div>
+          <span class="sn-tx"><b>{{ o.t }}</b><small>{{ o.h }} {{ o.h === 1 ? "almoxarifado" : "almoxarifados" }}</small></span><span class="sn-n" :title="o.n + ' aplicados'">{{ fmt(o.n) }}</span></button></div>
       <nav class="sn-grp" aria-label="Seções"><span class="sn-k">Seções</span>
         <a v-for="x in secs" :key="x.id" class="sn-it" :class="{on: ativo === x.id}" :href="'#' + x.id" :title="x.t" @click.prevent="go(x.id)">
           <span class="sn-ic" aria-hidden="true"><svg viewBox="0 0 24 24" v-html="ico[x.id]"></svg></span><span class="sn-tx"><b>{{ x.t }}</b></span></a></nav>
@@ -2022,6 +2026,9 @@ const TopBar = {
         <h1>Controle de Equipamentos Aplicados/Retirados <span class="tb-mes">- {{ mes }}</span></h1>
       </div>
       <div class="tb-r">
+        <label class="tb-sel tb-sel-reg"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+          <select :value="f.reg" @change="setReg($event.target.value)" aria-label="Região"><option value="">Todas as regiões</option>
+            <option v-for="o in regs.filter(x => x.k)" :key="o.k" :value="o.k">{{ o.t }}</option></select></label>
         <label class="tb-sel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21V8l9-5 9 5v13"/><path d="M7 21v-8h10v8M7 17h10"/></svg>
           <select :value="f.hub" @change="set('hub', $event.target.value)" aria-label="Almoxarifado"><option value="">Almoxarifado</option>
             <option v-for="h in hubsSorted" :key="h.id" :value="h.id">{{ h.nome }} · {{ h.uf }}</option></select></label>
@@ -2054,8 +2061,6 @@ createApp({
           <div id="sec-eq" class="sh-anc" aria-hidden="true"></div>
           <kpi-strip></kpi-strip>
           <test-cat v-if="verTest"></test-cat>
-          <header class="sh" id="sec-td"><i>02</i><h2>Distância e tempo</h2></header>
-          <intel></intel>
         </main>
       </div>
     </div>

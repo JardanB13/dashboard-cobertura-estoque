@@ -112,7 +112,8 @@ def main(args):
         sys.exit("Uso: python atualizar_conversao.py MOV.xlsx APLIC.xlsx [MOV2.xlsx APLIC2.xlsx ...]")
     HUBS = carregar_js("cobertura.js")["hubs"]
     hubs = {fold(h["nome"]): h["id"] for h in HUBS}
-    regiao = {h["id"]: ("ss" if h["uf"] in ("SP", "PR", "MG") else "ne") for h in HUBS}
+    regiao = {h["id"]: ("ss" if h["uf"] in ("SP", "PR", "MG") else
+                        "no" if h["uf"] in ("AC", "AM", "AP", "PA", "RO", "RR", "TO") else "ne") for h in HUBS}
     def hub_de(projeto):
         p = fold(projeto)
         p = re.sub(r"^(op|lab|fer|estrut) ", "", p)
