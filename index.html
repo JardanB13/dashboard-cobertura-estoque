@@ -960,6 +960,12 @@ body{background:#eef2f7}
 .kpi .leg{font-size:11.5px;margin-top:8px}
 .tc-tot b{font-size:22px}
 }
+.cobst{display:flex;align-items:center;gap:10px;flex-wrap:wrap;scroll-margin-top:calc(var(--tb-h) + 16px)}
+.cobst-i{display:flex;align-items:baseline;gap:8px;padding:8px 14px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 1px 2px rgba(15,28,46,.05)}
+.cobst-i b{font:700 18px/1 var(--f-mono);color:var(--navy);font-variant-numeric:tabular-nums}
+.cobst-i span{font:600 12px/1 var(--f-body);color:var(--ink-2);letter-spacing:.01em}
+.cobst-ctx{margin-left:4px;font-size:12px;color:var(--ink-3)}
+.cobst::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line-2),transparent);min-width:40px}
 </style>
 </head>
 <body>
@@ -2011,6 +2017,21 @@ const DataTabs = {
 };
 
 
+/* Resumo da cobertura no lugar do título da seção: almoxarifados e cidades atendidas */
+const CobStats = {
+  template: `<div class="cobst" aria-label="Resumo da cobertura">
+      <div class="cobst-i"><b>{{ nf0.format(nHubs) }}</b><span>{{ nHubs === 1 ? "almoxarifado" : "almoxarifados" }}</span></div>
+      <div class="cobst-i"><b>{{ nf0.format(nCid) }}</b><span>cidades atendidas</span></div>
+      <span class="cobst-ctx">{{ ctx }}</span>
+    </div>`,
+  setup() {
+    const nHubs = computed(() => (store.f.hub ? 1 : HUBS0.filter(h => !store.f.reg || REG(h.id) === store.f.reg).length));
+    const nCid = computed(() => new Set(sel.rows.value.map(r => r.key)).size);
+    const ctx = computed(() => (store.f.hub ? HUB0.get(store.f.hub)?.nome : REG_T[store.f.reg] || "Todas as regiões"));
+    return {nHubs, nCid, ctx, nf0};
+  },
+};
+
 /* Shell: navegação lateral (região + seções) e barra superior fixa */
 const SECOES = [{id: "sec-cob", n: "01", t: "Cobertura por cidades"}, {id: "sec-eq", n: "02", t: "Equipamentos em campo"}];
 const MES_TXT = MES_EXT[String(EQ.meta.periodo || "").slice(0, 3)] || String(EQ.meta.periodo || "");
@@ -2079,14 +2100,14 @@ const TopBar = {
 
 /* --------------------------------- app -------------------------------- */
 createApp({
-  components: {SideNav, TopBar, KpiStrip, TestCat, AplCat, SimBar, MapPanel, SidePanel, Intel},
+  components: {SideNav, TopBar, CobStats, KpiStrip, TestCat, AplCat, SimBar, MapPanel, SidePanel, Intel},
   template: `<div class="shell" :class="{mini}">
       <side-nav :mini="mini" :ativo="ativo" @mini="toggleMini"></side-nav>
       <button type="button" class="sn-open" @click="toggleMini" aria-label="Abrir menu" title="Abrir menu" :tabindex="mini ? 0 : -1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
       <div class="main-col">
         <top-bar></top-bar>
         <main class="wrap">
-          <header class="sh" id="sec-cob"><i>01</i><h2>Cobertura por cidades</h2></header>
+          <cob-stats id="sec-cob"></cob-stats>
           <sim-bar></sim-bar>
           <section class="main"><map-panel></map-panel><side-panel></side-panel></section>
           <div id="sec-eq" class="sh-anc" aria-hidden="true"></div>
