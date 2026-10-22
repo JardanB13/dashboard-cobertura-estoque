@@ -938,7 +938,7 @@ body{background:#eef2f7}
 .kpis{margin-top:0!important}
 @media (max-width:1080px){
   .shell{grid-template-columns:minmax(0,1fr)}.sn{display:none}
-  .tb-reg{display:flex;width:100%;order:3}.tb-sel.tb-sel-reg{display:none}
+  .tb-reg{display:none}
   .tb-sel{min-width:0;flex:1}
   .tb-r{width:100%;justify-content:stretch}
 }
@@ -2035,10 +2035,6 @@ const SideNav = {
   template: `<aside class="sn" aria-label="Navegação principal">
       <div class="sn-brand"><span class="sn-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="m3 8 9 5 9-5M12 13v8"/></svg></span>
         <div><b>Operações</b><small>Controle de equipamentos</small></div></div>
-      <div class="sn-grp" role="group" aria-label="Região"><span class="sn-k">Região</span>
-        <button v-for="o in regs" :key="o.k" type="button" class="sn-it" :class="{on: f.reg === o.k}" :aria-pressed="f.reg === o.k" :title="o.t" @click="setReg(o.k)">
-          <span class="sn-ic" aria-hidden="true"><svg viewBox="0 0 24 24" v-html="ico[o.ic]"></svg></span>
-          <span class="sn-tx"><b>{{ o.t }}</b><small>{{ o.h }} {{ o.h === 1 ? "almoxarifado" : "almoxarifados" }}</small></span><span class="sn-n" :title="o.n + ' aplicados'">{{ fmt(o.n) }}</span></button></div>
       <nav class="sn-grp" aria-label="Seções"><span class="sn-k">Seções</span>
         <a v-for="x in secs" :key="x.id" class="sn-it" :class="{on: ativo === x.id}" :href="'#' + x.id" :title="x.t" @click.prevent="go(x.id)">
           <span class="sn-ic" aria-hidden="true"><svg viewBox="0 0 24 24" v-html="ico[x.id]"></svg></span><span class="sn-tx"><b>{{ x.t }}</b></span></a></nav>
