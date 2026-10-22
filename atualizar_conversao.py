@@ -48,6 +48,8 @@ def ler(xlsx):
 
 def processar(mov_xlsx, apl_xlsx, hub_de, hub_cid):
     m = ler(mov_xlsx)
+    tipo = m["Tipo Movimento"].fillna("").str.strip()   # documentos RM/DM (todos os materiais)
+    docs = {k: int(m.loc[tipo.eq(k), "Nº. Doc"].dropna().nunique()) for k in ("RM", "DM")}
     m["ser"] = serie(m["Cod.Compl."]); m = m[~m["ser"].isin(VAZIO)].copy()
     m["E"], m["S"] = num(m["Entrada"]), num(m["Saída"])
     m["tm"] = m["Tipo Movimento"].fillna("").str.strip()
@@ -96,7 +98,7 @@ def processar(mov_xlsx, apl_xlsx, hub_de, hub_cid):
         else: k = "naodev"
         rows.append((hub_de(x["Projeto"]) or hub_cid(x["Município"]), k))
     rt = pd.DataFrame(rows, columns=["hub", "k"])
-    return cv, reap, rt, m["dt"].min(), m["dt"].max()
+    return cv, reap, rt, m["dt"].min(), m["dt"].max(), docs
 
 def main(args):
     cat_ref = None
@@ -127,11 +129,14 @@ def main(args):
         hs = cid.get(fold(municipio), set())
         return next(iter(hs)) if len(hs) == 1 else None
 
-    cvs, reaps, rts, d0s, d1s = [], [], [], [], []
+    cvs, reaps, rts, d0s, d1s, docs_reg = [], [], [], [], [], {}
     for i in range(0, len(args), 2):
-        cv, reap, rt, d0, d1 = processar(args[i], args[i + 1], hub_de, hub_cid)
+        cv, reap, rt, d0, d1, docs = processar(args[i], args[i + 1], hub_de, hub_cid)
         reg = rt["hub"].dropna().map(regiao).mode()
         rt["reg"] = reg.iloc[0] if len(reg) else "ne"
+        for k, n in docs.items():   # RM/DM do arquivo de movimentação, na região dele
+            docs_reg.setdefault(rt["reg"].iloc[0] if len(rt) else "ne", {}).setdefault(k, 0)
+            docs_reg[rt["reg"].iloc[0] if len(rt) else "ne"][k] += n
         cvs.append(cv); reaps.append(reap); rts.append(rt); d0s.append(d0); d1s.append(d1)
         print(f"   {Path(args[i]).name}: {len(cv)} RET convertidos · {len(rt)} retirados rastreados ({rt['hub'].isna().sum()} sem almoxarifado)")
     cv, reap, rt = pd.concat(cvs), pd.concat(reaps), pd.concat(rts)
@@ -156,6 +161,7 @@ def main(args):
         "status": {h: vec(g, "st", STATUS) for h, g in reap.dropna(subset=["hub"]).groupby("hub")},
         "ret": {h: vec(g, "k", RET_K) for h, g in rt.dropna(subset=["hub"]).groupby("hub")},
         "retSem": {g: vec(x[x["hub"].isna()], "k", RET_K) for g, x in rt.groupby("reg")},
+        "docs": docs_reg,   # documentos distintos de RM e DM por região
     }
     if cat_ref:   # aprovados como REAP na triagem, por categoria tecnológica do aparelho
         ap = cv[(cv["para"] == "REAP") & cv["hub"].notna()].copy()

@@ -962,6 +962,7 @@ body{background:#eef2f7}
 }
 .cobk{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;scroll-margin-top:calc(var(--tb-h) + 16px)}
 .cobk-c{position:relative;overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 22px 18px;box-shadow:0 1px 2px rgba(15,28,46,.04),0 10px 30px -14px rgba(15,28,46,.16);min-width:0}
+.cobk-c.dim{opacity:.45}
 .cobk-c::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c)}
 .cobk-ico{position:absolute;top:18px;right:18px;width:38px;height:38px;border-radius:11px;display:grid;place-items:center;color:var(--c);background:color-mix(in srgb,var(--c) 11%,#fff)}
 .cobk-ico svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -2026,12 +2027,11 @@ const DataTabs = {
 const COB_ICO = {
   hub: '<path d="M3 21V8l9-5 9 5v13"/><path d="M7 21v-8h10v8M7 17h10"/>',
   cid: '<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
-  pop: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 4.6a3.2 3.2 0 0 1 0 6.2M18 14.4c1.8.8 3 2.6 3 4.6"/>',
-  tempo: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/>',
+  doc: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',
 };
 const CobStats = {
   template: `<section class="cobk" aria-label="Resumo da cobertura">
-      <article v-for="c in cards" :key="c.k" class="cobk-c" :style="{'--c': c.c}">
+      <article v-for="c in cards" :key="c.k" class="cobk-c" :class="{dim: c.dim}" :style="{'--c': c.c}">
         <span class="cobk-ico" aria-hidden="true"><svg viewBox="0 0 24 24" v-html="c.i"></svg></span>
         <div class="cobk-v">{{ c.v }}</div>
         <div class="cobk-l">{{ c.l }}</div>
@@ -2045,13 +2045,16 @@ const CobStats = {
       const nHubs = store.f.hub ? 1 : HUBS0.filter(h => !store.f.reg || REG(h.id) === store.f.reg).length;
       const nUf = new Set(rows.map(r => r.uf)).size;
       const ctx = store.f.hub ? HUB0.get(store.f.hub)?.nome : REG_T[store.f.reg] || "Todas as regiões";
-      const pop = st.pop >= 1e6 ? `${nf1.format(st.pop / 1e6)} mi` : st.pop >= 1e3 ? `${nf0.format(st.pop / 1e3)} mil` : nf0.format(st.pop);
+      /* RM + DM: documentos distintos de requisição e devolução de material, por região */
+      const docs = (CONV && CONV.docs) || {}, regAtual = store.f.hub ? REG(store.f.hub) : store.f.reg;
+      const cardDoc = (g, nome, cor) => { const d = docs[g] || {}, rm = d.RM || 0, dm = d.DM || 0;
+        return {k: `doc-${g}`, l: `RM + DM · ${REG_T[g]}`, v: nf0.format(rm + dm), s: `${nome} · ${nf0.format(rm)} RM + ${nf0.format(dm)} DM`,
+          c: cor, i: COB_ICO.doc, dim: !!regAtual && regAtual !== g}; };
       return [
         {k: "hub", l: nHubs === 1 ? "Almoxarifado" : "Almoxarifados", v: nf0.format(nHubs), s: ctx, c: "var(--navy)", i: COB_ICO.hub},
         {k: "cid", l: "Cidades atendidas", v: nf0.format(st.n), s: `em ${nUf} ${nUf === 1 ? "estado" : "estados"}`, c: "#4a7fc1", i: COB_ICO.cid},
-        {k: "pop", l: "População atendida", v: pop, s: "habitantes nas cidades atendidas (IBGE)", c: "#0f766e", i: COB_ICO.pop},
-        {k: "tempo", l: "Tempo médio até o almoxarifado", v: st.n ? fmtMin(st.min) : "–", s: `${pct.format(st.ate2h)} das cidades a até 2h · ${nf1.format(st.km || 0)} km em média`,
-          p: st.ate2h, c: "#b45309", i: COB_ICO.tempo},
+        cardDoc("ne", "Proxxima", "#0f766e"),
+        cardDoc("ss", "ZAAZ Sudeste", "#b45309"),
       ];
     });
     return {cards};
