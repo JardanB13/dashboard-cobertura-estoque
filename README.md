@@ -40,4 +40,4 @@ Depois suba `equipamentos.js` e `conversao.js` (Add file → Upload files → Co
 - Conversão (movimentação CM): saída `RET-` e entrada do destino (`REAP-`, `SUC-`, `DET-`, `DEF-`) para a mesma série.
 - Status de cada RET convertido em REAP no fim do período: **instalado** (aplicado no cliente depois da conversão),
   **com o técnico** (entregue por RM e não instalado nem devolvido) ou **no almoxarifado**.
-- Regiões: **Norte** (almoxarifados em AC, AM, AP, PA, RO, RR, TO), **Nordeste** e **Sul/Sudeste** (SP, PR, MG).
+- Regiões: **Norte** (Castanhal-PA e Varjota-CE; cidades em AC, AM, AP, PA, RO, RR, TO, CE, PI, MA), **Nordeste** e **Sul/Sudeste** (SP, PR, MG).

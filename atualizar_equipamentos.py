@@ -152,7 +152,8 @@ def main(arquivos, cat_xlsx=None):
         if not v["o"]: v.pop("o")      # só grava "o" (obsoletos aplicados) onde houver
     no_mapa = {k: v for k, v in cid.items() if k in mapa}
     fora = [v for k, v in cid.items() if k not in mapa and (v["n"] or v["r"] or v["t"] or v.get("o"))]
-    N_UF = ("AC", "AM", "AP", "PA", "RO", "RR", "TO")
+    # Norte operacional: estados do Norte + área do almoxarifado de Varjota (CE, PI, MA)
+    N_UF = ("AC", "AM", "AP", "PA", "RO", "RR", "TO", "CE", "PI", "MA")
     reg = lambda k: "ss" if k.split("|")[-1] in ("SP", "PR", "MG") else "no" if k.split("|")[-1] in N_UF else "ne"
     soma = lambda vs: {"cid": len(vs), "n": sum(v["n"] for v in vs), "r": sum(v["r"] for v in vs), "t": sum(v["t"] for v in vs), "o": sum(v.get("o", 0) for v in vs)}
     fora_reg = {g: soma([v for k, v in cid.items() if k not in mapa and (v["n"] or v["r"] or v["t"] or v.get("o")) and reg(k) == g]) for g in ("no", "ne", "ss")}

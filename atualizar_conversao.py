@@ -113,7 +113,8 @@ def main(args):
     HUBS = carregar_js("cobertura.js")["hubs"]
     hubs = {fold(h["nome"]): h["id"] for h in HUBS}
     regiao = {h["id"]: ("ss" if h["uf"] in ("SP", "PR", "MG") else
-                        "no" if h["uf"] in ("AC", "AM", "AP", "PA", "RO", "RR", "TO") else "ne") for h in HUBS}
+                        "no" if h["uf"] in ("AC", "AM", "AP", "PA", "RO", "RR", "TO", "CE", "PI", "MA") else "ne")
+              for h in HUBS}  # Norte operacional inclui Varjota (CE)
     def hub_de(projeto):
         p = fold(projeto)
         p = re.sub(r"^(op|lab|fer|estrut) ", "", p)

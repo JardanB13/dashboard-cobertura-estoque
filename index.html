@@ -1091,7 +1091,8 @@ const rowsEff = computed(() => {
   });
 });
 const SS_UF = new Set(["SP", "PR", "MG"]);
-const N_UF = new Set(["AC", "AM", "AP", "PA", "RO", "RR", "TO"]);
+/* Norte operacional: estados do Norte + área do almoxarifado de Varjota (CE, PI, MA) */
+const N_UF = new Set(["AC", "AM", "AP", "PA", "RO", "RR", "TO", "CE", "PI", "MA"]);
 const REG = id => { const uf = HUB0.get(id)?.uf; return SS_UF.has(uf) ? "ss" : N_UF.has(uf) ? "no" : "ne"; };
 const REG_T = {no: "Norte", ne: "Nordeste", ss: "Sul/Sudeste"};
 const match = (r, f, ignoreHub = false) => (ignoreHub || !f.hub || r.h === f.hub) && (!f.reg || REG(r.h) === f.reg) && (!f.uf || r.uf === f.uf)
