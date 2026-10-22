@@ -857,7 +857,7 @@ body{background:var(--bg)}
 /* ===== v9 · app shell: navegação lateral + barra superior fixa ===== */
 :root{--sn-w:264px;--tb-h:76px}
 body{background:#eef2f7}
-.shell{display:grid;grid-template-columns:var(--sn-w) minmax(0,1fr);min-height:100vh;transition:grid-template-columns .22s ease}
+.shell{display:grid;grid-template-columns:minmax(0,1fr);min-height:100vh}
 .shell.mini{--sn-w:0px}
 .sn{transition:transform .26s cubic-bezier(.4,0,.2,1),opacity .2s}
 .shell.mini .sn{transform:translateX(-100%);opacity:0;pointer-events:none;width:264px}
@@ -2102,8 +2102,6 @@ const TopBar = {
 createApp({
   components: {SideNav, TopBar, CobStats, KpiStrip, TestCat, AplCat, SimBar, MapPanel, SidePanel, Intel},
   template: `<div class="shell" :class="{mini}">
-      <side-nav :mini="mini" :ativo="ativo" @mini="toggleMini"></side-nav>
-      <button type="button" class="sn-open" @click="toggleMini" aria-label="Abrir menu" title="Abrir menu" :tabindex="mini ? 0 : -1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
       <div class="main-col">
         <top-bar></top-bar>
         <main class="wrap">
