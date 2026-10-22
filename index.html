@@ -960,7 +960,7 @@ body{background:#eef2f7}
 .kpi .leg{font-size:11.5px;margin-top:8px}
 .tc-tot b{font-size:22px}
 }
-.cobk{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;scroll-margin-top:calc(var(--tb-h) + 16px)}
+.cobk{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;scroll-margin-top:calc(var(--tb-h) + 16px)}
 .cobk-c{position:relative;overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 22px 18px;box-shadow:0 1px 2px rgba(15,28,46,.04),0 10px 30px -14px rgba(15,28,46,.16);min-width:0}
 .cobk-c.dim{opacity:.45}
 .cobk-c::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c)}
@@ -2036,7 +2036,7 @@ const CobStats = {
         <div class="cobk-v">{{ c.v }}</div>
         <div class="cobk-l">{{ c.l }}</div>
         <div v-if="c.p != null" class="cobk-bar" role="img" :aria-label="c.s"><i :style="{width: c.p * 100 + '%'}"></i></div>
-        <div class="cobk-s">{{ c.s }}</div>
+        <div v-if="c.s" class="cobk-s">{{ c.s }}</div>
       </article>
     </section>`,
   setup() {
@@ -2047,14 +2047,11 @@ const CobStats = {
       const ctx = store.f.hub ? HUB0.get(store.f.hub)?.nome : REG_T[store.f.reg] || "Todas as regiões";
       /* RM + DM: documentos distintos de requisição e devolução de material, por região */
       const docs = (CONV && CONV.docs) || {}, regAtual = store.f.hub ? REG(store.f.hub) : store.f.reg;
-      const cardDoc = (g, nome, cor) => { const d = docs[g] || {}, rm = d.RM || 0, dm = d.DM || 0;
-        return {k: `doc-${g}`, l: `RM + DM · ${REG_T[g]}`, v: nf0.format(rm + dm), s: `${nome} · ${nf0.format(rm)} RM + ${nf0.format(dm)} DM`,
-          c: cor, i: COB_ICO.doc, dim: !!regAtual && regAtual !== g}; };
+      const totDocs = sum(Object.entries(docs).filter(([g]) => !regAtual || g === regAtual).map(([, d]) => (d.RM || 0) + (d.DM || 0)));
       return [
         {k: "hub", l: nHubs === 1 ? "Almoxarifado" : "Almoxarifados", v: nf0.format(nHubs), s: ctx, c: "var(--navy)", i: COB_ICO.hub},
         {k: "cid", l: "Cidades atendidas", v: nf0.format(st.n), s: `em ${nUf} ${nUf === 1 ? "estado" : "estados"}`, c: "#4a7fc1", i: COB_ICO.cid},
-        cardDoc("ne", "Proxxima", "#0f766e"),
-        cardDoc("ss", "ZAAZ Sudeste", "#b45309"),
+        {k: "doc", l: "RM / DM", v: nf0.format(totDocs), c: "#0f766e", i: COB_ICO.doc},
       ];
     });
     return {cards};
