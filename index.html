@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Controle de Equipamentos Aplicados/Retirados</title>
+<title>Reunião de indicadores - Supply</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap">
@@ -2049,8 +2049,8 @@ const CobStats = {
       const docs = (CONV && CONV.docs) || {}, regAtual = store.f.hub ? REG(store.f.hub) : store.f.reg;
       const totDocs = sum(Object.entries(docs).filter(([g]) => !regAtual || g === regAtual).map(([, d]) => (d.RM || 0) + (d.DM || 0)));
       return [
-        {k: "hub", l: nHubs === 1 ? "Almoxarifado" : "Almoxarifados", v: nf0.format(nHubs), s: ctx, c: "var(--navy)", i: COB_ICO.hub},
-        {k: "cid", l: "Cidades atendidas", v: nf0.format(st.n), s: `em ${nUf} ${nUf === 1 ? "estado" : "estados"}`, c: "#4a7fc1", i: COB_ICO.cid},
+        {k: "hub", l: nHubs === 1 ? "Almoxarifado" : "Almoxarifados", v: nf0.format(nHubs), c: "var(--navy)", i: COB_ICO.hub},
+        {k: "cid", l: "Cidades atendidas", v: nf0.format(st.n), c: "#4a7fc1", i: COB_ICO.cid},
         {k: "doc", l: "Requisições atendidas", v: nf0.format(totDocs), c: "#0f766e", i: COB_ICO.doc},
       ];
     });
@@ -2101,7 +2101,7 @@ const SideNav = {
 const TopBar = {
   template: `<header class="tb"><div class="tb-in">
       <div class="tb-l">
-        <h1>Controle de Equipamentos Aplicados/Retirados <span class="tb-mes">- {{ mes }}</span></h1>
+        <h1>Reunião de indicadores - Supply <span class="tb-mes">{{ mes }}</span></h1>
       </div>
       <div class="tb-r">
         <label class="tb-sel tb-sel-reg"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
