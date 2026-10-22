@@ -858,8 +858,16 @@ body{background:var(--bg)}
 :root{--sn-w:264px;--tb-h:76px}
 body{background:#eef2f7}
 .shell{display:grid;grid-template-columns:var(--sn-w) minmax(0,1fr);min-height:100vh;transition:grid-template-columns .22s ease}
-.shell.mini{--sn-w:76px}
-.sn{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:22px;padding:20px 14px 16px;color:#dbe6f5;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;
+.shell.mini{--sn-w:0px}
+.sn{transition:transform .26s cubic-bezier(.4,0,.2,1),opacity .2s}
+.shell.mini .sn{transform:translateX(-100%);opacity:0;pointer-events:none;width:264px}
+.sn-open{position:fixed;left:0;top:50%;z-index:30;width:22px;height:56px;margin-top:-28px;display:grid;place-items:center;border:0;border-radius:0 10px 10px 0;
+  background:var(--band);color:#cfe0f5;cursor:pointer;box-shadow:2px 4px 14px rgba(15,28,46,.22);transform:translateX(-100%);transition:transform .22s ease .1s,width .15s}
+.sn-open:hover{width:28px;color:#fff}
+.sn-open svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.shell.mini .sn-open{transform:none}
+@media (max-width:1080px){.sn-open{display:none}}
+.sn{position:sticky;top:0;height:100vh;min-width:0;display:flex;flex-direction:column;gap:22px;padding:20px 14px 16px;color:#dbe6f5;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;
   background-color:var(--band);background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:32px 32px;
   box-shadow:inset -1px 0 0 rgba(255,255,255,.06);z-index:20}
 .sn::-webkit-scrollbar{display:none}
@@ -891,11 +899,6 @@ body{background:#eef2f7}
 .sn-col{display:flex;align-items:center;gap:10px;height:34px;padding:0 10px;margin:4px 0 0;border:0;border-radius:8px;background:transparent;color:#8fa9cc;font-size:12px;cursor:pointer}
 .sn-col:hover{background:rgba(255,255,255,.06);color:#fff}
 .sn-col svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;transition:transform .2s}
-.shell.mini .sn-col svg{transform:rotate(180deg)}
-.shell.mini .sn-brand>div,.shell.mini .sn-tx,.shell.mini .sn-n,.shell.mini .sn-k,.shell.mini .sn-meta,.shell.mini .sn-col span{display:none}
-.shell.mini .sn-it,.shell.mini .sn-col{justify-content:center;padding:8px 0}
-.shell.mini .sn-brand{justify-content:center;padding:2px 0}
-.shell.mini .sn-foot{padding-inline:0}
 
 .main-col{min-width:0;display:flex;flex-direction:column}
 .tb{position:sticky;top:0;z-index:15;background:color-mix(in srgb,#fff 86%,transparent);backdrop-filter:saturate(1.4) blur(12px);-webkit-backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--line)}
@@ -2001,7 +2004,7 @@ const SideNav = {
         <a v-for="x in secs" :key="x.id" class="sn-it" :class="{on: ativo === x.id}" :href="'#' + x.id" :title="x.t" @click.prevent="go(x.id)">
           <span class="sn-ic" aria-hidden="true"><svg viewBox="0 0 24 24" v-html="ico[x.id]"></svg></span><span class="sn-tx"><b>{{ x.t }}</b></span></a></nav>
       <div class="sn-foot">
-        <button type="button" class="sn-col" @click="$emit('mini')" :aria-label="mini ? 'Expandir menu' : 'Recolher menu'">
+        <button type="button" class="sn-col" @click="$emit('mini')" aria-label="Recolher menu">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg><span>Recolher menu</span></button>
       </div>
     </aside>`,
@@ -2041,6 +2044,7 @@ createApp({
   components: {SideNav, TopBar, KpiStrip, TestCat, SimBar, MapPanel, SidePanel, Intel},
   template: `<div class="shell" :class="{mini}">
       <side-nav :mini="mini" :ativo="ativo" @mini="toggleMini"></side-nav>
+      <button type="button" class="sn-open" @click="toggleMini" aria-label="Abrir menu" title="Abrir menu" :tabindex="mini ? 0 : -1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
       <div class="main-col">
         <top-bar></top-bar>
         <main class="wrap">
