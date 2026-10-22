@@ -2051,7 +2051,7 @@ const CobStats = {
       return [
         {k: "hub", l: nHubs === 1 ? "Almoxarifado" : "Almoxarifados", v: nf0.format(nHubs), s: ctx, c: "var(--navy)", i: COB_ICO.hub},
         {k: "cid", l: "Cidades atendidas", v: nf0.format(st.n), s: `em ${nUf} ${nUf === 1 ? "estado" : "estados"}`, c: "#4a7fc1", i: COB_ICO.cid},
-        {k: "doc", l: "RM / DM", v: nf0.format(totDocs), c: "#0f766e", i: COB_ICO.doc},
+        {k: "doc", l: "Requisições atendidas", v: nf0.format(totDocs), c: "#0f766e", i: COB_ICO.doc},
       ];
     });
     return {cards};
