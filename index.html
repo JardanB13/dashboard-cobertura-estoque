@@ -835,6 +835,17 @@ body{background:var(--bg)}
 .tc-row .nm{font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tc-row .tr{height:6px;border-radius:99px;background:#edf0f5;overflow:hidden}.tc-row .tr i{display:block;height:100%;border-radius:99px;background:var(--c-reap)}
 .tc-row .q{font:600 14px var(--f-mono);text-align:right}.tc-row .p{font:500 12px var(--f-mono);text-align:right;color:var(--ink-3)}
+/* Equipes por região */
+.eqr{margin-top:14px}
+.eqr .tc-tot b{color:var(--navy)}
+.eqr .tc-grid{grid-template-columns:1fr}
+.eqr .tc-row{cursor:pointer;border-radius:6px;padding:8px 6px;transition:opacity .15s ease,background .15s ease}
+.eqr .tc-row:hover{background:color-mix(in srgb,var(--navy) 6%,transparent)}
+.eqr .tc-row:focus-visible{outline:2px solid var(--navy);outline-offset:1px}
+.eqr .tc-row .tr i{background:var(--navy)}
+.eqr .tc-row.on .nm{color:var(--navy)}
+.eqr .tc-row.dim{opacity:.4}
+.eqr .eqr-f{padding:0 20px 14px;font-size:11.5px;color:var(--ink-3)}
 @media (max-width:760px){.tc-grid{grid-template-columns:1fr;padding:10px 16px 14px}.tc-row{grid-template-columns:minmax(0,1fr) 56px 46px}.tc-row .tr{display:none}}
 /* Tabela de categorias (Sul/Sudeste) */
 .ctb{animation:t2in .25s ease;padding-bottom:10px}
@@ -1432,6 +1443,33 @@ const CatTabela = {
     const tot = computed(() => ({ap: sum(uso.value.map(c => c.ap)), t: sum(uso.value.map(c => c.t)), obs: obs.value ? obs.value.ap + obs.value.t : 0}));
     const titulo = computed(() => (store.f.hub ? HUB0.get(store.f.hub)?.nome : REG_T.ss));
     return {cats, maxAp, tot, titulo, nf0};
+  },
+};
+
+/* ===== Equipes por região — atualize os números aqui ===== */
+const EQUIPES = {no: 196, ne: 277, ss: 304};
+
+const EqRegiao = {
+  template: `<section class="tc card2 eqr" aria-label="Quantidade de equipes por região">
+      <header class="c2-h"><div class="c2-t"><b>Quantidade de equipes por região</b></div>
+        <div class="tc-tot"><b>{{ nf0.format(destaque.q) }}</b><span>{{ destaque.l }}</span></div></header>
+      <div class="tc-grid">
+        <div v-for="x in linhas" :key="x.k" class="tc-row" :class="{on: reg === x.k, dim: reg && reg !== x.k}"
+          role="button" tabindex="0" :aria-pressed="reg === x.k" :title="reg === x.k ? 'Voltar à visão geral' : 'Filtrar o dashboard por ' + x.l"
+          @click="pick(x.k)" @keydown.enter.prevent="pick(x.k)" @keydown.space.prevent="pick(x.k)">
+          <span class="nm">{{ x.l }}</span><span class="tr"><i :style="{width: x.p * 100 + '%'}"></i></span>
+          <span class="q">{{ nf0.format(x.q) }}</span><span class="p">{{ pct.format(x.p) }}</span></div>
+      </div>
+      <div class="eqr-f">Clique numa região para filtrar o dashboard.</div>
+    </section>`,
+  setup() {
+    const total = sum(Object.values(EQUIPES));
+    const linhas = Object.entries(EQUIPES).map(([k, q]) => ({k, l: REG_T[k] || k, q, p: total ? q / total : 0})).sort((a, b) => b.q - a.q);
+    const reg = computed(() => store.f.reg);
+    const destaque = computed(() => reg.value && EQUIPES[reg.value] != null
+      ? {q: EQUIPES[reg.value], l: `equipes · ${REG_T[reg.value]}`} : {q: total, l: "equipes no total"});
+    const pick = k => setRegiao(store.f.reg === k ? "" : k);
+    return {linhas, reg, destaque, pick, nf0, pct};
   },
 };
 
@@ -2126,7 +2164,7 @@ const TopBar = {
 
 /* --------------------------------- app -------------------------------- */
 createApp({
-  components: {SideNav, TopBar, CobStats, KpiStrip, TestCat, AplCat, SimBar, MapPanel, SidePanel, Intel},
+  components: {SideNav, TopBar, CobStats, KpiStrip, EqRegiao, TestCat, AplCat, SimBar, MapPanel, SidePanel, Intel},
   template: `<div class="shell" :class="{mini}">
       <div class="main-col">
         <top-bar></top-bar>
@@ -2136,6 +2174,7 @@ createApp({
           <section class="main"><map-panel></map-panel><side-panel></side-panel></section>
           <div id="sec-eq" class="sh-anc" aria-hidden="true"></div>
           <kpi-strip></kpi-strip>
+          <eq-regiao></eq-regiao>
           <apl-cat v-if="verApl"></apl-cat>
           <test-cat v-if="verTest"></test-cat>
         </main>
