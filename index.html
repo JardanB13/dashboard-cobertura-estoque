@@ -930,7 +930,7 @@ body{background:#eef2f7}
 .main-col .wrap{width:100%;padding-top:26px;gap:20px}
 .sh{display:flex;align-items:center;gap:12px;margin:10px 0 -4px;scroll-margin-top:calc(var(--tb-h) + 16px)}
 .sh:first-child{margin-top:0}
-.main-col .wrap{position:relative}.sh-anc{position:absolute;top:0;left:0;height:1px;width:1px;scroll-margin-top:var(--tb-h)}
+.sh-anc{height:0;margin-top:4px;scroll-margin-top:calc(var(--tb-h) + 24px)}
 .sh i{font:600 11px/1 var(--f-mono);font-style:normal;letter-spacing:.06em;color:var(--navy);background:#fff;border:1px solid var(--line-2);padding:6px 8px;border-radius:7px;box-shadow:0 1px 2px rgba(15,28,46,.05)}
 .sh h2{margin:0;font:700 17px/1.2 var(--f-display);letter-spacing:-.01em;color:var(--ink)}
 .sh::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line-2),transparent)}
@@ -1975,7 +1975,7 @@ const DataTabs = {
 
 
 /* Shell: navegação lateral (região + seções) e barra superior fixa */
-const SECOES = [{id: "sec-eq", n: "01", t: "Equipamentos em campo"}, {id: "sec-cob", n: "02", t: "Cobertura por cidades"}, {id: "sec-td", n: "03", t: "Distância e tempo"}];
+const SECOES = [{id: "sec-cob", n: "01", t: "Cobertura por cidades"}, {id: "sec-eq", n: "02", t: "Equipamentos em campo"}, {id: "sec-td", n: "03", t: "Distância e tempo"}];
 const MES_TXT = MES_EXT[String(EQ.meta.periodo || "").slice(0, 3)] || String(EQ.meta.periodo || "");
 const ANO_TXT = (String(EQ.meta.periodo || "").split("/")[1]) || "";
 const aplReg = k => { const e = eqSum(BASE_ROWS.filter(r => !k || REG(r.h) === k)), fo = k ? (EQ.meta.foraReg || {})[k] || {} : EQ.meta.fora || {};
@@ -2048,20 +2048,20 @@ createApp({
       <div class="main-col">
         <top-bar></top-bar>
         <main class="wrap">
+          <header class="sh" id="sec-cob"><i>01</i><h2>Cobertura por cidades</h2></header>
+          <sim-bar></sim-bar>
+          <section class="main"><map-panel></map-panel><side-panel></side-panel></section>
           <div id="sec-eq" class="sh-anc" aria-hidden="true"></div>
           <kpi-strip></kpi-strip>
           <test-cat v-if="verTest"></test-cat>
-          <header class="sh" id="sec-cob"><i>02</i><h2>Cobertura por cidades</h2></header>
-          <sim-bar></sim-bar>
-          <section class="main"><map-panel></map-panel><side-panel></side-panel></section>
-          <header class="sh" id="sec-td"><i>03</i><h2>Distância e tempo</h2></header>
+          <header class="sh" id="sec-td"><i>02</i><h2>Distância e tempo</h2></header>
           <intel></intel>
         </main>
       </div>
     </div>
     <div v-if="toast" class="toast" role="status">{{ toast }}</div>`,
   setup() {
-    const mini = ref(safeLS.get("cob.mini") === "1"), ativo = ref("sec-eq");
+    const mini = ref(safeLS.get("cob.mini") === "1"), ativo = ref("sec-cob");
     const toggleMini = () => { mini.value = !mini.value; safeLS.set("cob.mini", mini.value ? "1" : "0");
       setTimeout(() => window.dispatchEvent(new Event("resize")), 260); };
     onMounted(() => {
