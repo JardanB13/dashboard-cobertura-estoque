@@ -2516,9 +2516,7 @@ createApp({
             <test-cat v-if="verTest"></test-cat></safe-block>
           <div id="sec-mat" class="ma-sec">
             <safe-block v-for="r in matRegs" :key="r" nome="o material aplicado"><mat-apl :reg="r"></mat-apl></safe-block>
-            <div v-if="!matRegs.length" class="card2 ma ma-vazio" role="status"><b>Material aplicado</b><span>Ainda não há dados de material aplicado para a região Norte.</span></div>
-            <safe-block v-if="verRet" nome="o material retirado"><mat-apl reg="neRet"></mat-apl></safe-block>
-            <div v-else class="card2 ma ma-vazio" role="status"><b>Material retirado</b><span>Por enquanto só há dados de retirados do Nordeste.</span></div>
+            <safe-block nome="o material retirado"><mat-apl reg="neRet"></mat-apl></safe-block>
           </div>
         </main>
       </div>
@@ -2537,8 +2535,8 @@ createApp({
     return {mini, ativo, toggleMini, toast: computed(() => store.toast), verTest: computed(() => store.metric === "test" && !!CONV && !!CONV.reapCat),
       verApl: computed(() => store.metric === "total" && !!(EQ.meta.categorias || []).length),
       /* região escolhida no topo (ou pelo almoxarifado): Nordeste em cima, Sul/Sudeste embaixo */
-      matRegs: computed(() => { const r = store.f.hub ? REG(store.f.hub) : store.f.reg; return r ? ["ne", "ss"].filter(k => k === r) : ["ne", "ss"]; }),
-      verRet: computed(() => { const r = store.f.hub ? REG(store.f.hub) : store.f.reg; return !r || r === "ne"; })};
+      /* material: sempre os cards todos, na ordem aplicado NE, aplicado Sul/Sudeste, retirado NE (independe do filtro de região) */
+      matRegs: ["ne", "ss"]};
   },
 }).directive("count", vCount).mount("#app");
 document.getElementById("boot").remove();
