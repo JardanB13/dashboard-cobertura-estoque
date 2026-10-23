@@ -982,14 +982,14 @@ body{background:#eef2f7}
 .ma-xax{position:absolute;inset:auto 0 0 46px;height:30px}
 .ma-hit{fill:transparent}
 @keyframes maGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
-.ma-col rect.seg{transform-box:fill-box;transform-origin:bottom;animation:maGrow .6s cubic-bezier(.2,.7,.2,1) both}
+.ma-col rect.mseg{transform-box:fill-box;transform-origin:bottom;animation:maGrow .6s cubic-bezier(.2,.7,.2,1) both}
 .ma-hov{position:absolute;z-index:5;pointer-events:none;min-width:210px;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 28px -12px rgba(15,28,46,.35);padding:10px 12px;font-size:12px;color:var(--ink-2);top:0!important;transform:translateX(14px)}
 .ma-hov.esq{transform:translateX(calc(-100% - 14px))}
 .ma-hov b{display:flex;justify-content:space-between;color:var(--ink);font-size:12.5px;margin-bottom:6px}.ma-hov b span{font-family:var(--f-mono)}
 .ma-hov div{display:grid;grid-template-columns:10px 1fr auto 44px;gap:6px;align-items:center;line-height:1.7}
 .ma-hov i{width:8px;height:8px;border-radius:2px;background:var(--lc)}.ma-hov em{font:normal 600 11.5px var(--f-mono);color:var(--ink);text-align:right}.ma-hov small{font:500 10.5px var(--f-mono);color:var(--ink-3);text-align:right}
-.ma-col rect.seg{cursor:pointer;transition:opacity .15s ease}.ma-col rect.seg:hover{opacity:.85}
-.ma-col rect.seg.ma-dim{opacity:.35}
+.ma-col rect.mseg{cursor:pointer;transition:opacity .15s ease}.ma-col rect.mseg:hover{opacity:.85}
+.ma-col rect.mseg.ma-dim{opacity:.35}
 .ma-lb{position:absolute;transform:translate(-50%,-50%);font:600 11px/1 var(--f-mono);color:var(--ink);background:color-mix(in srgb,var(--surface) 88%,transparent);border-radius:4px;padding:3px 5px;pointer-events:none;white-space:nowrap}
 .ma-lb.dim{opacity:.45}
 .ma-tot{position:absolute;transform:translate(-50%,-100%);font:700 14px/1 var(--f-mono);color:var(--ink);margin-top:-8px;pointer-events:none}
@@ -1024,6 +1024,84 @@ body{background:#eef2f7}
 .cobk-bar{margin-top:12px;height:5px;border-radius:99px;background:#edf0f5;overflow:hidden}.cobk-bar i{display:block;height:100%;border-radius:99px;background:var(--c)}
 @media (max-width:1100px){.cobk{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:520px){.cobk{grid-template-columns:minmax(0,1fr)}.cobk-v{font-size:28px}}
+
+/* ===== Sistema visual v9: moderno, arredondado, com profundidade e movimento ===== */
+:root[data-theme="light"]{--r:20px;--shadow:0 1px 2px rgba(16,24,40,.04),0 10px 28px -14px rgba(16,24,40,.16);
+  --shadow-h:0 2px 6px rgba(16,24,40,.06),0 22px 44px -18px rgba(16,24,40,.26);--line:#e3e8f0;--grad:linear-gradient(135deg,#1e3a8a 0%,#2563eb 100%)}
+body{background:radial-gradient(1100px 520px at 0% -8%,#dbe6fb 0,rgba(219,230,251,0) 62%),radial-gradient(900px 480px at 100% -6%,#e7e2fb 0,rgba(231,226,251,0) 58%),#eef2f8 !important;background-attachment:fixed !important}
+@keyframes v9rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.cobk-c,.mapcard,.side,.kpis,.ma,.sec-h{animation:v9rise .55s cubic-bezier(.2,.7,.2,1) both}
+.cobk-c:nth-child(2){animation-delay:.05s}.cobk-c:nth-child(3){animation-delay:.1s}.cobk-c:nth-child(4){animation-delay:.15s}
+.side{animation-delay:.08s}.kpis{animation-delay:.05s}
+
+/* barra do topo: vidro + mês em pílula */
+.tb{background:rgba(255,255,255,.72)!important;border-bottom:1px solid rgba(255,255,255,.6)!important;box-shadow:0 6px 24px -18px rgba(16,24,40,.35)}
+.tb h1{letter-spacing:-.02em}
+.tb-mes{display:inline-flex;align-items:center;margin-left:10px;padding:4px 14px;border-radius:999px;font-size:.62em;vertical-align:middle;
+  background:linear-gradient(135deg,rgba(37,99,235,.12),rgba(124,58,237,.12));color:#1d4ed8!important;border:1px solid rgba(37,99,235,.18)}
+.tb-sel{border-radius:14px!important;border-color:#dfe5ee!important;box-shadow:0 1px 2px rgba(16,24,40,.04),0 6px 16px -12px rgba(16,24,40,.2)!important}
+
+/* títulos de seção */
+.sec-h{display:flex;align-items:center;gap:10px;margin:14px 2px -4px;font:800 17px/1.2 var(--f-display);letter-spacing:-.01em;color:var(--ink)}
+.sec-h i{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:var(--grad);box-shadow:0 6px 14px -6px rgba(37,99,235,.6)}
+.sec-h svg{width:17px;height:17px;fill:none;stroke:#fff;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.sec-h small{font:500 12.5px var(--f-body);color:var(--ink-3);margin-left:4px}
+
+/* cards do topo */
+.cobk{gap:16px!important}
+.cobk-c{border:1px solid rgba(255,255,255,.7)!important;border-radius:var(--r)!important;box-shadow:var(--shadow)!important;
+  display:flex;flex-direction:column;justify-content:center;transition:transform .2s ease,box-shadow .2s ease;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--c) 7%,#fff) 0%,#fff 55%)!important}
+.cobk-c:hover{transform:translateY(-3px);box-shadow:var(--shadow-h)!important}
+.cobk-c::before{top:18px!important;bottom:18px!important;width:4px!important;border-radius:0 4px 4px 0}
+.cobk-c::after{content:"";position:absolute;right:-40px;top:-40px;width:150px;height:150px;border-radius:50%;
+  background:radial-gradient(circle,color-mix(in srgb,var(--c) 16%,transparent) 0,transparent 70%);pointer-events:none}
+.cobk-ico{width:44px!important;height:44px!important;border-radius:14px!important;background:linear-gradient(135deg,color-mix(in srgb,var(--c) 18%,#fff),color-mix(in srgb,var(--c) 8%,#fff))!important;
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 18%,transparent)}
+.cobk-v{font-size:38px!important;letter-spacing:-.04em!important}
+
+/* mapa */
+.mapcard,.side{border:1px solid rgba(255,255,255,.7)!important;border-radius:var(--r)!important;box-shadow:var(--shadow)!important;overflow:hidden}
+.seg{border-radius:14px!important;padding:3px;gap:2px;background:rgba(255,255,255,.86)!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.8)!important;box-shadow:0 8px 22px -12px rgba(16,24,40,.35)!important}
+.seg button{border:0!important;border-radius:10px!important;transition:background .15s ease,color .15s ease}
+.seg button.on,.seg .on{background:var(--grad)!important;color:#fff!important;box-shadow:0 4px 10px -4px rgba(37,99,235,.55)}
+.legend{border-radius:16px!important;background:rgba(255,255,255,.88)!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 10px 28px -14px rgba(16,24,40,.35)!important;border:1px solid rgba(255,255,255,.8)!important}
+.mini-seg button.on{background:var(--grad)!important;color:#fff!important}
+.maplibregl-ctrl-group{border-radius:12px!important;overflow:hidden;box-shadow:0 8px 20px -12px rgba(16,24,40,.4)!important}
+
+/* ranking lateral */
+.side header{border-bottom-color:var(--line)!important}
+.rank li{border-radius:12px;margin:0 6px}
+.rank li:hover{background:#f3f6fb!important}
+.gbar{height:6px!important;border-radius:99px!important;background:#edf1f7!important;overflow:hidden}
+.gbar i{border-radius:99px!important;background:linear-gradient(90deg,#60a5fa,#1e40af)!important;transition:width .6s cubic-bezier(.2,.7,.2,1)}
+
+/* equipamentos em campo */
+.kg.eq .kg-c{border:1px solid rgba(255,255,255,.7)!important;border-radius:var(--r)!important;box-shadow:var(--shadow)!important;background:#fff!important}
+.kpi{transition:background .2s ease}
+.kpi:hover{background:#f7f9fc}
+.kpi.big{background:linear-gradient(140deg,#1e3a8a 0%,#1d4ed8 55%,#3b82f6 100%)!important;color:#fff;border:0!important;position:relative;overflow:hidden}
+.kpi.big::after{content:"";position:absolute;right:-60px;bottom:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.18),transparent 70%);pointer-events:none}
+.kpi.big:hover{background:linear-gradient(140deg,#1e3a8a 0%,#1d4ed8 50%,#3b82f6 100%)!important;filter:brightness(1.05)}
+.kpi.big .v,.kpi.big .l{color:#fff!important}.kpi.big .l::before{background:#fff!important}
+.kpi.big .ico{background:rgba(255,255,255,.16)!important;color:#fff!important}
+.kpi.big .leg span{color:rgba(255,255,255,.85)!important}.kpi.big .leg b{color:#fff!important}
+.kpi.big .split{background:rgba(255,255,255,.2)!important;border-radius:99px;overflow:hidden;gap:3px}
+.kpi.big .split i:nth-child(1){background:#93c5fd!important}.kpi.big .split i:nth-child(2){background:#5eead4!important}
+.kpi.big .leg span::before{box-shadow:0 0 0 2px rgba(255,255,255,.35)}
+.kpi .bar{height:7px!important;border-radius:99px!important;background:#edf1f7!important;overflow:hidden}
+.kpi .bar i{border-radius:99px!important;background:linear-gradient(90deg,color-mix(in srgb,var(--c) 60%,#fff),var(--c))!important;transition:width .7s cubic-bezier(.2,.7,.2,1)}
+.kpi .ico{border-radius:12px!important}
+.kpi.sel{box-shadow:inset 0 0 0 2px #2563eb!important}
+
+/* cartões de detalhe e material aplicado */
+.card2{border:1px solid rgba(255,255,255,.7)!important;border-radius:var(--r)!important;box-shadow:var(--shadow)!important}
+.ma-hov,.ma-pop{border-radius:14px!important}
+.ma-col rect.mseg{transition:opacity .15s ease,filter .15s ease}.ma-col rect.mseg:hover{opacity:1!important;filter:brightness(1.08) saturate(1.1)}
+.ma-lb{border-radius:6px!important;box-shadow:0 1px 3px rgba(16,24,40,.12)}
+.ma-tot{font-size:15px!important}
+@media (max-width:640px){.sec-h{font-size:15px;margin-top:22px}.sec-h small{display:none}.cobk-v{font-size:30px!important}}
 </style>
 </head>
 <body>
@@ -1052,6 +1130,23 @@ if (!window.DADOS_COBERTURA || !window.DADOS_EQUIPAMENTOS) {
   document.getElementById("boot").innerHTML = "<b>Não foi possível carregar os dados do painel.</b><br>Confira se <code>cobertura.js</code> e <code>equipamentos.js</code> estão no repositório e recarregue a página.";
   throw new Error("Dados do painel ausentes");
 }
+/* Números que contam até o valor (respeita "reduzir movimento") */
+const vCount = (() => {
+  const re = /^([^\d-]*)(-?\d[\d.]*(?:,\d+)?)(.*)$/s;
+  const ler = t => { const m = re.exec(String(t ?? "")); if (!m) return null;
+    const dec = (m[2].split(",")[1] || "").length; return {pre: m[1], n: parseFloat(m[2].replace(/\./g, "").replace(",", ".")), dec, suf: m[3]}; };
+  const run = (el, de, para) => {
+    const b = ler(para); cancelAnimationFrame(el._cnt || 0);
+    if (!b || reducedMotion()) { el.textContent = para ?? ""; return; }
+    const a = ler(de), n0 = a ? a.n : 0, t0 = performance.now(), D = 750;
+    const f = new Intl.NumberFormat("pt-BR", {minimumFractionDigits: b.dec, maximumFractionDigits: b.dec});
+    const tick = t => { const k = Math.min(1, (t - t0) / D), e = 1 - Math.pow(1 - k, 3);
+      el.textContent = k < 1 ? b.pre + f.format(n0 + (b.n - n0) * e) + b.suf : para;
+      if (k < 1) el._cnt = requestAnimationFrame(tick); };
+    el._cnt = requestAnimationFrame(tick);
+  };
+  return {mounted: (el, b) => run(el, null, b.value), updated: (el, b) => { if (b.value !== b.oldValue) run(el, b.oldValue, b.value); }};
+})();
 /* Proteção por bloco (equivalente ao Error Boundary do React): se uma seção quebrar, só ela mostra o aviso */
 const SafeBlock = {
   props: {nome: {type: String, default: "este bloco"}},
@@ -1534,15 +1629,21 @@ const MatApl = {
         <div class="ma-wrap">
         <div class="ma-plot">
           <div class="ma-yax" aria-hidden="true"><span v-for="t in ticks" :key="t.v" :style="{top: t.y / 10 + '%'}">{{ t.l }}</span></div>
-          <div class="ma-in" @mouseleave="hov = null">
-          <svg viewBox="0 0 1000 1000" preserveAspectRatio="none" role="img" :aria-label="aria">
-            <line v-for="t in ticks" :key="'g' + t.v" class="ma-grid" x1="0" x2="1000" :y1="t.y" :y2="t.y" vector-effect="non-scaling-stroke"/>
+          <div class="ma-in" ref="inEl" @mouseleave="hov = null">
+          <svg :viewBox="'0 0 ' + bw + ' ' + bh" role="img" :aria-label="aria">
+            <defs>
+              <linearGradient v-for="c in grads" :key="c.id" :id="c.id" x1="0" y1="0" x2="0" y2="1"><stop offset="0" :stop-color="c.a"/><stop offset="1" :stop-color="c.b"/></linearGradient>
+              <clipPath v-for="(m, i) in cols" :key="'cp' + i" :id="'macp' + i"><rect :x="X(m.x)" :y="Y(m.top)" :width="X(W)" :height="Y(BASE - m.top) + 12" rx="9"/></clipPath>
+            </defs>
+            <line v-for="t in ticks" :key="'g' + t.v" class="ma-grid" x1="0" :x2="bw" :y1="Y(t.y)" :y2="Y(t.y)"/>
             <g v-for="(m, i) in cols" :key="m.k" class="ma-col">
-              <rect class="ma-hit" :x="m.x - GAP / 2" y="0" :width="W + GAP" height="1000" @mousemove="hover($event, i)" @click.stop="sel = null"/>
-              <rect v-for="s in m.segs" :key="s.k" class="seg" :x="m.x" :y="s.y0" :width="W" :height="Math.max(0, s.y1 - s.y0)" :fill="s.c"
-                :style="{animationDelay: i * 90 + 'ms'}" stroke="var(--surface)" stroke-width="2" vector-effect="non-scaling-stroke"
+              <rect class="ma-hit" :x="X(m.x - GAP / 2)" y="0" :width="X(W + GAP)" :height="bh" @mousemove="hover($event, i)" @click.stop="sel = null"/>
+              <g :clip-path="'url(#macp' + i + ')'">
+              <rect v-for="s in m.segs" :key="s.k" class="mseg" :x="X(m.x)" :y="Y(s.y0)" :width="X(W)" :height="Math.max(0, Y(s.y1 - s.y0))" :fill="'url(#' + gid(s.k) + ')'"
+                :style="{animationDelay: i * 90 + 'ms'}" stroke="var(--surface)" stroke-width="2"
                 :class="{'ma-dim': sel && !(sel.i === i && sel.k === s.k)}"
                 @mousemove="hover($event, i)" @click.stop="pick(i, s.k)"><title>{{ s.k }} · {{ m.t }}: {{ nf0.format(s.q) }}</title></rect>
+              </g>
             </g>
           </svg>
           <template v-for="(m, i) in cols" :key="'l' + m.k">
@@ -1578,7 +1679,7 @@ const MatApl = {
       </div>
     </section>`,
   setup() {
-    const W = 200, X0 = 50, GAP = (1000 - 2 * X0 - 3 * W) / 2, TOP = 40, BASE = 1000;
+    const W = 220, X0 = 50, GAP = (1000 - 2 * X0 - 3 * W) / 2, TOP = 40, BASE = 1000;
     const pct2 = new Intl.NumberFormat("pt-BR", {style: "percent", minimumFractionDigits: 2, maximumFractionDigits: 2});
     const sel = ref(null);
     const meses = MAT_APL.meses.map(m => {
@@ -1590,6 +1691,16 @@ const MatApl = {
     const yOf = v => BASE - v / maxT * (BASE - TOP);
     const ticks = Array.from({length: maxT / PASSO + 1}, (_, k) => ({v: k * PASSO, y: yOf(k * PASSO), l: k ? String(k * PASSO / 1000).replace(".", ",") + " mil" : "0"}));
     const ocultas = ref([]);
+    /* coordenadas em pixels (cantos arredondados sem distorcer) */
+    const inEl = ref(null), bw = ref(1000), bh = ref(1000);
+    const X = v => v * bw.value / 1000, Y = v => v * bh.value / 1000;
+    let roMa;
+    onMounted(() => { roMa = new ResizeObserver(([e]) => { bw.value = Math.max(1, e.contentRect.width); bh.value = Math.max(1, e.contentRect.height); }); if (inEl.value) roMa.observe(inEl.value); });
+    onBeforeUnmount(() => roMa && roMa.disconnect());
+    /* gradiente suave: topo clareado 18% em direção ao branco, base na cor original */
+    const clareia = (hex, f) => "#" + [1, 3, 5].map(i => { const v = parseInt(hex.slice(i, i + 2), 16); return Math.round(v + (255 - v) * f).toString(16).padStart(2, "0"); }).join("");
+    const grads = MAT_APL.cats.map((c, k) => ({id: "mag" + k, a: clareia(c.c, .18), b: c.c}));
+    const gid = k => "mag" + MAT_APL.cats.findIndex(c => c.k === k);
     const toggle = k => { ocultas.value = ocultas.value.includes(k) ? ocultas.value.filter(x => x !== k) : [...ocultas.value, k]; sel.value = null; };
     const cols = computed(() => meses.map((m, i) => {
       let y = BASE, tot = 0; const segs = [];
@@ -1617,7 +1728,7 @@ const MatApl = {
     onBeforeUnmount(() => document.removeEventListener("click", fechar));
     const sinal = v => (v > 0 ? "+" : "") + pct2.format(v);
     const aria = "Material aplicado por tecnologia: " + meses.map(m => `${m.t} ${nf0.format(m.tot)}`).join(", ");
-    return {W, GAP, cols, ticks, legenda, ocultas, toggle, hov, hover, sel, det, pick, sinal, aria, nf0, pct, pct2};
+    return {W, GAP, BASE, cols, ticks, legenda, ocultas, toggle, hov, hover, sel, det, pick, sinal, aria, nf0, pct, pct2, inEl, bw, bh, X, Y, grads, gid};
   },
 };
 
@@ -1629,7 +1740,7 @@ const KpiStrip = {
             role="button" tabindex="0" :aria-pressed="metric === k.k" :title="metric === k.k ? 'Clique para voltar à visão geral' : 'Clique para analisar só este indicador'"
             @click="pick(k.k)" @keydown.enter.prevent="pick(k.k)" @keydown.space.prevent="pick(k.k)">
             <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" v-html="k.i"></svg></span>
-            <div class="v">{{ k.v }}</div><div class="l">{{ k.l }}</div>
+            <div class="v" v-count="k.v"></div><div class="l">{{ k.l }}</div>
             <div v-if="k.p != null" class="bar" role="img" :aria-label="k.s"><i :style="{width: (k.p * 100) + '%'}"></i></div>
             <template v-if="k.sp"><div class="split" role="img" :aria-label="k.s"><i v-for="x in k.sp" :key="x.t" :style="{flexGrow: x.q, background: x.c}"></i></div>
               <div class="leg"><span v-for="x in k.sp" :key="x.t" :style="{'--lc': x.c}">{{ x.t }} <b>{{ x.p }}</b></span></div></template>
@@ -2220,7 +2331,7 @@ const CobStats = {
   template: `<section class="cobk" aria-label="Resumo da cobertura">
       <article v-for="c in cards" :key="c.k" class="cobk-c" :class="{dim: c.dim}" :style="{'--c': c.c}">
         <span class="cobk-ico" aria-hidden="true"><svg viewBox="0 0 24 24" v-html="c.i"></svg></span>
-        <div class="cobk-v">{{ c.v }}</div>
+        <div class="cobk-v" v-count="c.v"></div>
         <div class="cobk-l">{{ c.l }}</div>
         <div v-if="c.p != null" class="cobk-bar" role="img" :aria-label="c.s"><i :style="{width: c.p * 100 + '%'}"></i></div>
         <div v-if="c.s" class="cobk-s">{{ c.s }}</div>
@@ -2331,8 +2442,10 @@ createApp({
         <main class="wrap">
           <safe-block nome="os indicadores do topo"><cob-stats id="sec-cob"></cob-stats></safe-block>
           <sim-bar></sim-bar>
+          <h2 class="sec-h"><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></i>Cobertura por cidades<small>mapa e almoxarifados</small></h2>
           <safe-block nome="o mapa"><section class="main"><map-panel></map-panel><side-panel></side-panel></section></safe-block>
           <div id="sec-eq" class="sh-anc" aria-hidden="true"></div>
+          <h2 class="sec-h"><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg></i>Equipamentos em campo<small>clique em um indicador para detalhar</small></h2>
           <safe-block nome="os equipamentos em campo"><kpi-strip></kpi-strip>
             <apl-cat v-if="verApl"></apl-cat>
             <test-cat v-if="verTest"></test-cat></safe-block>
@@ -2354,7 +2467,7 @@ createApp({
     return {mini, ativo, toggleMini, toast: computed(() => store.toast), verTest: computed(() => store.metric === "test" && !!CONV && !!CONV.reapCat),
       verApl: computed(() => store.metric === "total" && !!(EQ.meta.categorias || []).length)};
   },
-}).mount("#app");
+}).directive("count", vCount).mount("#app");
 document.getElementById("boot").remove();
 </script>
 </body>
