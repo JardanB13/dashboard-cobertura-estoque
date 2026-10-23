@@ -1643,15 +1643,16 @@ const MAT_APL = {
 };
 
 /* Sul/Sudeste — prints do Power BI (gráfico + cartões por tecnologia). Novo × reaproveitado sai da lista de modelos (prefixo REAP-).
-   "DEMAIS TECNOLOGIAS" = total do mês − (ONT WIFI 5 + ONT WIFI 6 + ROTEADOR WIFI 5): ONU, obsoleto e outras sem detalhe no print. */
+   "DEMAIS TECNOLOGIAS" = total do mês − (ONT WIFI 5 + ONT WIFI 6 + ROTEADOR WIFI 5 + OBSOLETO): ONU e outras sem detalhe no print.
+   OBSOLETO (Power BI, "Quantidade aplicada"): jul 134 · ago 104 · set 115. */
 const MAT_APL_SS = {
   cats: [
-    {k: "DEMAIS TECNOLOGIAS", c: "#94a3b8"}, {k: "ROTEADOR WIFI 5", c: "#29b6f6"}, {k: "ONT WIFI 6", c: "#e3b505"}, {k: "ONT WIFI 5", c: "#1f9d3a"},
+    {k: "DEMAIS TECNOLOGIAS", c: "#94a3b8"}, {k: "ROTEADOR WIFI 5", c: "#29b6f6"}, {k: "ONT WIFI 6", c: "#e3b505"}, {k: "ONT WIFI 5", c: "#1f9d3a"}, {k: "OBSOLETO", c: "#111827"},
   ],
   meses: [
-    {k: "2026-07", t: "Julho", d: {"ONT WIFI 5": [2132, 210], "ONT WIFI 6": [5798, 178], "ROTEADOR WIFI 5": [113, 616], "DEMAIS TECNOLOGIAS": [0, 0, 487]}},
-    {k: "2026-08", t: "Agosto", d: {"ONT WIFI 5": [1778, 173], "ONT WIFI 6": [4894, 276], "ROTEADOR WIFI 5": [98, 552, 2], "DEMAIS TECNOLOGIAS": [0, 0, 465]}},
-    {k: "2026-09", t: "Setembro", d: {"ONT WIFI 5": [1350, 177], "ONT WIFI 6": [4992, 189], "ROTEADOR WIFI 5": [114, 446, 3], "DEMAIS TECNOLOGIAS": [0, 0, 425]}},
+    {k: "2026-07", t: "Julho", d: {"ONT WIFI 5": [2132, 210], "ONT WIFI 6": [5798, 178], "ROTEADOR WIFI 5": [113, 616], "DEMAIS TECNOLOGIAS": [0, 0, 353], "OBSOLETO": [0, 0, 134]}},
+    {k: "2026-08", t: "Agosto", d: {"ONT WIFI 5": [1778, 173], "ONT WIFI 6": [4894, 276], "ROTEADOR WIFI 5": [98, 552, 2], "DEMAIS TECNOLOGIAS": [0, 0, 361], "OBSOLETO": [0, 0, 104]}},
+    {k: "2026-09", t: "Setembro", d: {"ONT WIFI 5": [1350, 177], "ONT WIFI 6": [4992, 189], "ROTEADOR WIFI 5": [114, 446, 3], "DEMAIS TECNOLOGIAS": [0, 0, 310], "OBSOLETO": [0, 0, 115]}},
   ],
   /* junho: derivado da variação mostrada no Power BI para julho (+0,04%, +7,70%, +5,96%) */
   jun: {tot: null, d: {"ONT WIFI 5": 2341, "ONT WIFI 6": 5549, "ROTEADOR WIFI 5": 688}},
