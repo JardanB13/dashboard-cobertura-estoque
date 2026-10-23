@@ -978,7 +978,6 @@ body{background:#eef2f7}
 .ma-in{position:absolute;inset:0 0 30px 0}.ma-in svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
 .ma-col rect{cursor:pointer;transition:opacity .15s ease}.ma-col rect:hover{opacity:.85}
 .ma-col rect.ma-dim{opacity:.35}
-.ma-rib{opacity:.32;pointer-events:none}
 .ma-lb{position:absolute;transform:translate(-50%,-50%);font:600 11px/1 var(--f-mono);color:var(--ink);background:color-mix(in srgb,var(--surface) 88%,transparent);border-radius:4px;padding:3px 5px;pointer-events:none;white-space:nowrap}
 .ma-lb.dim{opacity:.45}
 .ma-tot{position:absolute;transform:translate(-50%,-100%);font:700 14px/1 var(--f-mono);color:var(--ink);margin-top:-8px;pointer-events:none}
@@ -1500,7 +1499,6 @@ const MatApl = {
         <div class="ma-plot">
           <div class="ma-in">
           <svg viewBox="0 0 1000 1000" preserveAspectRatio="none" role="img" :aria-label="aria">
-            <path v-for="r in ribs" :key="r.id" class="ma-rib" :d="r.d" :fill="r.c"/>
             <g v-for="(m, i) in cols" :key="m.k" class="ma-col">
               <rect v-for="s in m.segs" :key="s.k" :x="m.x" :y="s.y0" :width="W" :height="Math.max(0, s.y1 - s.y0)" :fill="s.c"
                 stroke="var(--surface)" stroke-width="2" vector-effect="non-scaling-stroke" :class="{'ma-dim': sel && !(sel.i === i && sel.k === s.k)}"
@@ -1535,7 +1533,7 @@ const MatApl = {
       </div>
     </section>`,
   setup() {
-    const W = 230, X0 = 25, GAP = (1000 - 2 * X0 - 3 * W) / 2, TOP = 70, BASE = 1000;
+    const W = 200, X0 = 70, GAP = (1000 - 2 * X0 - 3 * W) / 2, TOP = 70, BASE = 1000;
     const pct2 = new Intl.NumberFormat("pt-BR", {style: "percent", minimumFractionDigits: 2, maximumFractionDigits: 2});
     const sel = ref(null);
     const meses = MAT_APL.meses.map(m => {
@@ -1549,12 +1547,6 @@ const MatApl = {
         segs.push({k: c.k, c: c.c, q, y1: y, y0: y - h}); y -= h; });
       return {...m, x: X0 + i * (W + GAP), segs, top: y};
     });
-    const ribs = [];
-    cols.slice(0, -1).forEach((a, i) => { const b = cols[i + 1];
-      a.segs.forEach(s => { const t = b.segs.find(z => z.k === s.k); if (!t) return;
-        const x1 = a.x + W, x2 = b.x, mx = (x1 + x2) / 2;
-        ribs.push({id: i + s.k, c: s.c,
-          d: `M${x1} ${s.y0}C${mx} ${s.y0} ${mx} ${t.y0} ${x2} ${t.y0}L${x2} ${t.y1}C${mx} ${t.y1} ${mx} ${s.y1} ${x1} ${s.y1}Z`}); }); });
     const legenda = MAT_APL.cats.slice().reverse().filter(c => meses.some(m => m.q(c.k)));
     const prevQ = (i, k) => i > 0 ? (meses[i - 1].q(k) || null) : (MAT_APL.jun.d[k] ?? null);
     const det = computed(() => { if (!sel.value) return null; const {i, k} = sel.value, m = cols[i], s = m.segs.find(z => z.k === k), c = m.d[k];
@@ -1569,7 +1561,7 @@ const MatApl = {
     onBeforeUnmount(() => document.removeEventListener("click", fechar));
     const sinal = v => (v > 0 ? "+" : "") + pct2.format(v);
     const aria = "Material aplicado por tecnologia: " + meses.map(m => `${m.t} ${nf0.format(m.tot)}`).join(", ");
-    return {W, cols, ribs, legenda, sel, det, pick, sinal, aria, nf0, pct2};
+    return {W, cols, legenda, sel, det, pick, sinal, aria, nf0, pct2};
   },
 };
 
