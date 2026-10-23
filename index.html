@@ -971,7 +971,7 @@ body{background:#eef2f7}
 .cobk-s{margin-top:6px;font-size:12px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* Material aplicado (jul–set) */
 .ma{margin-top:22px;scroll-margin-top:calc(var(--tb-h) + 16px)}
-.ma .c2-t small{font-size:12px;color:var(--ink-3)}
+.ma-h .c2-t{gap:4px}.ma-h .c2-t b{font-size:20px;letter-spacing:-.01em}.ma .c2-t small{font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--ink-3)}
 .ma-body{display:grid;grid-template-columns:minmax(0,1fr) 170px;gap:18px;padding:16px 20px 18px}
 .ma-wrap{position:relative;min-width:0}
 .ma-plot{position:relative;height:340px}
@@ -981,7 +981,7 @@ body{background:#eef2f7}
 .ma-rib{opacity:.32;pointer-events:none}
 .ma-lb{position:absolute;transform:translate(-50%,-50%);font:600 11px/1 var(--f-mono);color:var(--ink);background:color-mix(in srgb,var(--surface) 88%,transparent);border-radius:4px;padding:3px 5px;pointer-events:none;white-space:nowrap}
 .ma-lb.dim{opacity:.45}
-.ma-tot{position:absolute;transform:translate(-50%,-100%);font:700 13px/1 var(--f-mono);color:var(--ink);background:var(--bg,#eef1f6);border-radius:5px;padding:4px 7px;margin-top:-6px;pointer-events:none}
+.ma-tot{position:absolute;transform:translate(-50%,-100%);font:700 14px/1 var(--f-mono);color:var(--ink);margin-top:-8px;pointer-events:none}
 .ma-x{position:absolute;bottom:4px;transform:translateX(-50%);font:700 11.5px var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
 .ma-leg{list-style:none;margin:0;padding:6px 0 0;display:grid;gap:7px;align-content:start;font-size:12px;color:var(--ink-2)}
 .ma-leg li{display:flex;align-items:center;gap:8px}.ma-leg i{width:10px;height:10px;border-radius:3px;background:var(--lc);flex:none}
@@ -1494,7 +1494,7 @@ const MAT_APL = {
 
 const MatApl = {
   template: `<section id="sec-mat" class="card2 ma" aria-label="Material aplicado">
-      <header class="c2-h"><div class="c2-t"><b>Material aplicado</b><small>Julho a setembro de 2026 · clique em uma tecnologia para ver o detalhe</small></div></header>
+      <header class="c2-h ma-h"><div class="c2-t"><b>Material aplicado</b><small>Jul · Ago · Set 2026</small></div></header>
       <div class="ma-body">
         <div class="ma-wrap">
         <div class="ma-plot">
