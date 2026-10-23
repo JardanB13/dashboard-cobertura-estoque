@@ -835,17 +835,6 @@ body{background:var(--bg)}
 .tc-row .nm{font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tc-row .tr{height:6px;border-radius:99px;background:#edf0f5;overflow:hidden}.tc-row .tr i{display:block;height:100%;border-radius:99px;background:var(--c-reap)}
 .tc-row .q{font:600 14px var(--f-mono);text-align:right}.tc-row .p{font:500 12px var(--f-mono);text-align:right;color:var(--ink-3)}
-/* Equipes por região */
-.eqr{margin-top:14px}
-.eqr .tc-tot b{color:var(--navy)}
-.eqr .tc-grid{grid-template-columns:1fr}
-.eqr .tc-row{cursor:pointer;border-radius:6px;padding:8px 6px;transition:opacity .15s ease,background .15s ease}
-.eqr .tc-row:hover{background:color-mix(in srgb,var(--navy) 6%,transparent)}
-.eqr .tc-row:focus-visible{outline:2px solid var(--navy);outline-offset:1px}
-.eqr .tc-row .tr i{background:var(--navy)}
-.eqr .tc-row.on .nm{color:var(--navy)}
-.eqr .tc-row.dim{opacity:.4}
-.eqr .eqr-f{padding:0 20px 14px;font-size:11.5px;color:var(--ink-3)}
 @media (max-width:760px){.tc-grid{grid-template-columns:1fr;padding:10px 16px 14px}.tc-row{grid-template-columns:minmax(0,1fr) 56px 46px}.tc-row .tr{display:none}}
 /* Tabela de categorias (Sul/Sudeste) */
 .ctb{animation:t2in .25s ease;padding-bottom:10px}
@@ -971,7 +960,7 @@ body{background:#eef2f7}
 .kpi .leg{font-size:11.5px;margin-top:8px}
 .tc-tot b{font-size:22px}
 }
-.cobk{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;scroll-margin-top:calc(var(--tb-h) + 16px)}
+.cobk{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;scroll-margin-top:calc(var(--tb-h) + 16px)}
 .cobk-c{position:relative;overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 22px 18px;box-shadow:0 1px 2px rgba(15,28,46,.04),0 10px 30px -14px rgba(15,28,46,.16);min-width:0}
 .cobk-c.dim{opacity:.45}
 .cobk-c::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c)}
@@ -980,6 +969,10 @@ body{background:#eef2f7}
 .cobk-v{font:700 34px/1 var(--f-mono);letter-spacing:-.03em;color:var(--navy);font-variant-numeric:tabular-nums;padding-right:48px}
 .cobk-l{margin-top:10px;font:700 11.5px/1.3 var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
 .cobk-s{margin-top:6px;font-size:12px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cobk-reg{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:5px}
+.cobk-reg li{display:grid;grid-template-columns:minmax(0,1fr) 46px 36px;gap:8px;align-items:center;font-size:12px;color:var(--ink-2);cursor:pointer;border-radius:5px}
+.cobk-reg li:hover{color:var(--navy)}.cobk-reg li.on{color:var(--navy);font-weight:700}.cobk-reg li.off{opacity:.45}
+.cobk-reg b{font:600 12.5px var(--f-mono);text-align:right;color:var(--ink)}.cobk-reg i{font:500 11px var(--f-mono);font-style:normal;text-align:right;color:var(--ink-3)}
 .cobk-bar{margin-top:12px;height:5px;border-radius:99px;background:#edf0f5;overflow:hidden}.cobk-bar i{display:block;height:100%;border-radius:99px;background:var(--c)}
 @media (max-width:1100px){.cobk{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:520px){.cobk{grid-template-columns:minmax(0,1fr)}.cobk-v{font-size:28px}}
@@ -1448,30 +1441,6 @@ const CatTabela = {
 
 /* ===== Equipes por região — atualize os números aqui ===== */
 const EQUIPES = {no: 196, ne: 277, ss: 304};
-
-const EqRegiao = {
-  template: `<section class="tc card2 eqr" aria-label="Quantidade de equipes por região">
-      <header class="c2-h"><div class="c2-t"><b>Quantidade de equipes por região</b></div>
-        <div class="tc-tot"><b>{{ nf0.format(destaque.q) }}</b><span>{{ destaque.l }}</span></div></header>
-      <div class="tc-grid">
-        <div v-for="x in linhas" :key="x.k" class="tc-row" :class="{on: reg === x.k, dim: reg && reg !== x.k}"
-          role="button" tabindex="0" :aria-pressed="reg === x.k" :title="reg === x.k ? 'Voltar à visão geral' : 'Filtrar o dashboard por ' + x.l"
-          @click="pick(x.k)" @keydown.enter.prevent="pick(x.k)" @keydown.space.prevent="pick(x.k)">
-          <span class="nm">{{ x.l }}</span><span class="tr"><i :style="{width: x.p * 100 + '%'}"></i></span>
-          <span class="q">{{ nf0.format(x.q) }}</span><span class="p">{{ pct.format(x.p) }}</span></div>
-      </div>
-      <div class="eqr-f">Clique numa região para filtrar o dashboard.</div>
-    </section>`,
-  setup() {
-    const total = sum(Object.values(EQUIPES));
-    const linhas = Object.entries(EQUIPES).map(([k, q]) => ({k, l: REG_T[k] || k, q, p: total ? q / total : 0})).sort((a, b) => b.q - a.q);
-    const reg = computed(() => store.f.reg);
-    const destaque = computed(() => reg.value && EQUIPES[reg.value] != null
-      ? {q: EQUIPES[reg.value], l: `equipes · ${REG_T[reg.value]}`} : {q: total, l: "equipes no total"});
-    const pick = k => setRegiao(store.f.reg === k ? "" : k);
-    return {linhas, reg, destaque, pick, nf0, pct};
-  },
-};
 
 const KpiStrip = {
   template: `<section class="kpis" aria-live="polite">
@@ -2066,6 +2035,7 @@ const COB_ICO = {
   hub: '<path d="M3 21V8l9-5 9 5v13"/><path d="M7 21v-8h10v8M7 17h10"/>',
   cid: '<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
   doc: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',
+  eqp: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17" cy="9" r="2.6"/><path d="M15.5 14.2A5 5 0 0 1 21 19"/>',
 };
 const CobStats = {
   template: `<section class="cobk" aria-label="Resumo da cobertura">
@@ -2075,6 +2045,11 @@ const CobStats = {
         <div class="cobk-l">{{ c.l }}</div>
         <div v-if="c.p != null" class="cobk-bar" role="img" :aria-label="c.s"><i :style="{width: c.p * 100 + '%'}"></i></div>
         <div v-if="c.s" class="cobk-s">{{ c.s }}</div>
+        <ul v-if="c.reg" class="cobk-reg">
+          <li v-for="x in c.reg" :key="x.k" :class="{on: reg === x.k, off: reg && reg !== x.k}" role="button" tabindex="0"
+            :title="reg === x.k ? 'Voltar à visão geral' : 'Filtrar por ' + x.l" @click="pickReg(x.k)" @keydown.enter.prevent="pickReg(x.k)">
+            <span>{{ x.l }}</span><b>{{ nf0.format(x.q) }}</b><i>{{ pct.format(x.p) }}</i></li>
+        </ul>
       </article>
     </section>`,
   setup() {
@@ -2090,9 +2065,14 @@ const CobStats = {
         {k: "hub", l: nHubs === 1 ? "Almoxarifado" : "Almoxarifados", v: nf0.format(nHubs), c: "var(--navy)", i: COB_ICO.hub},
         {k: "cid", l: "Lojas atendidas", v: nf0.format(st.n), c: "#4a7fc1", i: COB_ICO.cid},
         {k: "doc", l: "Requisições atendidas", v: nf0.format(totDocs), c: "#0f766e", i: COB_ICO.doc},
+        (() => { const tot = sum(Object.values(EQUIPES)), r = regAtual && EQUIPES[regAtual] != null ? regAtual : "";
+          return {k: "eqp", l: "Equipes" + (r ? " · " + REG_T[r] : " por região"), v: nf0.format(r ? EQUIPES[r] : tot), c: "#b45309", i: COB_ICO.eqp,
+            reg: Object.entries(EQUIPES).map(([k, q]) => ({k, l: REG_T[k] || k, q, p: tot ? q / tot : 0})).sort((a, b) => b.q - a.q)}; })(),
       ];
     });
-    return {cards};
+    const reg = computed(() => store.f.hub ? REG(store.f.hub) : store.f.reg);
+    const pickReg = k => setRegiao(store.f.reg === k ? "" : k);
+    return {cards, reg, pickReg, nf0, pct};
   },
 };
 
@@ -2164,7 +2144,7 @@ const TopBar = {
 
 /* --------------------------------- app -------------------------------- */
 createApp({
-  components: {SideNav, TopBar, CobStats, KpiStrip, EqRegiao, TestCat, AplCat, SimBar, MapPanel, SidePanel, Intel},
+  components: {SideNav, TopBar, CobStats, KpiStrip, TestCat, AplCat, SimBar, MapPanel, SidePanel, Intel},
   template: `<div class="shell" :class="{mini}">
       <div class="main-col">
         <top-bar></top-bar>
@@ -2174,7 +2154,6 @@ createApp({
           <section class="main"><map-panel></map-panel><side-panel></side-panel></section>
           <div id="sec-eq" class="sh-anc" aria-hidden="true"></div>
           <kpi-strip></kpi-strip>
-          <eq-regiao></eq-regiao>
           <apl-cat v-if="verApl"></apl-cat>
           <test-cat v-if="verTest"></test-cat>
         </main>
