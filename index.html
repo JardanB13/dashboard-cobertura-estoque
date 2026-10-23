@@ -1081,15 +1081,7 @@ body{background:radial-gradient(1100px 520px at 0% -8%,#dbe6fb 0,rgba(219,230,25
 .kg.eq .kg-c{border:1px solid rgba(255,255,255,.7)!important;border-radius:var(--r)!important;box-shadow:var(--shadow)!important;background:#fff!important}
 .kpi{transition:background .2s ease}
 .kpi:hover{background:#f7f9fc}
-.kpi.big{background:linear-gradient(140deg,#1e3a8a 0%,#1d4ed8 55%,#3b82f6 100%)!important;color:#fff;border:0!important;position:relative;overflow:hidden}
-.kpi.big::after{content:"";position:absolute;right:-60px;bottom:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.18),transparent 70%);pointer-events:none}
-.kpi.big:hover{background:linear-gradient(140deg,#1e3a8a 0%,#1d4ed8 50%,#3b82f6 100%)!important;filter:brightness(1.05)}
-.kpi.big .v,.kpi.big .l{color:#fff!important}.kpi.big .l::before{background:#fff!important}
-.kpi.big .ico{background:rgba(255,255,255,.16)!important;color:#fff!important}
-.kpi.big .leg span{color:rgba(255,255,255,.85)!important}.kpi.big .leg b{color:#fff!important}
-.kpi.big .split{background:rgba(255,255,255,.2)!important;border-radius:99px;overflow:hidden;gap:3px}
-.kpi.big .split i:nth-child(1){background:#93c5fd!important}.kpi.big .split i:nth-child(2){background:#5eead4!important}
-.kpi.big .leg span::before{box-shadow:0 0 0 2px rgba(255,255,255,.35)}
+.kpi.big .split{border-radius:99px;overflow:hidden;gap:3px}
 .kpi .bar{height:7px!important;border-radius:99px!important;background:#edf1f7!important;overflow:hidden}
 .kpi .bar i{border-radius:99px!important;background:linear-gradient(90deg,color-mix(in srgb,var(--c) 60%,#fff),var(--c))!important;transition:width .7s cubic-bezier(.2,.7,.2,1)}
 .kpi .ico{border-radius:12px!important}
@@ -1628,8 +1620,9 @@ const MAT_APL = {
   fonte: "Power BI · Materiais aplicados (Tecnologias detalhadas)",
   cats: [
     {k: "SEM INFORMACAO", c: "#7f8c8d"}, {k: "ROTEADOR WIFI 6", c: "#f2559b"}, {k: "ROTEADOR WIFI 5", c: "#29b6f6"},
-    {k: "RADIO", c: "#7b2cbf"}, {k: "ONU", c: "#c8102e"}, {k: "ONT WIFI 6", c: "#e3b505"}, {k: "ONT WIFI 5", c: "#1f9d3a"}, {k: "(Em branco)", c: "#d9c48f"},
+    {k: "RADIO", c: "#7b2cbf"}, {k: "ONU", c: "#c8102e"}, {k: "ONT WIFI 6", c: "#e3b505"}, {k: "ONT WIFI 5", c: "#1f9d3a"},
   ],
+  /* "(Em branco)" (2 itens em agosto) não aparece no gráfico, mas segue somado no total do mês, como no Power BI */
   meses: [
     {k: "2026-07", t: "Julho", d: {"ONT WIFI 6": [3706, 1759], "ROTEADOR WIFI 6": [1792, 588], "ONT WIFI 5": [0, 850], "ONU": [0, 815],
       "SEM INFORMACAO": [15, 37], "ROTEADOR WIFI 5": [4, 29], "RADIO": [0, 5]}},
@@ -1750,6 +1743,7 @@ const MatApl = {
       let y = BASE, tot = 0; const segs = [];
       D.cats.forEach(c => { const q = m.q(c.k); if (!q || ocultas.value.includes(c.k)) return; const h = q / maxT * (BASE - TOP);
         segs.push({k: c.k, c: c.c, q, y1: y, y0: y - h}); y -= h; tot += q; });
+      tot = m.tot - sum(ocultas.value.map(k => m.q(k)));
       return {...m, tot, x: X0 + i * (W + GAP), segs, top: y};
     }));
     /* dica ao passar o mouse: o mês inteiro, tecnologia por tecnologia */
