@@ -969,6 +969,42 @@ body{background:#eef2f7}
 .cobk-v{font:700 34px/1 var(--f-mono);letter-spacing:-.03em;color:var(--navy);font-variant-numeric:tabular-nums;padding-right:48px}
 .cobk-l{margin-top:10px;font:700 11.5px/1.3 var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
 .cobk-s{margin-top:6px;font-size:12px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Material aplicado (jul–set) */
+.ma{margin-top:22px;scroll-margin-top:calc(var(--tb-h) + 16px)}
+.ma .c2-t small{font-size:12px;color:var(--ink-3)}
+.ma-sum{display:flex;gap:18px;align-items:baseline;text-align:right}.ma-sum b{font:700 22px/1 var(--f-mono);color:var(--ink)}.ma-sum span{font-size:11.5px;color:var(--ink-3);display:block;margin-top:3px}
+.ma-body{display:grid;grid-template-columns:minmax(0,1fr) 170px;gap:18px;padding:16px 20px 8px}
+.ma-plot{position:relative;height:330px}
+.ma-in{position:absolute;inset:0 0 30px 0}.ma-in svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.ma-col{cursor:pointer}.ma-col rect{transition:opacity .15s ease}
+.ma-dim{opacity:.38}
+.ma-rib{opacity:.32;pointer-events:none;transition:opacity .15s ease}
+.ma-lb{position:absolute;transform:translate(-50%,-50%);font:600 11px/1 var(--f-mono);color:var(--ink);background:color-mix(in srgb,var(--surface) 88%,transparent);border-radius:4px;padding:3px 5px;pointer-events:none;white-space:nowrap}
+.ma-lb.dim{opacity:.45}
+.ma-tot{position:absolute;transform:translate(-50%,-100%);font:700 13px/1 var(--f-mono);color:var(--ink);background:var(--bg,#eef1f6);border-radius:5px;padding:4px 7px;margin-top:-6px;pointer-events:none}
+.ma-x{position:absolute;bottom:0;transform:translateX(-50%);border:0;background:none;font:700 11.5px var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);cursor:pointer;padding:6px 8px;border-radius:6px}
+.ma-x.on{color:var(--ink);background:color-mix(in srgb,var(--navy) 9%,transparent)}
+.ma-x:focus-visible{outline:2px solid var(--navy)}
+.ma-leg{list-style:none;margin:0;padding:6px 0 0;display:grid;gap:7px;align-content:start;font-size:12px;color:var(--ink-2)}
+.ma-leg li{display:flex;align-items:center;gap:8px}.ma-leg i{width:10px;height:10px;border-radius:3px;background:var(--lc);flex:none}
+.ma-tip{position:absolute;z-index:5;pointer-events:none;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:8px;padding:8px 10px;font-size:12px;color:var(--ink-2);min-width:170px;transform:translate(-50%,calc(-100% - 10px))}
+.ma-tip b{display:block;color:var(--ink);font-size:12.5px;margin-bottom:4px}.ma-tip div{display:flex;justify-content:space-between;gap:12px}.ma-tip span{font-family:var(--f-mono);color:var(--ink)}
+.ma-hint{padding:4px 20px 18px;font-size:12px;color:var(--ink-3)}
+.ma-det{border-top:1px solid var(--line);padding:16px 20px 20px}
+.ma-det-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.ma-det-h b{font:700 14px var(--f-display);color:var(--ink)}.ma-det-h span{font-size:12px;color:var(--ink-3)}
+.ma-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.ma-card{border:1px solid var(--line);border-radius:12px;padding:14px 14px 12px;background:var(--surface);border-top:3px solid var(--c);animation:t2in .25s ease}
+.ma-card h4{margin:0;display:flex;justify-content:space-between;align-items:baseline;gap:8px;font:700 12px/1.3 var(--f-body);letter-spacing:.05em;text-transform:uppercase;color:var(--ink-2)}
+.ma-card h4 b{font:700 20px/1 var(--f-mono);color:var(--ink);letter-spacing:-.02em}
+.ma-g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.ma-g{text-align:center}.ma-g svg{width:100%;max-width:120px;height:auto;display:block;margin:0 auto}
+.ma-g .gv{font:700 15px/1 var(--f-mono);color:var(--ink);margin-top:-6px}.ma-g .gl{font-size:10.5px;line-height:1.25;color:var(--ink-3);margin-top:4px}
+.ma-g .up{color:#15803d}.ma-g .dn{color:#b91c1c}
+.ma-nr{margin-top:12px}.ma-nr .bar{display:flex;height:6px;border-radius:99px;overflow:hidden;gap:2px;background:#edf0f5}
+.ma-nr .bar i{display:block}.ma-nr .bar i:first-child{background:var(--c-novo)}.ma-nr .bar i:last-child{background:var(--c-reap)}
+.ma-nr .lg{display:flex;justify-content:space-between;margin-top:6px;font-size:11.5px;color:var(--ink-3)}.ma-nr .lg b{font:600 12px var(--f-mono);color:var(--ink)}
+@media (max-width:760px){.ma-body{grid-template-columns:1fr}.ma-leg{grid-template-columns:repeat(2,minmax(0,1fr))}.ma-plot{height:280px}.ma-lb{font-size:10px;padding:2px 3px}.ma-sum{gap:12px}.ma-sum b{font-size:18px}}
 .cobk-reg{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:5px}
 .cobk-reg li{display:grid;grid-template-columns:minmax(0,1fr) 46px 36px;gap:8px;align-items:center;font-size:12px;color:var(--ink-2);cursor:pointer;border-radius:5px}
 .cobk-reg li:hover{color:var(--navy)}.cobk-reg li.on{color:var(--navy);font-weight:700}.cobk-reg li.off{opacity:.45}
@@ -1441,6 +1477,115 @@ const CatTabela = {
 
 /* ===== Equipes por região — atualize os números aqui ===== */
 const EQUIPES = {no: 196, ne: 277, ss: 304};
+
+/* ===== Material aplicado — jul a set/2026 (Power BI · Tecnologias detalhadas). [novo, reaproveitado, sem informação] ===== */
+const MAT_APL = {
+  fonte: "Power BI · Materiais aplicados (Tecnologias detalhadas)",
+  cats: [
+    {k: "SEM INFORMACAO", c: "#7f8c8d"}, {k: "ROTEADOR WIFI 6", c: "#f2559b"}, {k: "ROTEADOR WIFI 5", c: "#29b6f6"},
+    {k: "RADIO", c: "#7b2cbf"}, {k: "ONU", c: "#c8102e"}, {k: "ONT WIFI 6", c: "#e3b505"}, {k: "ONT WIFI 5", c: "#1f9d3a"}, {k: "(Em branco)", c: "#d9c48f"},
+  ],
+  meses: [
+    {k: "2026-07", t: "Julho", d: {"ONT WIFI 6": [3706, 1759], "ROTEADOR WIFI 6": [1792, 588], "ONT WIFI 5": [0, 850], "ONU": [0, 815],
+      "SEM INFORMACAO": [15, 37], "ROTEADOR WIFI 5": [4, 29], "RADIO": [0, 5]}},
+    {k: "2026-08", t: "Agosto", d: {"ONT WIFI 6": [3595, 1284], "ROTEADOR WIFI 6": [1247, 558], "ONT WIFI 5": [1, 1174], "ONU": [0, 527],
+      "SEM INFORMACAO": [14, 23], "ROTEADOR WIFI 5": [2, 34], "RADIO": [3, 19], "(Em branco)": [0, 0, 2]}},
+    {k: "2026-09", t: "Setembro", d: {"ONT WIFI 6": [3118, 1208], "ROTEADOR WIFI 6": [839, 839], "ONT WIFI 5": [0, 1537], "ONU": [0, 596],
+      "ROTEADOR WIFI 5": [34, 151], "SEM INFORMACAO": [13, 85], "RADIO": [0, 8]}},
+  ],
+  /* junho: só para a variação de julho (categorias exibidas no gráfico do Power BI) */
+  jun: {tot: 8892, d: {"ONT WIFI 6": 5234, "ROTEADOR WIFI 6": 2043, "ONT WIFI 5": 766, "ONU": 760}},
+};
+
+const MatApl = {
+  template: `<section id="sec-mat" class="card2 ma" aria-label="Material aplicado">
+      <header class="c2-h"><div class="c2-t"><b>Material aplicado</b><small>Julho a setembro de 2026 · quantidade por tecnologia</small></div>
+        <div class="ma-sum" v-if="selM"><div><b>{{ nf0.format(selM.tot) }}</b><span>aplicados em {{ selM.t.toLowerCase() }}</span></div></div></header>
+      <div class="ma-body">
+        <div class="ma-plot" ref="plot" @mouseleave="tip = null">
+          <div class="ma-in">
+          <svg viewBox="0 0 1000 1000" preserveAspectRatio="none" role="img" :aria-label="aria">
+            <path v-for="r in ribs" :key="r.id" class="ma-rib" :d="r.d" :fill="r.c" :class="{'ma-dim': sel !== null && !r.on}"/>
+            <g v-for="(m, i) in cols" :key="m.k" class="ma-col" @click="pick(i)">
+              <rect v-for="s in m.segs" :key="s.k" :x="m.x" :y="s.y0" :width="W" :height="Math.max(0, s.y1 - s.y0)" :fill="s.c"
+                stroke="var(--surface)" stroke-width="2" vector-effect="non-scaling-stroke" :class="{'ma-dim': sel !== null && sel !== i}"
+                @mousemove="hover($event, m, s)"/>
+            </g>
+          </svg>
+          <template v-for="(m, i) in cols" :key="'l' + m.k">
+            <span class="ma-tot" :style="{left: (m.x + W / 2) / 10 + '%', top: m.top / 10 + '%'}">{{ nf0.format(m.tot) }}</span>
+            <span v-for="s in m.segs.filter(s => s.y1 - s.y0 > 34)" :key="s.k" class="ma-lb" :class="{dim: sel !== null && sel !== i}"
+              :style="{left: (m.x + W / 2) / 10 + '%', top: (s.y0 + s.y1) / 20 + '%'}">{{ nf0.format(s.q) }}</span>
+          </template>
+          </div>
+          <template v-for="(m, i) in cols" :key="'x' + m.k">
+            <button type="button" class="ma-x" :class="{on: sel === i}" :style="{left: (m.x + W / 2) / 10 + '%'}" :aria-pressed="sel === i" @click="pick(i)">{{ m.t }}</button>
+          </template>
+          <div v-if="tip" class="ma-tip" :style="{left: tip.x + 'px', top: tip.y + 'px'}"><b>{{ tip.k }} · {{ tip.m }}</b>
+            <div>Aplicados <span>{{ nf0.format(tip.q) }}</span></div><div>Novos <span>{{ nf0.format(tip.n) }}</span></div>
+            <div>Reaproveitados <span>{{ nf0.format(tip.r) }}</span></div><div>% do mês <span>{{ pct.format(tip.p) }}</span></div></div>
+        </div>
+        <ul class="ma-leg"><li v-for="c in legenda" :key="c.k" :style="{'--lc': c.c}"><i></i>{{ c.k }}</li></ul>
+      </div>
+      <div v-if="sel === null" class="ma-hint">Clique em um mês para ver o detalhe por tecnologia.</div>
+      <div v-else class="ma-det">
+        <div class="ma-det-h"><b>{{ selM.t }} · detalhe por tecnologia</b>
+          <span>{{ nf0.format(selM.n) }} novos · {{ nf0.format(selM.r) }} reaproveitados<template v-if="selM.var != null"> · {{ sinal(selM.var) }} vs mês anterior</template></span></div>
+        <div class="ma-grid">
+          <article v-for="x in det" :key="x.k" class="ma-card" :style="{'--c': x.c}">
+            <h4>{{ x.k }} <b>{{ nf0.format(x.q) }}</b></h4>
+            <div class="ma-g2">
+              <div class="ma-g"><svg viewBox="0 0 120 66" aria-hidden="true"><path d="M10 60a50 50 0 0 1 100 0" fill="none" stroke="#e4e8ef" stroke-width="12"/>
+                <path v-if="x.var != null" d="M10 60a50 50 0 0 1 100 0" fill="none" :stroke="x.var >= 0 ? '#16a34a' : '#dc2626'" stroke-width="12" pathLength="100" :stroke-dasharray="Math.min(100, Math.abs(x.var) * 100) + ' 100'"/></svg>
+                <div class="gv" :class="x.var == null ? '' : x.var >= 0 ? 'up' : 'dn'">{{ x.var == null ? "–" : sinal(x.var) }}</div><div class="gl">Diferença em relação ao mês anterior</div></div>
+              <div class="ma-g"><svg viewBox="0 0 120 66" aria-hidden="true"><path d="M10 60a50 50 0 0 1 100 0" fill="none" stroke="#e4e8ef" stroke-width="12"/>
+                <path d="M10 60a50 50 0 0 1 100 0" fill="none" stroke="#2f80ed" stroke-width="12" pathLength="100" :stroke-dasharray="x.p * 100 + ' 100'"/></svg>
+                <div class="gv">{{ pct2.format(x.p) }}</div><div class="gl">Em relação ao total do mês selecionado</div></div>
+            </div>
+            <div class="ma-nr"><div class="bar" role="img" :aria-label="'Novos ' + x.n + ', reaproveitados ' + x.r"><i :style="{flexGrow: x.n}"></i><i :style="{flexGrow: x.r}"></i></div>
+              <div class="lg"><span>Novos <b>{{ nf0.format(x.n) }}</b></span><span>Reaproveitados <b>{{ nf0.format(x.r) }}</b></span></div></div>
+          </article>
+        </div>
+      </div>
+    </section>`,
+  setup() {
+    const W = 230, X0 = 25, GAP = (1000 - 2 * X0 - 3 * W) / 2, TOP = 70, BASE = 1000;
+    const pct2 = new Intl.NumberFormat("pt-BR", {style: "percent", minimumFractionDigits: 2, maximumFractionDigits: 2});
+    const sel = ref(null), tip = ref(null), plot = ref(null);
+    const meses = MAT_APL.meses.map((m, i) => {
+      const q = k => { const v = m.d[k]; return v ? sum(v) : 0; };
+      const tot = sum(Object.keys(m.d).map(q)), n = sum(Object.values(m.d).map(v => v[0])), r = sum(Object.values(m.d).map(v => v[1]));
+      return {...m, q, tot, n, r};
+    });
+    const maxT = Math.max(...meses.map(m => m.tot)) * 1.04;
+    const cols = meses.map((m, i) => {
+      let y = BASE; const segs = [];
+      MAT_APL.cats.forEach(c => { const q = m.q(c.k); if (!q) return; const h = q / maxT * (BASE - TOP);
+        segs.push({k: c.k, c: c.c, q, n: m.d[c.k][0], r: m.d[c.k][1], y1: y, y0: y - h}); y -= h; });
+      return {...m, x: X0 + i * (W + GAP), segs, top: y};
+    });
+    const ribs = [];
+    cols.slice(0, -1).forEach((a, i) => { const b = cols[i + 1];
+      a.segs.forEach(s => { const t = b.segs.find(z => z.k === s.k); if (!t) return;
+        const x1 = a.x + W, x2 = b.x, mx = (x1 + x2) / 2;
+        ribs.push({id: i + s.k, c: s.c, on: sel.value === null, i,
+          d: `M${x1} ${s.y0}C${mx} ${s.y0} ${mx} ${t.y0} ${x2} ${t.y0}L${x2} ${t.y1}C${mx} ${t.y1} ${mx} ${s.y1} ${x1} ${s.y1}Z`}); }); });
+    const ribsC = computed(() => ribs.map(r => ({...r, on: sel.value === r.i || sel.value === r.i + 1})));
+    const legenda = MAT_APL.cats.slice().reverse().filter(c => meses.some(m => m.q(c.k)));
+    const prevOf = i => i > 0 ? {tot: meses[i - 1].tot, q: k => meses[i - 1].q(k) || null} : {tot: MAT_APL.jun.tot, q: k => MAT_APL.jun.d[k] ?? null};
+    const selM = computed(() => { if (sel.value === null) return null; const m = meses[sel.value], p = prevOf(sel.value);
+      return {...m, var: p.tot ? m.tot / p.tot - 1 : null}; });
+    const det = computed(() => { if (sel.value === null) return []; const m = meses[sel.value], p = prevOf(sel.value);
+      return MAT_APL.cats.filter(c => m.q(c.k)).map(c => { const q = m.q(c.k), pq = p.q(c.k);
+        return {k: c.k, c: c.c, q, n: m.d[c.k][0], r: m.d[c.k][1], p: q / m.tot, var: pq ? q / pq - 1 : null}; }).sort((a, b) => b.q - a.q); });
+    const pick = i => { sel.value = sel.value === i ? null : i; tip.value = null; };
+    const hover = (e, m, s) => { const r = plot.value.getBoundingClientRect();
+      tip.value = {x: e.clientX - r.left, y: e.clientY - r.top, k: s.k, m: m.t, q: s.q, n: s.n, r: s.r, p: s.q / m.tot}; };
+    const sinal = v => (v > 0 ? "+" : "") + pct2.format(v);
+    const aria = "Material aplicado por tecnologia: " + meses.map(m => `${m.t} ${nf0.format(m.tot)}`).join(", ");
+    return {W, cols, ribs: ribsC, legenda, sel, selM, det, pick, hover, tip, plot, sinal, aria, nf0, pct, pct2};
+  },
+};
 
 const KpiStrip = {
   template: `<section class="kpis" aria-live="polite">
@@ -2077,7 +2222,7 @@ const CobStats = {
 };
 
 /* Shell: navegação lateral (região + seções) e barra superior fixa */
-const SECOES = [{id: "sec-cob", n: "01", t: "Cobertura por cidades"}, {id: "sec-eq", n: "02", t: "Equipamentos em campo"}];
+const SECOES = [{id: "sec-cob", n: "01", t: "Cobertura por cidades"}, {id: "sec-eq", n: "02", t: "Equipamentos em campo"}, {id: "sec-mat", n: "03", t: "Material aplicado"}];
 const MES_TXT = MES_EXT[String(EQ.meta.periodo || "").slice(0, 3)] || String(EQ.meta.periodo || "");
 const ANO_TXT = (String(EQ.meta.periodo || "").split("/")[1]) || "";
 const aplReg = k => { const e = eqSum(BASE_ROWS.filter(r => !k || REG(r.h) === k)), fo = k ? (EQ.meta.foraReg || {})[k] || {} : EQ.meta.fora || {};
@@ -2093,6 +2238,7 @@ const SN_ICO = {
   ne: '<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
   ss: '<path d="M3 20h18M5 20V9l7-5 7 5v11"/><path d="M9 20v-6h6v6"/>',
   "sec-eq": '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10"/>',
+  "sec-mat": '<path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/>',
   "sec-cob": '<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/>',
   "sec-td": '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/>',
 };
@@ -2144,7 +2290,7 @@ const TopBar = {
 
 /* --------------------------------- app -------------------------------- */
 createApp({
-  components: {SideNav, TopBar, CobStats, KpiStrip, TestCat, AplCat, SimBar, MapPanel, SidePanel, Intel},
+  components: {SideNav, TopBar, CobStats, KpiStrip, MatApl, TestCat, AplCat, SimBar, MapPanel, SidePanel, Intel},
   template: `<div class="shell" :class="{mini}">
       <div class="main-col">
         <top-bar></top-bar>
@@ -2156,6 +2302,7 @@ createApp({
           <kpi-strip></kpi-strip>
           <apl-cat v-if="verApl"></apl-cat>
           <test-cat v-if="verTest"></test-cat>
+          <mat-apl></mat-apl>
         </main>
       </div>
     </div>
