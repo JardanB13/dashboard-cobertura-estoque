@@ -29,3 +29,7 @@ with open('equipamentos.js', 'w', encoding='utf-8') as f:
     f.write(f"window.DADOS_EQUIPAMENTOS = {json.dumps(dados_saida, ensure_ascii=False, indent=2)};")
 
 print("Arquivo equipamentos.js atualizado com sucesso!")
+git add equipamentos.js atualizar_equipamentos.py
+git commit -m "fix: alinha o total de material aplicado de setembro excluindo itens obsoletos"
+git push origin main
+
