@@ -1136,8 +1136,11 @@ const vCount = (() => {
   const ler = t => { const m = re.exec(String(t ?? "")); if (!m) return null;
     const dec = (m[2].split(",")[1] || "").length; return {pre: m[1], n: parseFloat(m[2].replace(/\./g, "").replace(",", ".")), dec, suf: m[3]}; };
   const run = (el, de, para) => {
-    const b = ler(para); cancelAnimationFrame(el._cnt || 0);
-    if (!b || reducedMotion()) { el.textContent = para ?? ""; return; }
+    const b = ler(para); cancelAnimationFrame(el._cnt || 0); clearTimeout(el._fb);
+    /* valor final já no lugar: se a animação não rodar (aba em 2º plano, impressão, PDF), o número aparece igual */
+    el.textContent = para ?? "";
+    if (!b || reducedMotion() || document.hidden) return;
+    el._fb = setTimeout(() => { cancelAnimationFrame(el._cnt || 0); el.textContent = para; }, 900);
     const a = ler(de), n0 = a ? a.n : 0, t0 = performance.now(), D = 750;
     const f = new Intl.NumberFormat("pt-BR", {minimumFractionDigits: b.dec, maximumFractionDigits: b.dec});
     const tick = t => { const k = Math.min(1, (t - t0) / D), e = 1 - Math.pow(1 - k, 3);
